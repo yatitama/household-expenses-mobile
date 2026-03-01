@@ -17,6 +17,11 @@ import type { TransactionType, TransactionInput, QuickAddTemplate } from '../typ
 
 type TabType = TransactionType | 'transfer';
 
+const parseDate = (dateString: string): Date => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
 export const AddTransactionScreen = () => {
   const insets = useSafeAreaInsets();
   const allAccounts = accountService.getAll();
@@ -237,7 +242,7 @@ export const AddTransactionScreen = () => {
                       </TouchableOpacity>
                     </View>
                     <DatePickerIOS
-                      date={new Date(date)}
+                      date={parseDate(date)}
                       onDateChange={handleDateChange}
                       mode="date"
                       locale="ja-JP"
