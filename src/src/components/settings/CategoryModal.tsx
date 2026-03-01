@@ -1,0 +1,131 @@
+import { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Trash2, Check } from 'lucide-react-native';
+import { ModalWrapper } from '../accounts/modals/ModalWrapper';
+import { COLORS } from '../accounts/constants';
+import { ICON_NAMES, getCategoryIcon } from '../../utils/categoryIcons';
+import type { Category, CategoryInput, TransactionType } from '../../types';
+
+interface CategoryModalProps {
+  category: Category | null;
+  onSave: (input: CategoryInput) => void;
+  onClose: () => void;
+  onDelete?: (id: string) => void;
+  defaultType?: TransactionType;
+}
+
+export const CategoryModal = ({
+  category,
+  onSave,
+  onClose,
+  onDelete,
+  defaultType = 'expense',
+}: CategoryModalProps) => {
+  const [name, setName] = useState(category?.name ?? '');
+  const [type, setType] = useState<TransactionType>(category?.type ?? defaultType);
+  const [color, setColor] = useState(category?.color ?? COLORS[2]);
+  const [icon, setIcon] = useState(category?.icon ?? 'MoreHorizontal');
+
+  const handleSubmit = () => {
+    if (!name.trim()) return;
+    onSave({ name: name.trim(), type, color, icon });
+  };
+
+  return (
+    <ModalWrapper
+      title={category ? 'カテゴリを編集' : 'カテゴリを追加'}
+      onClose={onClose}
+      isForm
+      headerAction={
+        category && onDelete ? (
+          <TouchableOpacity onPress={() => { onDelete(category.id); onClose(); }} className="p-1">
+            <Trash2 size={15} color="#9ca3af" />
+          </TouchableOpacity>
+        ) : undefined
+      }
+      footer={
+        <TouchableOpacity
+          onPress={handleSubmit}
+          className="w-full py-3 bg-gray-800 rounded-lg items-center"
+        >
+          <Text className="text-white font-semibold text-sm">保存</Text>
+        </TouchableOpacity>
+      }
+    >
+      <View className="gap-5">
+        {/* 名前 */}
+        <View>
+          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
+          <TextInput
+            className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-gray-900 dark:text-gray-100"
+            value={name}
+            onChangeText={setName}
+            placeholder="例: 食費"
+            placeholderTextColor="#9ca3af"
+          />
+        </View>
+
+        {/* 種類（新規作成時のみ変更可） */}
+        <View>
+          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">種類</Text>
+          <View className="flex-row gap-2">
+            {(['expense', 'income'] as TransactionType[]).map((t) => (
+              <TouchableOpacity
+                key={t}
+                onPress={() => !category && setType(t)}
+                className={`relative flex-1 items-center py-2 rounded-lg ${type === t ? 'bg-gray-100 dark:bg-gray-700' : ''} ${category ? 'opacity-50' : ''}`}
+              >
+                <Text className="text-sm text-gray-900 dark:text-gray-200">
+                  {t === 'expense' ? '支出' : '収入'}
+                </Text>
+                {type === t && (
+                  <View className="absolute top-0 right-0">
+                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                  </View>
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* アイコン */}
+        <View>
+          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">アイコン</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {ICON_NAMES.map((iconName) => (
+              <TouchableOpacity
+                key={iconName}
+                onPress={() => setIcon(iconName)}
+                className="w-9 h-9 rounded-lg items-center justify-center"
+                style={{
+                  backgroundColor: icon === iconName ? color : '#f3f4f6',
+                }}
+              >
+                {getCategoryIcon(iconName, 16, icon === iconName ? '#fff' : '#6b7280')}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* 色 */}
+        <View>
+          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">色</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {COLORS.map((c) => (
+              <TouchableOpacity
+                key={c}
+                onPress={() => setColor(c)}
+                className="w-8 h-8 rounded-full"
+                style={{
+                  backgroundColor: c,
+                  borderWidth: color === c ? 3 : 0,
+                  borderColor: '#374151',
+                }}
+              />
+            ))}
+          </View>
+        </View>
+      </View>
+    </ModalWrapper>
+  );
+};
