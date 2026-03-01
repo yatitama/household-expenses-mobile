@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
 import { Search, List, Sliders } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
@@ -13,12 +14,22 @@ import type { Transaction } from '../types';
 
 export const TransactionsScreen = () => {
   const insets = useSafeAreaInsets();
+  const [, setFocused] = useState(false);
   const { filters, filteredTransactions, updateFilter } = useTransactionFilter();
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
-  const categories = useMemo(() => categoryService.getAll(), []);
-  const accounts = useMemo(() => accountService.getAll(), []);
-  const paymentMethods = useMemo(() => paymentMethodService.getAll(), []);
+  useFocusEffect(
+    useCallback(() => {
+      setFocused(true);
+      return () => {
+        setFocused(false);
+      };
+    }, []),
+  );
+
+  const categories = categoryService.getAll();
+  const accounts = accountService.getAll();
+  const paymentMethods = paymentMethodService.getAll();
 
   // 日付でグループ化
   const grouped = useMemo(() => {
