@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Trash2, Check } from 'lucide-react-native';
+import { Trash2 } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { COLORS } from '../accounts/constants';
 import { ICON_NAMES, getCategoryIcon } from '../../utils/categoryIcons';
@@ -70,21 +70,16 @@ export const CategoryModal = ({
         {/* 種類（新規作成時のみ変更可） */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">種類</Text>
-          <View className="flex-row gap-2">
+          <View className={`flex-row rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-700 ${category ? 'opacity-50' : ''}`}>
             {(['expense', 'income'] as TransactionType[]).map((t) => (
               <TouchableOpacity
                 key={t}
                 onPress={() => !category && setType(t)}
-                className={`relative flex-1 items-center py-2 rounded-lg ${type === t ? 'bg-gray-100 dark:bg-gray-700' : ''} ${category ? 'opacity-50' : ''}`}
+                className={`flex-1 py-2.5 items-center ${type === t ? 'bg-gray-800 dark:bg-gray-600' : ''}`}
               >
-                <Text className="text-sm text-gray-900 dark:text-gray-200">
+                <Text className={`text-sm font-medium ${type === t ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
                   {t === 'expense' ? '支出' : '収入'}
                 </Text>
-                {type === t && (
-                  <View className="absolute top-0 right-0">
-                    <Check size={12} color="#374151" strokeWidth={2.5} />
-                  </View>
-                )}
               </TouchableOpacity>
             ))}
           </View>
@@ -93,7 +88,7 @@ export const CategoryModal = ({
         {/* アイコン */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">アイコン</Text>
-          <View className="flex-row flex-wrap gap-2">
+          <View className="flex-row flex-wrap gap-2 justify-center">
             {ICON_NAMES.map((iconName) => (
               <TouchableOpacity
                 key={iconName}
@@ -112,7 +107,7 @@ export const CategoryModal = ({
         {/* 色 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">色</Text>
-          <View className="flex-row flex-wrap gap-2">
+          <View className="flex-row flex-wrap gap-2 justify-center">
             {COLORS.map((c) => (
               <TouchableOpacity
                 key={c}
