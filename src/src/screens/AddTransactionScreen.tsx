@@ -258,12 +258,12 @@ export const AddTransactionScreen = () => {
               {/* カテゴリ */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">カテゴリ</Text>
-                <View className="flex-row flex-wrap gap-3 justify-start">
+                <View className="flex-row flex-wrap gap-2">
                   {filteredCategories.map((cat) => (
                     <TouchableOpacity
                       key={cat.id}
                       onPress={() => setCategoryId(cat.id)}
-                      className={`relative w-[30%] items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                      className={`relative flex-1 basis-1/3 items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                     >
                       <View className="mb-1">
                         {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
@@ -288,12 +288,12 @@ export const AddTransactionScreen = () => {
               {/* 支払い元 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い元</Text>
-                <View className="flex-row flex-wrap gap-3 justify-start">
+                <View className="flex-row flex-wrap gap-2">
                   {allAccounts.map((acc) => (
                     <TouchableOpacity
                       key={acc.id}
                       onPress={() => setSelectedSourceId(acc.id)}
-                      className={`relative w-[30%] items-center p-2 rounded-lg ${selectedSourceId === acc.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                      className={`relative flex-1 basis-1/3 items-center p-2 rounded-lg ${selectedSourceId === acc.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                     >
                       <View
                         className="w-8 h-8 rounded-full items-center justify-center mb-1"
@@ -319,7 +319,7 @@ export const AddTransactionScreen = () => {
                     <TouchableOpacity
                       key={pm.id}
                       onPress={() => setSelectedSourceId(pm.id)}
-                      className={`relative w-[30%] items-center p-2 rounded-lg ${selectedSourceId === pm.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                      className={`relative flex-1 basis-1/3 items-center p-2 rounded-lg ${selectedSourceId === pm.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                     >
                       <View
                         className="w-8 h-8 rounded-full items-center justify-center mb-1"
