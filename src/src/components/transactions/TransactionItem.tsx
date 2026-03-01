@@ -1,5 +1,4 @@
-import { Animated, View, Text } from 'react-native';
-import { useTransactionSwipe } from '../../hooks/useTransactionSwipe';
+import { TouchableOpacity, View, Text } from 'react-native';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { formatCurrency } from '../../utils/formatters';
 import type { Transaction } from '../../types';
@@ -10,8 +9,7 @@ interface TransactionItemProps {
   paymentMethod: { id: string; name: string; linkedAccountId?: string } | undefined;
   account: { id: string; name: string; balance: number; color: string } | undefined;
   isLast: boolean;
-  onEdit: (transaction: Transaction) => void;
-  onDelete: (transaction: Transaction) => void;
+  onPress: (transaction: Transaction) => void;
 }
 
 export const TransactionItem = ({
@@ -20,18 +18,11 @@ export const TransactionItem = ({
   paymentMethod: pm,
   account: acc,
   isLast,
-  onEdit,
-  onDelete,
+  onPress,
 }: TransactionItemProps) => {
-  const { panHandlers, pan } = useTransactionSwipe({
-    onSwipeLeft: () => onEdit(t),
-    onSwipeRight: () => onDelete(t),
-  });
-
   return (
-    <Animated.View
-      {...panHandlers}
-      style={{ transform: [{ translateX: pan.x }] }}
+    <TouchableOpacity
+      onPress={() => onPress(t)}
       className={`flex-row items-center px-4 py-3 ${!isLast ? 'border-b border-gray-100 dark:border-gray-800' : ''}`}
     >
       {/* カテゴリアイコン */}
@@ -56,6 +47,6 @@ export const TransactionItem = ({
         {t.type === 'expense' ? '-' : '+'}
         {formatCurrency(t.amount)}
       </Text>
-    </Animated.View>
+    </TouchableOpacity>
   );
 };
