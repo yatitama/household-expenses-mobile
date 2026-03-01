@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, DatePickerAndroid, Modal, Keyboard,
+  KeyboardAvoidingView, Platform, DatePickerAndroid, Keyboard,
 } from 'react-native';
 import DatePickerIOS from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -236,32 +236,22 @@ export const AddTransactionScreen = () => {
               <Text className="text-base text-gray-900 dark:text-gray-100">{date}</Text>
               <ChevronDown size={20} color="#9ca3af" />
             </TouchableOpacity>
-            {Platform.OS === 'ios' && (
-              <Modal
-                transparent
-                animationType="slide"
-                visible={showDatePicker}
-              >
-                <View className="flex-1 bg-black/50 justify-end">
-                  <View className="bg-white dark:bg-slate-800">
-                    <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                      <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                        <Text className="text-blue-500">キャンセル</Text>
-                      </TouchableOpacity>
-                      <Text className="font-bold text-gray-900 dark:text-gray-100">日付を選択</Text>
-                      <TouchableOpacity onPress={handleDateConfirm}>
-                        <Text className="text-blue-500">完了</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <DatePickerIOS
-                      value={pickerDate}
-                      onChange={handleDateChange}
-                      mode="date"
-                      locale="ja-JP"
-                    />
-                  </View>
-                </View>
-              </Modal>
+            {Platform.OS === 'ios' && showDatePicker && (
+              <View className="mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800">
+                <DatePickerIOS
+                  value={pickerDate}
+                  onChange={handleDateChange}
+                  mode="date"
+                  display="inline"
+                  locale="ja-JP"
+                />
+                <TouchableOpacity
+                  onPress={handleDateConfirm}
+                  className="items-center py-3 border-t border-gray-200 dark:border-gray-600"
+                >
+                  <Text className="text-blue-500 font-semibold">完了</Text>
+                </TouchableOpacity>
+              </View>
             )}
           </View>
 
