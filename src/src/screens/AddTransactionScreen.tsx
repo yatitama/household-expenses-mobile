@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, DatePickerAndroid, DatePickerIOS, Modal, Keyboard,
+  KeyboardAvoidingView, Platform, DatePickerAndroid, Modal, Keyboard,
 } from 'react-native';
+import DatePickerIOS from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { format } from 'date-fns';
 import Toast from 'react-native-toast-message';
