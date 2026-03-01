@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Trash2, User, Check } from 'lucide-react-native';
 import { ModalWrapper } from './ModalWrapper';
 import { PM_TYPE_LABELS, BILLING_TYPE_LABELS, COLORS } from '../constants';
 import { COMMON_MEMBER_ID } from '../../../types';
+import { DismissibleTextInput } from '../../inputs/DismissibleTextInput';
 import type {
   Account, PaymentMethod, PaymentMethodType,
   PaymentMethodInput, BillingType, Member,
@@ -69,7 +70,7 @@ export const PaymentMethodModal = ({
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
           <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
-            <TextInput
+            <DismissibleTextInput
               className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
               value={name}
               onChangeText={setName}
@@ -166,7 +167,7 @@ export const PaymentMethodModal = ({
             <View className="flex-1">
               <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">締め日</Text>
               <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
-                <TextInput
+                <DismissibleTextInput
                   className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
                   value={closingDay}
                   onChangeText={setClosingDay}
@@ -179,7 +180,7 @@ export const PaymentMethodModal = ({
             <View className="flex-1">
               <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い日</Text>
               <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
-                <TextInput
+                <DismissibleTextInput
                   className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
                   value={paymentDay}
                   onChangeText={setPaymentDay}

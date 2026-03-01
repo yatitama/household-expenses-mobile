@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, ScrollView,
+  View, Text, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, DatePickerAndroid, Keyboard,
 } from 'react-native';
 import DatePickerIOS from '@react-native-community/datetimepicker';
@@ -13,6 +13,7 @@ import {
   paymentMethodService, quickAddTemplateService,
 } from '../services/storage';
 import { getCategoryIcon } from '../utils/categoryIcons';
+import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import type { TransactionType, TransactionInput, QuickAddTemplate } from '../types';
 
 type TabType = TransactionType | 'transfer';
@@ -213,15 +214,13 @@ export const AddTransactionScreen = () => {
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">金額</Text>
             <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
               <Text className="text-gray-500 mr-1 text-base">¥</Text>
-              <TextInput
+              <DismissibleTextInput
                 className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
                 value={amount}
                 onChangeText={setAmount}
                 keyboardType="numeric"
                 placeholder="0"
                 placeholderTextColor="#9ca3af"
-                returnKeyType="done"
-                onSubmitEditing={() => Keyboard.dismiss()}
               />
             </View>
           </View>
@@ -403,15 +402,13 @@ export const AddTransactionScreen = () => {
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">振替手数料（任意）</Text>
                 <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
                   <Text className="text-gray-500 mr-1 text-base">¥</Text>
-                  <TextInput
+                  <DismissibleTextInput
                     className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
                     value={transferFee}
                     onChangeText={setTransferFee}
                     keyboardType="numeric"
                     placeholder="0"
                     placeholderTextColor="#9ca3af"
-                    returnKeyType="done"
-                    onSubmitEditing={() => Keyboard.dismiss()}
                   />
                 </View>
               </View>
@@ -421,7 +418,7 @@ export const AddTransactionScreen = () => {
           {/* メモ */}
           <View>
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">メモ（任意）</Text>
-            <TextInput
+            <DismissibleTextInput
               className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-3 text-gray-900 dark:text-gray-100"
               value={memo}
               onChangeText={setMemo}
