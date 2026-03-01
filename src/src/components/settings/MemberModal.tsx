@@ -64,7 +64,7 @@ export const MemberModal = ({ member, onSave, onClose, onDelete }: MemberModalPr
         {/* 色 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">色</Text>
-          <View className="flex-row flex-wrap gap-2 justify-center">
+          <View className="flex-row flex-wrap gap-2 justify-start">
             {COLORS.map((c) => (
               <TouchableOpacity
                 key={c}
