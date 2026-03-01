@@ -262,16 +262,17 @@ export const AddTransactionScreen = () => {
               {/* カテゴリ */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">カテゴリ</Text>
-                <View className="gap-2">
+                <View style={{ gap: 8 }}>
                   {Array.from({ length: Math.ceil(filteredCategories.length / 3) }, (_, rowIndex) => {
                     const rowCats = filteredCategories.slice(rowIndex * 3, rowIndex * 3 + 3);
                     return (
-                      <View key={rowIndex} className="flex-row gap-2">
+                      <View key={rowIndex} style={{ flexDirection: 'row', gap: 8 }}>
                         {rowCats.map((cat) => (
                           <TouchableOpacity
                             key={cat.id}
                             onPress={() => setCategoryId(cat.id)}
-                            className={`relative flex-1 items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                            style={{ flex: 1 }}
+                            className={`relative items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                           >
                             <View className="mb-1">
                               {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
@@ -291,7 +292,7 @@ export const AddTransactionScreen = () => {
                           </TouchableOpacity>
                         ))}
                         {rowCats.length < 3 && Array.from({ length: 3 - rowCats.length }, (_, i) => (
-                          <View key={`empty-${i}`} className="flex-1" />
+                          <View key={`empty-${i}`} style={{ flex: 1 }} />
                         ))}
                       </View>
                     );
@@ -302,7 +303,7 @@ export const AddTransactionScreen = () => {
               {/* 支払い元 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い元</Text>
-                <View className="gap-2">
+                <View style={{ gap: 8 }}>
                   {(() => {
                     const sources = [
                       ...allAccounts.map((acc) => ({ id: acc.id, name: acc.name, color: acc.color, isAccount: true as const })),
@@ -311,12 +312,13 @@ export const AddTransactionScreen = () => {
                     return Array.from({ length: Math.ceil(sources.length / 3) }, (_, rowIndex) => {
                       const rowSources = sources.slice(rowIndex * 3, rowIndex * 3 + 3);
                       return (
-                        <View key={rowIndex} className="flex-row gap-2">
+                        <View key={rowIndex} style={{ flexDirection: 'row', gap: 8 }}>
                           {rowSources.map((src) => (
                             <TouchableOpacity
                               key={src.id}
                               onPress={() => setSelectedSourceId(src.id)}
-                              className={`relative flex-1 items-center p-2 rounded-lg ${selectedSourceId === src.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                              style={{ flex: 1 }}
+                              className={`relative items-center p-2 rounded-lg ${selectedSourceId === src.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                             >
                               <View
                                 className="w-8 h-8 rounded-full items-center justify-center mb-1"
@@ -339,7 +341,7 @@ export const AddTransactionScreen = () => {
                             </TouchableOpacity>
                           ))}
                           {rowSources.length < 3 && Array.from({ length: 3 - rowSources.length }, (_, i) => (
-                            <View key={`empty-${i}`} className="flex-1" />
+                            <View key={`empty-${i}`} style={{ flex: 1 }} />
                           ))}
                         </View>
                       );
