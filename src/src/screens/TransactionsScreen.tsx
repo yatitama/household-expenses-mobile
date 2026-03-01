@@ -1,23 +1,25 @@
 import { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
-import { Search, List, Sliders } from 'lucide-react-native';
+import { Search, List } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
 import { useTransactionFilter } from '../hooks/useTransactionFilter';
 import { categoryService, accountService, paymentMethodService, transactionService } from '../services/storage';
 import { formatCurrency, formatDate } from '../utils/formatters';
-import { getCategoryIcon } from '../utils/categoryIcons';
-import { revertTransactionBalance, applyTransactionBalance } from '../components/accounts/balanceHelpers';
+import { revertTransactionBalance } from '../components/accounts/balanceHelpers';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
+import { ConfirmDialog } from '../components/feedback/ConfirmDialog';
+import { TransactionItem } from '../components/transactions/TransactionItem';
 import type { Transaction } from '../types';
 
 export const TransactionsScreen = () => {
   const insets = useSafeAreaInsets();
   const [, setFocused] = useState(false);
   const { filters, filteredTransactions, updateFilter } = useTransactionFilter();
-  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -52,10 +54,23 @@ export const TransactionsScreen = () => {
     [filteredTransactions],
   );
 
-  const handleDelete = (t: Transaction) => {
-    revertTransactionBalance(t);
-    transactionService.delete(t.id);
-    Toast.show({ type: 'success', text1: '取引を削除しました' });
+  const handleDeleteClick = (t: Transaction) => {
+    setTransactionToDelete(t);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (transactionToDelete) {
+      revertTransactionBalance(transactionToDelete);
+      transactionService.delete(transactionToDelete.id);
+      Toast.show({ type: 'success', text1: '取引を削除しました' });
+      setTransactionToDelete(null);
+    }
+  };
+
+  const handleEdit = (t: Transaction) => {
+    // For now, just show a toast. In a real app, you would navigate to an edit screen or open an edit modal
+    Toast.show({ type: 'info', text1: '編集機能は準備中です' });
   };
 
   return (
@@ -116,36 +131,16 @@ export const TransactionsScreen = () => {
                   const isLast = idx === txns.length - 1;
 
                   return (
-                    <TouchableOpacity
+                    <TransactionItem
                       key={t.id}
-                      className={`flex-row items-center px-4 py-3 ${!isLast ? 'border-b border-gray-100 dark:border-gray-800' : ''}`}
-                      onLongPress={() => handleDelete(t)}
-                    >
-                      {/* カテゴリアイコン */}
-                      <View
-                        className="w-8 h-8 rounded-full items-center justify-center mr-3"
-                        style={{ backgroundColor: cat?.color ?? '#9ca3af' }}
-                      >
-                        {getCategoryIcon(cat?.icon ?? '', 14, '#fff')}
-                      </View>
-                      {/* 情報 */}
-                      <View className="flex-1 min-w-0">
-                        <Text className="text-sm font-medium text-gray-900 dark:text-gray-100" numberOfLines={1}>
-                          {cat?.name ?? '不明'}
-                        </Text>
-                        <Text className="text-xs text-gray-500 dark:text-gray-400" numberOfLines={1}>
-                          {pm?.name ?? acc?.name ?? ''}
-                          {t.memo ? ` · ${t.memo}` : ''}
-                        </Text>
-                      </View>
-                      {/* 金額 */}
-                      <Text
-                        className={`text-sm font-semibold ${t.type === 'expense' ? 'text-red-500' : 'text-green-600'}`}
-                      >
-                        {t.type === 'expense' ? '-' : '+'}
-                        {formatCurrency(t.amount)}
-                      </Text>
-                    </TouchableOpacity>
+                      transaction={t}
+                      category={cat}
+                      paymentMethod={pm}
+                      account={acc}
+                      isLast={isLast}
+                      onEdit={handleEdit}
+                      onDelete={handleDeleteClick}
+                    />
                   );
                 })}
               </View>
@@ -153,6 +148,14 @@ export const TransactionsScreen = () => {
           ))
         )}
       </ScrollView>
+      <ConfirmDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="取引を削除しますか？"
+        message="この操作は取り消せません。"
+        confirmText="削除"
+      />
     </View>
   );
 };
