@@ -87,6 +87,8 @@ export const AppNavigator = () => {
                   height: 56,
                   borderRadius: 28,
                   backgroundColor: '#374151',
+                  borderWidth: 3,
+                  borderColor: '#ffffff',
                   alignItems: 'center',
                   justifyContent: 'center',
                   shadowColor: '#000',
