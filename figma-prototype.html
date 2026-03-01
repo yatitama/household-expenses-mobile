@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>家計簿アプリ - 画面デザイン</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+
+    .container { display: flex; gap: 20px; padding: 20px; flex-wrap: wrap; }
+    .screen { width: 360px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .screen-header { padding: 16px; background: #0a7ea4; color: white; font-size: 14px; font-weight: 600; }
+    .screen-content { padding: 16px; min-height: 600px; }
+
+    /* Dashboard */
+    .month-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #11181C; }
+    .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+    .summary-item { padding: 12px; background: #f5f5f5; border-radius: 8px; text-align: center; }
+    .summary-label { font-size: 12px; color: #687076; margin-bottom: 4px; }
+    .summary-value { font-size: 16px; font-weight: 700; }
+    .value-income { color: #4CAF50; }
+    .value-expense { color: #FF6B6B; }
+
+    .transaction-list { margin-top: 16px; }
+    .transaction-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; }
+    .transaction-info { }
+    .transaction-category { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .transaction-meta { font-size: 13px; color: #687076; }
+    .transaction-amount { font-weight: 600; font-size: 15px; }
+
+    /* Add Transaction */
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block; color: #11181C; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid #687076; border-radius: 8px; font-size: 16px; }
+    .button-group { display: flex; gap: 8px; margin-bottom: 16px; }
+    .button-toggle { flex: 1; padding: 10px; text-align: center; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+    .button-toggle.active { background: #0a7ea4; color: white; border-color: #0a7ea4; }
+    .button-primary { width: 100%; padding: 12px; background: #0a7ea4; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+
+    /* Settings */
+    .menu-item { padding: 16px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .menu-text { font-size: 16px; font-weight: 500; }
+    .menu-arrow { color: #687076; font-size: 20px; }
+
+    /* List Items */
+    .list-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+    .list-content { }
+    .list-label { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+    .list-subtitle { font-size: 13px; color: #687076; }
+    .button-delete { background: #ff4444; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px; border: none; cursor: pointer; }
+
+    .empty-text { text-align: center; color: #687076; padding: 24px; font-size: 14px; }
+
+    /* Color Picker */
+    .color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 16px; }
+    .color-box { aspect-ratio: 1; border-radius: 8px; border: 2px solid transparent; cursor: pointer; }
+    .color-box.active { border-color: #333; }
+
+    /* Icon Picker */
+    .icon-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 16px; }
+    .icon-box { aspect-ratio: 1; border-radius: 8px; border: 2px solid #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
+    .icon-box.active { border-color: #0a7ea4; background: #f0f7ff; }
+
+    .color-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .color-dot { width: 16px; height: 16px; border-radius: 50%; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Dashboard Screen -->
+    <div class="screen">
+      <div class="screen-header">ダッシュボード</div>
+      <div class="screen-content">
+        <div class="month-title">2026-03</div>
+
+        <div class="summary">
+          <div class="summary-item">
+            <div class="summary-label">収入</div>
+            <div class="summary-value value-income">¥500,000</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">支出</div>
+            <div class="summary-value value-expense">¥180,000</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">残額</div>
+            <div class="summary-value value-income">¥320,000</div>
+          </div>
+        </div>
+
+        <div class="transaction-list">
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-category">食費</div>
+              <div class="transaction-meta">現金 • 2026-02-28</div>
+            </div>
+            <div class="transaction-amount value-expense">-¥5,000</div>
+          </div>
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-category">給料</div>
+              <div class="transaction-meta">口座 • 2026-02-25</div>
+            </div>
+            <div class="transaction-amount value-income">+¥300,000</div>
+          </div>
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-category">交通費</div>
+              <div class="transaction-meta">カード • 2026-02-20</div>
+            </div>
+            <div class="transaction-amount value-expense">-¥2,500</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Transaction Screen -->
+    <div class="screen">
+      <div class="screen-header">収支記録</div>
+      <div class="screen-content">
+        <div class="form-group">
+          <label class="form-label">種類*</label>
+          <div class="button-group">
+            <button class="button-toggle active">支出</button>
+            <button class="button-toggle">収入</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">金額*</label>
+          <input type="text" class="form-input" placeholder="0" value="5000">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">カテゴリ*</label>
+          <input type="text" class="form-input" placeholder="カテゴリを選択" value="食費" readonly style="background: #f5f5f5;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">支払い方法*</label>
+          <div class="button-group">
+            <button class="button-toggle active">現金</button>
+            <button class="button-toggle">カード</button>
+            <button class="button-toggle">口座</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">日付*</label>
+          <input type="text" class="form-input" placeholder="YYYY-MM-DD" value="2026-03-01">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">メモ</label>
+          <input type="text" class="form-input" placeholder="メモを入力（任意）" value="昼食代">
+        </div>
+
+        <button class="button-primary">記録する</button>
+      </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div class="screen">
+      <div class="screen-header">設定</div>
+      <div class="screen-content">
+        <div style="margin-bottom: 24px;">
+          <div style="font-size: 14px; font-weight: 700; padding: 0 0 8px 0; color: #11181C;">管理</div>
+          <div class="menu-item">
+            <span class="menu-text">メンバー</span>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <span class="menu-text">カテゴリ</span>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <span class="menu-text">口座</span>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <span class="menu-text">カード</span>
+            <span class="menu-arrow">›</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Members List Screen -->
+    <div class="screen">
+      <div class="screen-header">メンバー管理</div>
+      <div class="screen-content">
+        <div class="form-group">
+          <label class="form-label">名前*</label>
+          <input type="text" class="form-input" placeholder="メンバー名を入力">
+        </div>
+        <button class="button-primary">追加</button>
+
+        <div style="margin-top: 24px;">
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #11181C;">メンバー一覧 (2)</div>
+          <div class="list-item">
+            <div class="list-content">
+              <div class="list-label">太郎</div>
+            </div>
+            <button class="button-delete">削除</button>
+          </div>
+          <div class="list-item">
+            <div class="list-content">
+              <div class="list-label">花子</div>
+            </div>
+            <button class="button-delete">削除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories List Screen -->
+    <div class="screen">
+      <div class="screen-header">カテゴリ管理</div>
+      <div class="screen-content">
+        <div class="form-group">
+          <label class="form-label">カテゴリ名*</label>
+          <input type="text" class="form-input" placeholder="カテゴリ名を入力">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">種類*</label>
+          <div class="button-group">
+            <button class="button-toggle active">支出</button>
+            <button class="button-toggle">収入</button>
+          </div>
+        </div>
+
+        <button class="button-primary">追加</button>
+
+        <div style="margin-top: 24px;">
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #11181C;">支出 (3)</div>
+          <div class="list-item">
+            <div class="list-content"><div class="list-label">食費</div></div>
+            <button class="button-delete">削除</button>
+          </div>
+          <div class="list-item">
+            <div class="list-content"><div class="list-label">交通費</div></div>
+            <button class="button-delete">削除</button>
+          </div>
+          <div class="list-item">
+            <div class="list-content"><div class="list-label">娯楽</div></div>
+            <button class="button-delete">削除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories with Color/Icon Screen -->
+    <div class="screen">
+      <div class="screen-header">カテゴリ編集 - 色・アイコン選択</div>
+      <div class="screen-content">
+        <div class="form-group">
+          <label class="form-label">カテゴリ名*</label>
+          <input type="text" class="form-input" placeholder="カテゴリ名を入力" value="食費">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">種類*</label>
+          <div class="button-group">
+            <button class="button-toggle active">支出</button>
+            <button class="button-toggle">収入</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">色を選択</label>
+          <div class="color-grid">
+            <div class="color-box active" style="background: #FF6B6B;"></div>
+            <div class="color-box" style="background: #FF8E72;"></div>
+            <div class="color-box" style="background: #FFA94D;"></div>
+            <div class="color-box" style="background: #FFD43B;"></div>
+            <div class="color-box" style="background: #69DB7C;"></div>
+            <div class="color-box" style="background: #4CAF50;"></div>
+            <div class="color-box" style="background: #00D9FF;"></div>
+            <div class="color-box" style="background: #748EF6;"></div>
+            <div class="color-box" style="background: #9775FA;"></div>
+            <div class="color-box" style="background: #F06595;"></div>
+            <div class="color-box" style="background: #868E96;"></div>
+            <div class="color-box" style="background: #000000;"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">アイコンを選択</label>
+          <div class="icon-grid">
+            <div class="icon-box active">🍔</div>
+            <div class="icon-box">🍕</div>
+            <div class="icon-box">🍜</div>
+            <div class="icon-box">🍷</div>
+            <div class="icon-box">☕</div>
+            <div class="icon-box">🚗</div>
+            <div class="icon-box">✈️</div>
+            <div class="icon-box">🎬</div>
+            <div class="icon-box">🎮</div>
+            <div class="icon-box">📚</div>
+            <div class="icon-box">💼</div>
+            <div class="icon-box">🏥</div>
+          </div>
+        </div>
+
+        <button class="button-primary">保存</button>
+      </div>
+    </div>
+
+    <!-- Members with Color Screen -->
+    <div class="screen">
+      <div class="screen-header">メンバー管理 - 色設定</div>
+      <div class="screen-content">
+        <div class="form-group">
+          <label class="form-label">名前*</label>
+          <input type="text" class="form-input" placeholder="メンバー名を入力" value="太郎">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">色を選択</label>
+          <div class="color-grid">
+            <div class="color-box active" style="background: #0a7ea4;"></div>
+            <div class="color-box" style="background: #FF6B6B;"></div>
+            <div class="color-box" style="background: #4CAF50;"></div>
+            <div class="color-box" style="background: #FFA94D;"></div>
+            <div class="color-box" style="background: #748EF6;"></div>
+            <div class="color-box" style="background: #F06595;"></div>
+          </div>
+        </div>
+
+        <button class="button-primary">追加</button>
+
+        <div style="margin-top: 24px;">
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #11181C;">メンバー一覧</div>
+          <div class="color-item">
+            <div class="color-dot" style="background: #0a7ea4;"></div>
+            <div style="flex: 1; font-weight: 600;">太郎</div>
+            <button class="button-delete">削除</button>
+          </div>
+          <div class="color-item">
+            <div class="color-dot" style="background: #FF6B6B;"></div>
+            <div style="flex: 1; font-weight: 600;">花子</div>
+            <button class="button-delete">削除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accounts List Screen -->
+    <div class="screen">
+      <div class="screen-header">口座管理</div>
+      <div class="screen-content">
+        <div class="form-group">
+          <label class="form-label">口座名*</label>
+          <input type="text" class="form-input" placeholder="口座名を入力" value="みずほ銀行">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">オーナー*</label>
+          <input type="text" class="form-input" placeholder="オーナーを選択" value="太郎" readonly style="background: #f5f5f5;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">色を選択</label>
+          <div class="color-grid">
+            <div class="color-box active" style="background: #0a7ea4;"></div>
+            <div class="color-box" style="background: #FF6B6B;"></div>
+            <div class="color-box" style="background: #4CAF50;"></div>
+            <div class="color-box" style="background: #FFA94D;"></div>
+            <div class="color-box" style="background: #748EF6;"></div>
+            <div class="color-box" style="background: #F06595;"></div>
+          </div>
+        </div>
+
+        <button class="button-primary">追加</button>
+
+        <div style="margin-top: 24px;">
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #11181C;">口座一覧 (3)</div>
+          <div class="list-item">
+            <div class="list-content">
+              <div class="list-label">みずほ銀行</div>
+              <div class="list-subtitle">太郎</div>
+            </div>
+            <button class="button-delete">削除</button>
+          </div>
+          <div class="list-item">
+            <div class="list-content">
+              <div class="list-label">三井住友銀行</div>
+              <div class="list-subtitle">花子</div>
+            </div>
+            <button class="button-delete">削除</button>
+          </div>
+          <div class="list-item">
+            <div class="list-content">
+              <div class="list-label">ゆうちょ銀行</div>
+              <div class="list-subtitle">太郎</div>
+            </div>
+            <button class="button-delete">削除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards List Screen -->
+    <div class="screen">
+      <div class="screen-header">カード管理</div>
+      <div class="screen-content">
+        <div class="form-group">
+          <label class="form-label">カード名*</label>
+          <input type="text" class="form-input" placeholder="カード名を入力" value="楽天カード">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">オーナー*</label>
+          <input type="text" class="form-input" placeholder="オーナーを選択" value="太郎" readonly style="background: #f5f5f5;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">請求口座*</label>
+          <input type="text" class="form-input" placeholder="口座を選択" value="みずほ銀行" readonly style="background: #f5f5f5;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">色を選択</label>
+          <div class="color-grid">
+            <div class="color-box active" style="background: #0a7ea4;"></div>
+            <div class="color-box" style="background: #FF6B6B;"></div>
+            <div class="color-box" style="background: #4CAF50;"></div>
+            <div class="color-box" style="background: #FFA94D;"></div>
+            <div class="color-box" style="background: #748EF6;"></div>
+            <div class="color-box" style="background: #F06595;"></div>
+          </div>
+        </div>
+
+        <button class="button-primary">追加</button>
+
+        <div style="margin-top: 24px;">
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #11181C;">カード一覧 (2)</div>
+          <div class="list-item">
+            <div class="list-content">
+              <div class="list-label">楽天カード</div>
+              <div class="list-subtitle">太郎 - みずほ銀行</div>
+            </div>
+            <button class="button-delete">削除</button>
+          </div>
+          <div class="list-item">
+            <div class="list-content">
+              <div class="list-label">JCBカード</div>
+              <div class="list-subtitle">花子 - 三井住友銀行</div>
+            </div>
+            <button class="button-delete">削除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
