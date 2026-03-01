@@ -77,7 +77,8 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
               <TouchableOpacity
                 key={member.id}
                 onPress={() => setMemberId(member.id)}
-                className={`relative flex-col items-center p-2 rounded-lg flex-1 basis-1/3 ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                className={`relative flex-col items-center p-2 rounded-lg ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                style={{ flex: 1, flexBasis: '33.333%' }}
               >
                 <View className="w-7 h-7 rounded-full items-center justify-center mb-1" style={{ backgroundColor: `${member.color}30` }}>
                   <User size={14} color={member.color} />
