@@ -101,16 +101,17 @@ export const PaymentMethodModal = ({
         {/* 所有者 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">所有者</Text>
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             {Array.from({ length: Math.ceil(members.length / 3) }, (_, rowIndex) => {
               const rowMembers = members.slice(rowIndex * 3, rowIndex * 3 + 3);
               return (
-                <View key={rowIndex} className="flex-row gap-2">
+                <View key={rowIndex} style={{ flexDirection: 'row', gap: 8 }}>
                   {rowMembers.map((member) => (
                     <TouchableOpacity
                       key={member.id}
                       onPress={() => setMemberId(member.id)}
-                      className={`relative flex-1 flex-col items-center p-2 rounded-lg ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                      style={{ flex: 1 }}
+                      className={`relative flex-col items-center p-2 rounded-lg ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                     >
                       <View className="w-7 h-7 rounded-full items-center justify-center mb-1" style={{ backgroundColor: `${member.color}30` }}>
                         <User size={14} color={member.color} />
@@ -124,7 +125,7 @@ export const PaymentMethodModal = ({
                     </TouchableOpacity>
                   ))}
                   {rowMembers.length < 3 && Array.from({ length: 3 - rowMembers.length }, (_, i) => (
-                    <View key={`empty-${i}`} className="flex-1" />
+                    <View key={`empty-${i}`} style={{ flex: 1 }} />
                   ))}
                 </View>
               );
