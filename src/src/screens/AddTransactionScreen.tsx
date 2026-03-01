@@ -197,7 +197,7 @@ export const AddTransactionScreen = () => {
             <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
               <Text className="text-gray-500 mr-1 text-base">¥</Text>
               <TextInput
-                className="flex-1 py-2.5 text-gray-900 dark:text-gray-100 text-base"
+                className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
                 value={amount}
                 onChangeText={setAmount}
                 keyboardType="numeric"
@@ -395,7 +395,7 @@ export const AddTransactionScreen = () => {
                 <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
                   <Text className="text-gray-500 mr-1 text-base">¥</Text>
                   <TextInput
-                    className="flex-1 py-2.5 text-gray-900 dark:text-gray-100 text-base"
+                    className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
                     value={transferFee}
                     onChangeText={setTransferFee}
                     keyboardType="numeric"
