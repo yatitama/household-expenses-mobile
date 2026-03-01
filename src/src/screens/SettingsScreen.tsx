@@ -221,7 +221,7 @@ export const SettingsScreen = () => {
           <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">設定</Text>
         </View>
 
-        <View className="px-4">
+        <View className="px-4 pt-4">
           {/* メンバー管理 */}
           <Section
             title="メンバー管理"

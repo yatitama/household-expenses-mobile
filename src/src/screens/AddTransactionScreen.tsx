@@ -175,7 +175,7 @@ export const AddTransactionScreen = () => {
           <Text className="text-xl font-bold text-gray-900 dark:text-gray-100">取引を追加</Text>
         </View>
 
-        <View className="p-4 gap-5">
+        <View className="px-4 pt-4 gap-5">
           {/* タブ */}
           <View className="flex-row rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-700">
             {(['expense', 'income', 'transfer'] as TabType[]).map((t) => (
