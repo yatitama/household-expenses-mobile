@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { CreditCard, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { memberService, accountService, paymentMethodService, savingsGoalService } from '../services/storage';
 import { formatCurrency } from '../utils/formatters';
@@ -12,10 +13,20 @@ import { ACCOUNT_TYPE_ICONS } from '../components/accounts/AccountIcons';
 export const MoneyScreen = () => {
   const insets = useSafeAreaInsets();
   const [expandedAccounts, setExpandedAccounts] = useState<Set<string>>(new Set());
+  const [, setFocused] = useState(false);
 
-  const members = useMemo(() => memberService.getAll(), []);
-  const accounts = useMemo(() => accountService.getAll(), []);
-  const paymentMethods = useMemo(() => paymentMethodService.getAll(), []);
+  useFocusEffect(
+    useCallback(() => {
+      setFocused(true);
+      return () => {
+        setFocused(false);
+      };
+    }, []),
+  );
+
+  const members = memberService.getAll();
+  const accounts = accountService.getAll();
+  const paymentMethods = paymentMethodService.getAll();
 
   const currentRealMonth = toYearMonth(new Date());
   const savingsGoals = savingsGoalService.getAll();

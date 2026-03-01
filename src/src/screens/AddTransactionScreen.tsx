@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform, DatePickerAndroid, DatePickerIOS, Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { format } from 'date-fns';
 import Toast from 'react-native-toast-message';
-import { Wallet, CreditCard } from 'lucide-react-native';
+import { Wallet, CreditCard, ChevronDown } from 'lucide-react-native';
 import {
   accountService, transactionService, categoryService,
   paymentMethodService, quickAddTemplateService,
@@ -30,6 +30,7 @@ export const AddTransactionScreen = () => {
   const [memo, setMemo] = useState('');
   const [transferFromAccountId, setTransferFromAccountId] = useState('');
   const [transferFee, setTransferFee] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const type: TransactionType = tab === 'transfer' ? 'income' : tab;
   const filteredCategories = categories.filter((c) => c.type === type);
@@ -43,6 +44,27 @@ export const AddTransactionScreen = () => {
     setTransferFromAccountId('');
     setTransferFee('');
   };
+
+  const handleDateChange = (selectedDate: Date) => {
+    setDate(format(selectedDate, 'yyyy-MM-dd'));
+    setShowDatePicker(false);
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'android' && showDatePicker) {
+      DatePickerAndroid.open({
+        date: new Date(date),
+        mode: 'spinner',
+      }).then(({ action, year, month, day }) => {
+        if (action === DatePickerAndroid.dateSetAction) {
+          setDate(format(new Date(year, month, day), 'yyyy-MM-dd'));
+        }
+        setShowDatePicker(false);
+      }).catch(() => {
+        setShowDatePicker(false);
+      });
+    }
+  }, [showDatePicker]);
 
   const handleSubmit = () => {
     if (tab === 'transfer') {
@@ -171,10 +193,10 @@ export const AddTransactionScreen = () => {
           {/* 金額 */}
           <View>
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">金額</Text>
-            <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
+            <View className="flex-row items-center justify-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12">
               <Text className="text-gray-500 mr-1">¥</Text>
               <TextInput
-                className="flex-1 py-3 text-gray-900 dark:text-gray-100 text-base"
+                className="flex-1 text-gray-900 dark:text-gray-100 text-base h-12"
                 value={amount}
                 onChangeText={setAmount}
                 keyboardType="numeric"
@@ -187,13 +209,39 @@ export const AddTransactionScreen = () => {
           {/* 日付 */}
           <View>
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">日付</Text>
-            <TextInput
-              className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-3 text-gray-900 dark:text-gray-100"
-              value={date}
-              onChangeText={setDate}
-              placeholder="yyyy-MM-dd"
-              placeholderTextColor="#9ca3af"
-            />
+            <TouchableOpacity
+              onPress={() => setShowDatePicker(true)}
+              className="flex-row items-center justify-between bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12"
+            >
+              <Text className="text-base text-gray-900 dark:text-gray-100">{date}</Text>
+              <ChevronDown size={20} color="#9ca3af" />
+            </TouchableOpacity>
+            {Platform.OS === 'ios' && (
+              <Modal
+                transparent
+                animationType="slide"
+                visible={showDatePicker}
+              >
+                <View className="flex-1 bg-black/50 justify-end">
+                  <View className="bg-white dark:bg-slate-800">
+                    <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                        <Text className="text-blue-500">キャンセル</Text>
+                      </TouchableOpacity>
+                      <Text className="font-bold text-gray-900 dark:text-gray-100">日付を選択</Text>
+                      <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                        <Text className="text-blue-500">完了</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <DatePickerIOS
+                      date={new Date(date)}
+                      onDateChange={handleDateChange}
+                      mode="date"
+                    />
+                  </View>
+                </View>
+              </Modal>
+            )}
           </View>
 
           {tab !== 'transfer' ? (
@@ -201,19 +249,31 @@ export const AddTransactionScreen = () => {
               {/* カテゴリ */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">カテゴリ</Text>
-                <View className="flex-row flex-wrap gap-2">
+                <View className="flex-row flex-wrap gap-3">
                   {filteredCategories.map((cat) => (
                     <TouchableOpacity
                       key={cat.id}
                       onPress={() => setCategoryId(cat.id)}
-                      className={`flex-row items-center gap-1.5 px-3 py-2 rounded-lg ${
-                        categoryId === cat.id ? 'bg-gray-800' : 'bg-gray-100 dark:bg-slate-700'
-                      }`}
+                      className="w-[30%]"
                     >
-                      {getCategoryIcon(cat.icon ?? '', 14, categoryId === cat.id ? '#fff' : '#6b7280')}
-                      <Text className={`text-xs font-medium ${categoryId === cat.id ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
-                        {cat.name}
-                      </Text>
+                      <View
+                        className={`items-center p-2 rounded-lg border-2 ${
+                          categoryId === cat.id
+                            ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
+                            : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
+                        }`}
+                      >
+                        <View className="mb-1">
+                          {getCategoryIcon(cat.icon ?? '', 24, '#6b7280')}
+                        </View>
+                        <Text
+                          className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {cat.name}
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -222,47 +282,63 @@ export const AddTransactionScreen = () => {
               {/* 支払い元 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い元</Text>
-                <View className="gap-2">
+                <View className="flex-row flex-wrap gap-3">
                   {allAccounts.map((acc) => (
                     <TouchableOpacity
                       key={acc.id}
                       onPress={() => setSelectedSourceId(acc.id)}
-                      className={`flex-row items-center gap-2 px-3 py-2.5 rounded-lg border ${
-                        selectedSourceId === acc.id
-                          ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
-                          : 'border-gray-200 dark:border-gray-600'
-                      }`}
+                      className="w-[30%]"
                     >
-                      <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
-                        <Wallet size={12} color="#fff" />
-                      </View>
-                      <Text className="text-sm text-gray-900 dark:text-gray-100 flex-1">{acc.name}</Text>
-                      {selectedSourceId === acc.id && (
-                        <View className="w-4 h-4 bg-gray-800 rounded-full items-center justify-center">
-                          <Text className="text-white text-xs">✓</Text>
+                      <View
+                        className={`items-center p-2 rounded-lg border-2 ${
+                          selectedSourceId === acc.id
+                            ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
+                            : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
+                        }`}
+                      >
+                        <View
+                          className="w-8 h-8 rounded-full items-center justify-center mb-1"
+                          style={{ backgroundColor: acc.color }}
+                        >
+                          <Wallet size={16} color="#fff" />
                         </View>
-                      )}
+                        <Text
+                          className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {acc.name}
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                   ))}
                   {allPaymentMethods.map((pm) => (
                     <TouchableOpacity
                       key={pm.id}
                       onPress={() => setSelectedSourceId(pm.id)}
-                      className={`flex-row items-center gap-2 px-3 py-2.5 rounded-lg border ${
-                        selectedSourceId === pm.id
-                          ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
-                          : 'border-gray-200 dark:border-gray-600'
-                      }`}
+                      className="w-[30%]"
                     >
-                      <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: pm.color }}>
-                        <CreditCard size={12} color="#fff" />
-                      </View>
-                      <Text className="text-sm text-gray-900 dark:text-gray-100 flex-1">{pm.name}</Text>
-                      {selectedSourceId === pm.id && (
-                        <View className="w-4 h-4 bg-gray-800 rounded-full items-center justify-center">
-                          <Text className="text-white text-xs">✓</Text>
+                      <View
+                        className={`items-center p-2 rounded-lg border-2 ${
+                          selectedSourceId === pm.id
+                            ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
+                            : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
+                        }`}
+                      >
+                        <View
+                          className="w-8 h-8 rounded-full items-center justify-center mb-1"
+                          style={{ backgroundColor: pm.color }}
+                        >
+                          <CreditCard size={16} color="#fff" />
                         </View>
-                      )}
+                        <Text
+                          className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {pm.name}
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                   ))}
                 </View>
