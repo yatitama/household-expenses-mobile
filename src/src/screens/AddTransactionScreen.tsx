@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import {
   View, Text, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, DatePickerAndroid, Keyboard,
+  useWindowDimensions,
 } from 'react-native';
 import DatePickerIOS from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,6 +28,9 @@ const parseDate = (dateString: string): Date => {
 export const AddTransactionScreen = () => {
   const insets = useSafeAreaInsets();
   const scrollViewRef = useRef<RNScrollView>(null);
+  const { width: windowWidth } = useWindowDimensions();
+  // px-4 (16px × 2 = 32px) のコンテナ水平パディング + gap-2 (8px) × 2 列間 = 48px
+  const gridItemWidth = (windowWidth - 48) / 3;
   const allAccounts = accountService.getAll();
   const allPaymentMethods = paymentMethodService.getAll();
   const categories = categoryService.getAll();
@@ -262,91 +266,68 @@ export const AddTransactionScreen = () => {
               {/* カテゴリ */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">カテゴリ</Text>
-                <View style={{ gap: 8 }}>
-                  {Array.from({ length: Math.ceil(filteredCategories.length / 3) }, (_, rowIndex) => {
-                    const rowCats = filteredCategories.slice(rowIndex * 3, rowIndex * 3 + 3);
-                    return (
-                      <View key={rowIndex} style={{ flexDirection: 'row', gap: 8 }}>
-                        {rowCats.map((cat) => (
-                          <TouchableOpacity
-                            key={cat.id}
-                            onPress={() => setCategoryId(cat.id)}
-                            style={{ flex: 1 }}
-                            className={`relative items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
-                          >
-                            <View className="mb-1">
-                              {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
-                            </View>
-                            <Text
-                              className="text-xs text-gray-900 dark:text-gray-100 text-center"
-                              numberOfLines={1}
-                              ellipsizeMode="tail"
-                            >
-                              {cat.name}
-                            </Text>
-                            {categoryId === cat.id && (
-                              <View className="absolute top-0 right-0">
-                                <Check size={12} color="#374151" strokeWidth={2.5} />
-                              </View>
-                            )}
-                          </TouchableOpacity>
-                        ))}
-                        {rowCats.length < 3 && Array.from({ length: 3 - rowCats.length }, (_, i) => (
-                          <View key={`empty-${i}`} style={{ flex: 1 }} />
-                        ))}
+                <View className="flex-row flex-wrap gap-2">
+                  {filteredCategories.map((cat) => (
+                    <TouchableOpacity
+                      key={cat.id}
+                      onPress={() => setCategoryId(cat.id)}
+                      style={{ width: gridItemWidth }}
+                      className={`relative items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                    >
+                      <View className="mb-1">
+                        {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
                       </View>
-                    );
-                  })}
+                      <Text
+                        className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {cat.name}
+                      </Text>
+                      {categoryId === cat.id && (
+                        <View className="absolute top-0 right-0">
+                          <Check size={12} color="#374151" strokeWidth={2.5} />
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  ))}
                 </View>
               </View>
 
               {/* 支払い元 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い元</Text>
-                <View style={{ gap: 8 }}>
-                  {(() => {
-                    const sources = [
-                      ...allAccounts.map((acc) => ({ id: acc.id, name: acc.name, color: acc.color, isAccount: true as const })),
-                      ...allPaymentMethods.map((pm) => ({ id: pm.id, name: pm.name, color: pm.color, isAccount: false as const })),
-                    ];
-                    return Array.from({ length: Math.ceil(sources.length / 3) }, (_, rowIndex) => {
-                      const rowSources = sources.slice(rowIndex * 3, rowIndex * 3 + 3);
-                      return (
-                        <View key={rowIndex} style={{ flexDirection: 'row', gap: 8 }}>
-                          {rowSources.map((src) => (
-                            <TouchableOpacity
-                              key={src.id}
-                              onPress={() => setSelectedSourceId(src.id)}
-                              style={{ flex: 1 }}
-                              className={`relative items-center p-2 rounded-lg ${selectedSourceId === src.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
-                            >
-                              <View
-                                className="w-8 h-8 rounded-full items-center justify-center mb-1"
-                                style={{ backgroundColor: src.color }}
-                              >
-                                {src.isAccount ? <Wallet size={16} color="#fff" /> : <CreditCard size={16} color="#fff" />}
-                              </View>
-                              <Text
-                                className="text-xs text-gray-900 dark:text-gray-100 text-center"
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                              >
-                                {src.name}
-                              </Text>
-                              {selectedSourceId === src.id && (
-                                <View className="absolute top-0 right-0">
-                                  <Check size={12} color="#374151" strokeWidth={2.5} />
-                                </View>
-                              )}
-                            </TouchableOpacity>
-                          ))}
-                          {rowSources.length < 3 && Array.from({ length: 3 - rowSources.length }, (_, i) => (
-                            <View key={`empty-${i}`} style={{ flex: 1 }} />
-                          ))}
+                <View className="flex-row flex-wrap gap-2">
+                  {[
+                    ...allAccounts.map((acc) => ({ id: acc.id, name: acc.name, color: acc.color, isAccount: true as const })),
+                    ...allPaymentMethods.map((pm) => ({ id: pm.id, name: pm.name, color: pm.color, isAccount: false as const })),
+                  ].map((src) => (
+                    <TouchableOpacity
+                      key={src.id}
+                      onPress={() => setSelectedSourceId(src.id)}
+                      style={{ width: gridItemWidth }}
+                      className={`relative items-center p-2 rounded-lg ${selectedSourceId === src.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                    >
+                      <View
+                        className="w-8 h-8 rounded-full items-center justify-center mb-1"
+                        style={{ backgroundColor: src.color }}
+                      >
+                        {src.isAccount ? <Wallet size={16} color="#fff" /> : <CreditCard size={16} color="#fff" />}
+                      </View>
+                      <Text
+                        className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {src.name}
+                      </Text>
+                      {selectedSourceId === src.id && (
+                        <View className="absolute top-0 right-0">
+                          <Check size={12} color="#374151" strokeWidth={2.5} />
                         </View>
-                      );
-                    });
-                  })()}
+                      )}
+                    </TouchableOpacity>
+                  ))}
                 </View>
               </View>
             </>
