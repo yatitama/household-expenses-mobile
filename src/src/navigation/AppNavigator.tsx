@@ -31,12 +31,14 @@ export const AppNavigator = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: 56 + insets.bottom,
+          height: 64 + insets.bottom,
           paddingBottom: insets.bottom,
           backgroundColor: '#ffffff',
-          borderTopWidth: 1,
-          borderTopColor: '#e5e7eb',
+          borderTopWidth: 0,
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
           elevation: 0,
+          overflow: 'hidden',
         },
         tabBarActiveTintColor: ICON_COLOR_ACTIVE,
         tabBarInactiveTintColor: ICON_COLOR_INACTIVE,
@@ -77,7 +79,7 @@ export const AppNavigator = () => {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginTop: -16,
+                marginTop: -24,
               }}
             >
               <View
