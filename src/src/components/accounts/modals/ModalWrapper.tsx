@@ -27,6 +27,8 @@ interface ModalWrapperProps {
   footer?: React.ReactNode;
   /** タイトル右横のアクションアイコン（削除ボタンなど） */
   headerAction?: React.ReactNode;
+  /** モーダルの表示状態（デフォルト: true） */
+  visible?: boolean;
 }
 
 export const ModalWrapper = ({
@@ -36,6 +38,7 @@ export const ModalWrapper = ({
   isForm = false,
   footer,
   headerAction,
+  visible = true,
 }: ModalWrapperProps) => {
   const insets = useSafeAreaInsets();
   // シート入場時は画面外（下）から開始し、スプリングで引き上げる
@@ -94,7 +97,7 @@ export const ModalWrapper = ({
 
   return (
     <Modal
-      visible
+      visible={visible}
       transparent
       animationType="none"
       onRequestClose={close}

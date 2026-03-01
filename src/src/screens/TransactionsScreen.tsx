@@ -138,20 +138,18 @@ export const TransactionsScreen = () => {
       </ScrollView>
 
       {/* 詳細シート */}
-      {selectedTransaction && (
-        <TransactionDetailsSheet
-          transaction={selectedTransaction}
-          isOpen={detailsSheetOpen}
-          onClose={() => {
-            setDetailsSheetOpen(false);
-            setSelectedTransaction(null);
-          }}
-          category={categories.find((c) => c.id === selectedTransaction.categoryId)}
-          account={accounts.find((a) => a.id === selectedTransaction.accountId)}
-          paymentMethod={paymentMethods.find((p) => p.id === selectedTransaction.paymentMethodId)}
-          onEdit={handleEdit}
-        />
-      )}
+      <TransactionDetailsSheet
+        transaction={selectedTransaction}
+        isOpen={detailsSheetOpen}
+        onClose={() => {
+          setDetailsSheetOpen(false);
+          setSelectedTransaction(null);
+        }}
+        category={selectedTransaction ? categories.find((c) => c.id === selectedTransaction.categoryId) : undefined}
+        account={selectedTransaction ? accounts.find((a) => a.id === selectedTransaction.accountId) : undefined}
+        paymentMethod={selectedTransaction ? paymentMethods.find((p) => p.id === selectedTransaction.paymentMethodId) : undefined}
+        onEdit={handleEdit}
+      />
     </View>
   );
 };

@@ -30,7 +30,7 @@ export const TransactionDetailsSheet = ({
 }: TransactionDetailsSheetProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  if (!transaction || !isOpen) return null;
+  if (!transaction) return null;
 
   const handleDeleteClick = () => {
     setShowDeleteDialog(true);
@@ -69,6 +69,7 @@ export const TransactionDetailsSheet = ({
         title="取引詳細"
         onClose={onClose}
         isForm
+        visible={isOpen}
         headerAction={headerAction}
       >
         {/* カテゴリ */}
