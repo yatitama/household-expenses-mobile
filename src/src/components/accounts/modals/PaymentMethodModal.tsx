@@ -26,6 +26,7 @@ export const PaymentMethodModal = ({
   // padding: 12 (12px × 2 = 24px) のモーダル水平パディング + gap-2 (8px) × 2 列間 = 40px
   const gridItemWidth = (windowWidth - 40) / 3;
   const [name, setName] = useState(paymentMethod?.name ?? '');
+  const [memberId, setMemberId] = useState(paymentMethod?.memberId ?? COMMON_MEMBER_ID);
   const [pmType, setPmType] = useState<PaymentMethodType>(paymentMethod?.type ?? 'credit_card');
   const [linkedAccountId, setLinkedAccountId] = useState(paymentMethod?.linkedAccountId ?? '');
   const [billingType, setBillingType] = useState<BillingType>(paymentMethod?.billingType ?? 'monthly');
