@@ -54,7 +54,7 @@ export const AddTransactionScreen = () => {
     if (Platform.OS === 'android' && showDatePicker) {
       DatePickerAndroid.open({
         date: new Date(date),
-        mode: 'spinner',
+        mode: 'calendar',
       }).then(({ action, year, month, day }) => {
         if (action === DatePickerAndroid.dateSetAction) {
           setDate(format(new Date(year, month, day), 'yyyy-MM-dd'));
@@ -193,10 +193,11 @@ export const AddTransactionScreen = () => {
           {/* 金額 */}
           <View>
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">金額</Text>
-            <View className="flex-row items-center justify-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12">
-              <Text className="text-gray-500 mr-1">¥</Text>
+            <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12">
+              <Text className="text-gray-500 mr-1 text-base">¥</Text>
               <TextInput
-                className="flex-1 text-gray-900 dark:text-gray-100 text-base h-12"
+                className="flex-1 text-gray-900 dark:text-gray-100 text-base"
+                style={{ textAlignVertical: 'center', includeFontPadding: false }}
                 value={amount}
                 onChangeText={setAmount}
                 keyboardType="numeric"
@@ -237,6 +238,7 @@ export const AddTransactionScreen = () => {
                       date={new Date(date)}
                       onDateChange={handleDateChange}
                       mode="date"
+                      locale="ja-JP"
                     />
                   </View>
                 </View>
@@ -249,7 +251,7 @@ export const AddTransactionScreen = () => {
               {/* カテゴリ */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">カテゴリ</Text>
-                <View className="flex-row flex-wrap gap-3">
+                <View className="flex-row flex-wrap gap-3 justify-center">
                   {filteredCategories.map((cat) => (
                     <TouchableOpacity
                       key={cat.id}
@@ -257,14 +259,14 @@ export const AddTransactionScreen = () => {
                       className="w-[30%]"
                     >
                       <View
-                        className={`items-center p-2 rounded-lg border-2 ${
+                        className={`items-center p-2 rounded-lg border ${
                           categoryId === cat.id
                             ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
                             : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
                         }`}
                       >
                         <View className="mb-1">
-                          {getCategoryIcon(cat.icon ?? '', 24, '#6b7280')}
+                          {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
                         </View>
                         <Text
                           className="text-xs text-gray-900 dark:text-gray-100 text-center"
@@ -282,7 +284,7 @@ export const AddTransactionScreen = () => {
               {/* 支払い元 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い元</Text>
-                <View className="flex-row flex-wrap gap-3">
+                <View className="flex-row flex-wrap gap-3 justify-center">
                   {allAccounts.map((acc) => (
                     <TouchableOpacity
                       key={acc.id}
@@ -290,7 +292,7 @@ export const AddTransactionScreen = () => {
                       className="w-[30%]"
                     >
                       <View
-                        className={`items-center p-2 rounded-lg border-2 ${
+                        className={`items-center p-2 rounded-lg border ${
                           selectedSourceId === acc.id
                             ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
                             : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
@@ -319,7 +321,7 @@ export const AddTransactionScreen = () => {
                       className="w-[30%]"
                     >
                       <View
-                        className={`items-center p-2 rounded-lg border-2 ${
+                        className={`items-center p-2 rounded-lg border ${
                           selectedSourceId === pm.id
                             ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
                             : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
