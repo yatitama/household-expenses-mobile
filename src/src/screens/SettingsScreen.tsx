@@ -5,7 +5,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Users, Tag, CreditCard, Database, Wallet,
-  ChevronDown, ChevronUp, Plus, Trash2, Pencil,
+  ChevronDown, ChevronUp, Plus, Trash2,
 } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
 import {
@@ -244,26 +244,16 @@ export const SettingsScreen = () => {
             }
           >
             {members.map((m) => (
-              <View key={m.id} className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+              <TouchableOpacity
+                key={m.id}
+                className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                onPress={() => { setEditingMember(m); setIsMemberModalOpen(true); }}
+              >
                 <View className="w-8 h-8 rounded-full items-center justify-center mr-3" style={{ backgroundColor: m.color }}>
                   <Users size={14} color="#fff" />
                 </View>
                 <Text className="flex-1 text-sm text-gray-900 dark:text-gray-100">{m.name}</Text>
-                <TouchableOpacity
-                  onPress={() => { setEditingMember(m); setIsMemberModalOpen(true); }}
-                  className="p-1.5 mr-1"
-                >
-                  <Pencil size={14} color="#9ca3af" />
-                </TouchableOpacity>
-                {!m.isDefault && (
-                  <TouchableOpacity
-                    onPress={() => handleDeleteMember(m.id)}
-                    className="p-1.5"
-                  >
-                    <Trash2 size={14} color="#9ca3af" />
-                  </TouchableOpacity>
-                )}
-              </View>
+              </TouchableOpacity>
             ))}
             <TouchableOpacity
               onPress={() => { setEditingMember(null); setIsMemberModalOpen(true); }}
@@ -309,24 +299,16 @@ export const SettingsScreen = () => {
               ))}
             </View>
             {filteredCategories.map((cat) => (
-              <View key={cat.id} className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700">
+              <TouchableOpacity
+                key={cat.id}
+                className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700"
+                onPress={() => { setEditingCategory(cat); setIsCategoryModalOpen(true); }}
+              >
                 <View className="w-7 h-7 rounded-full items-center justify-center mr-3" style={{ backgroundColor: cat.color }}>
                   {getCategoryIcon(cat.icon ?? '', 13, '#fff')}
                 </View>
                 <Text className="flex-1 text-sm text-gray-900 dark:text-gray-100">{cat.name}</Text>
-                <TouchableOpacity
-                  onPress={() => { setEditingCategory(cat); setIsCategoryModalOpen(true); }}
-                  className="p-1.5 mr-1"
-                >
-                  <Pencil size={14} color="#9ca3af" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleDeleteCategory(cat.id)}
-                  className="p-1.5"
-                >
-                  <Trash2 size={14} color="#9ca3af" />
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             ))}
             <TouchableOpacity
               onPress={() => { setEditingCategory(null); setIsCategoryModalOpen(true); }}
@@ -361,7 +343,11 @@ export const SettingsScreen = () => {
             {sortedAccounts.map((account) => {
               const member = members.find((m) => m.id === account.memberId);
               return (
-                <View key={account.id} className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                <TouchableOpacity
+                  key={account.id}
+                  className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                  onPress={() => { setEditingAccount(account); setIsAccountModalOpen(true); }}
+                >
                   <View
                     className="w-8 h-8 rounded-full items-center justify-center mr-3"
                     style={{ backgroundColor: account.color }}
@@ -375,19 +361,7 @@ export const SettingsScreen = () => {
                       {member ? ` · ${member.name}` : ''}
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => { setEditingAccount(account); setIsAccountModalOpen(true); }}
-                    className="p-1.5 mr-1"
-                  >
-                    <Pencil size={14} color="#9ca3af" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleDeleteAccount(account.id)}
-                    className="p-1.5"
-                  >
-                    <Trash2 size={14} color="#9ca3af" />
-                  </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               );
             })}
             <TouchableOpacity
@@ -424,7 +398,11 @@ export const SettingsScreen = () => {
               const linkedAccount = accounts.find((a) => a.id === pm.linkedAccountId);
               const member = members.find((m) => m.id === pm.memberId);
               return (
-                <View key={pm.id} className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                <TouchableOpacity
+                  key={pm.id}
+                  className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                  onPress={() => { setEditingPM(pm); setIsPMModalOpen(true); }}
+                >
                   <View
                     className="w-8 h-8 rounded-full items-center justify-center mr-3"
                     style={{ backgroundColor: pm.color }}
@@ -439,19 +417,7 @@ export const SettingsScreen = () => {
                       {linkedAccount ? ` · ${linkedAccount.name}` : ''}
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => { setEditingPM(pm); setIsPMModalOpen(true); }}
-                    className="p-1.5 mr-1"
-                  >
-                    <Pencil size={14} color="#9ca3af" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleDeletePM(pm.id)}
-                    className="p-1.5"
-                  >
-                    <Trash2 size={14} color="#9ca3af" />
-                  </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               );
             })}
             <TouchableOpacity

@@ -12,6 +12,7 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -36,6 +37,7 @@ export const ModalWrapper = ({
   footer,
   headerAction,
 }: ModalWrapperProps) => {
+  const insets = useSafeAreaInsets();
   // シート入場時は画面外（下）から開始し、スプリングで引き上げる
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   // ScrollView のスクロール位置を追跡（先頭でのみスワイプ閉じを有効にする）
@@ -81,6 +83,15 @@ export const ModalWrapper = ({
     })
   ).current;
 
+  // ドラッグハンドル・ヘッダー・フッターの固定高さを除いた最大スクロール領域
+  const DRAG_H = isForm ? 30 : 0;
+  const HEADER_H = 52;
+  const FOOTER_H = footer ? 72 : 0;
+  const scrollMaxHeight = SCREEN_HEIGHT * 0.9 - DRAG_H - HEADER_H - FOOTER_H - 8;
+
+  // フッターの下余白: セーフエリア + 余白
+  const footerPaddingBottom = Math.max(insets.bottom, 8) + 12;
+
   return (
     <Modal
       visible
@@ -94,7 +105,7 @@ export const ModalWrapper = ({
           {/* シート本体: panHandlers をシート全体に適用 */}
           <Animated.View
             style={{ transform: [{ translateY }] }}
-            className={`bg-white dark:bg-slate-800 w-full max-h-[90%] ${isForm ? 'rounded-t-xl' : ''}`}
+            className={`bg-white dark:bg-slate-800 w-full ${isForm ? 'rounded-t-xl' : ''}`}
             {...(isForm ? panResponder.panHandlers : {})}
             // タッチをここで消費してバックドロップへのタップ伝播を防ぐ
             onStartShouldSetResponder={() => true}
@@ -106,23 +117,24 @@ export const ModalWrapper = ({
               </View>
             )}
 
+            {/* ヘッダー */}
+            <View className="flex-row items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
+              <View className="flex-row items-center gap-2 flex-1">
+                <Text className="text-base font-bold text-gray-900 dark:text-gray-100">{title}</Text>
+                {headerAction}
+              </View>
+              <TouchableOpacity onPress={close} className="p-1.5">
+                <X size={18} color="#9ca3af" />
+              </TouchableOpacity>
+            </View>
+
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
-              {/* ヘッダー */}
-              <View className="flex-row items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
-                <View className="flex-row items-center gap-2 flex-1">
-                  <Text className="text-base font-bold text-gray-900 dark:text-gray-100">{title}</Text>
-                  {headerAction}
-                </View>
-                <TouchableOpacity onPress={close} className="p-1.5">
-                  <X size={18} color="#9ca3af" />
-                </TouchableOpacity>
-              </View>
-
-              {/* コンテンツ */}
+              {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
               <ScrollView
-                className="p-3"
+                style={{ maxHeight: scrollMaxHeight }}
+                contentContainerStyle={{ padding: 12, paddingBottom: 20 }}
                 keyboardShouldPersistTaps="handled"
                 onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
                 scrollEventThrottle={16}
@@ -130,9 +142,12 @@ export const ModalWrapper = ({
                 {children}
               </ScrollView>
 
-              {/* フッター */}
+              {/* フッター: 常にスクロール領域の外に固定表示 */}
               {footer && (
-                <View className="p-3 border-t border-gray-200 dark:border-gray-700">
+                <View
+                  className="px-3 pt-3 border-t border-gray-200 dark:border-gray-700"
+                  style={{ paddingBottom: footerPaddingBottom }}
+                >
                   {footer}
                 </View>
               )}
