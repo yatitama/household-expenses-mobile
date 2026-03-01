@@ -4,22 +4,20 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
 import { Search, List } from 'lucide-react-native';
-import Toast from 'react-native-toast-message';
 import { useTransactionFilter } from '../hooks/useTransactionFilter';
-import { categoryService, accountService, paymentMethodService, transactionService } from '../services/storage';
+import { categoryService, accountService, paymentMethodService } from '../services/storage';
 import { formatCurrency, formatDate } from '../utils/formatters';
-import { revertTransactionBalance } from '../components/accounts/balanceHelpers';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
-import { ConfirmDialog } from '../components/feedback/ConfirmDialog';
 import { TransactionItem } from '../components/transactions/TransactionItem';
+import { TransactionDetailsSheet } from '../components/transactions/TransactionDetailsSheet';
 import type { Transaction } from '../types';
 
 export const TransactionsScreen = () => {
   const insets = useSafeAreaInsets();
   const [, setFocused] = useState(false);
   const { filters, filteredTransactions, updateFilter } = useTransactionFilter();
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -54,23 +52,14 @@ export const TransactionsScreen = () => {
     [filteredTransactions],
   );
 
-  const handleDeleteClick = (t: Transaction) => {
-    setTransactionToDelete(t);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    if (transactionToDelete) {
-      revertTransactionBalance(transactionToDelete);
-      transactionService.delete(transactionToDelete.id);
-      Toast.show({ type: 'success', text1: '取引を削除しました' });
-      setTransactionToDelete(null);
-    }
+  const handleTransactionPress = (t: Transaction) => {
+    setSelectedTransaction(t);
+    setDetailsSheetOpen(true);
   };
 
   const handleEdit = (t: Transaction) => {
-    // For now, just show a toast. In a real app, you would navigate to an edit screen or open an edit modal
-    Toast.show({ type: 'info', text1: '編集機能は準備中です' });
+    // TODO: 編集画面への遷移、またはモーダルを開く
+    console.log('Edit transaction:', t.id);
   };
 
   return (
@@ -138,8 +127,7 @@ export const TransactionsScreen = () => {
                       paymentMethod={pm}
                       account={acc}
                       isLast={isLast}
-                      onEdit={handleEdit}
-                      onDelete={handleDeleteClick}
+                      onPress={handleTransactionPress}
                     />
                   );
                 })}
@@ -148,14 +136,22 @@ export const TransactionsScreen = () => {
           ))
         )}
       </ScrollView>
-      <ConfirmDialog
-        isOpen={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="取引を削除しますか？"
-        message="この操作は取り消せません。"
-        confirmText="削除"
-      />
+
+      {/* 詳細シート */}
+      {selectedTransaction && (
+        <TransactionDetailsSheet
+          transaction={selectedTransaction}
+          isOpen={detailsSheetOpen}
+          onClose={() => {
+            setDetailsSheetOpen(false);
+            setSelectedTransaction(null);
+          }}
+          category={categories.find((c) => c.id === selectedTransaction.categoryId)}
+          account={accounts.find((a) => a.id === selectedTransaction.accountId)}
+          paymentMethod={paymentMethods.find((p) => p.id === selectedTransaction.paymentMethodId)}
+          onEdit={handleEdit}
+        />
+      )}
     </View>
   );
 };
