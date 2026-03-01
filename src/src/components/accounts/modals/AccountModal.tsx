@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
 import { Trash2, User, Check } from 'lucide-react-native';
 import { ModalWrapper } from './ModalWrapper';
 import { ACCOUNT_TYPE_LABELS, COLORS } from '../constants';
@@ -22,6 +22,9 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
   const [accountType, setAccountType] = useState<AccountType>(account?.type ?? 'bank');
   const [balance, setBalance] = useState(account?.balance.toString() ?? '0');
   const [color, setColor] = useState(account?.color ?? COLORS[0]);
+  const { width: windowWidth } = useWindowDimensions();
+  // padding: 12 (12px × 2 = 24px) のモーダル水平パディング + gap-2 (8px) × 2 列間 = 40px
+  const gridItemWidth = (windowWidth - 40) / 3;
 
   const handleSubmit = () => {
     if (!name.trim()) return;
@@ -73,35 +76,25 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
         {/* 所有者 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">所有者</Text>
-          <View style={{ gap: 8 }}>
-            {Array.from({ length: Math.ceil(members.length / 3) }, (_, rowIndex) => {
-              const rowMembers = members.slice(rowIndex * 3, rowIndex * 3 + 3);
-              return (
-                <View key={rowIndex} style={{ flexDirection: 'row', gap: 8 }}>
-                  {rowMembers.map((member) => (
-                    <TouchableOpacity
-                      key={member.id}
-                      onPress={() => setMemberId(member.id)}
-                      style={{ flex: 1 }}
-                      className={`relative flex-col items-center p-2 rounded-lg ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
-                    >
-                      <View className="w-7 h-7 rounded-full items-center justify-center mb-1" style={{ backgroundColor: `${member.color}30` }}>
-                        <User size={14} color={member.color} />
-                      </View>
-                      <Text className="text-xs text-gray-900 dark:text-gray-200 text-center">{member.name}</Text>
-                      {memberId === member.id && (
-                        <View className="absolute top-0 right-0">
-                          <Check size={12} color="#374151" strokeWidth={2.5} />
-                        </View>
-                      )}
-                    </TouchableOpacity>
-                  ))}
-                  {rowMembers.length < 3 && Array.from({ length: 3 - rowMembers.length }, (_, i) => (
-                    <View key={`empty-${i}`} style={{ flex: 1 }} />
-                  ))}
+          <View className="flex-row flex-wrap gap-2">
+            {members.map((member) => (
+              <TouchableOpacity
+                key={member.id}
+                onPress={() => setMemberId(member.id)}
+                style={{ width: gridItemWidth }}
+                className={`relative items-center p-2 rounded-lg ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+              >
+                <View className="w-7 h-7 rounded-full items-center justify-center mb-1" style={{ backgroundColor: `${member.color}30` }}>
+                  <User size={14} color={member.color} />
                 </View>
-              );
-            })}
+                <Text className="text-xs text-gray-900 dark:text-gray-200 text-center">{member.name}</Text>
+                {memberId === member.id && (
+                  <View className="absolute top-0 right-0">
+                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                  </View>
+                )}
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
