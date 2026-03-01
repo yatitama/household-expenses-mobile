@@ -72,7 +72,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
         {/* 所有者 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">所有者</Text>
-          <View className="flex-row flex-wrap gap-2">
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
             {members.map((member) => (
               <TouchableOpacity
                 key={member.id}
