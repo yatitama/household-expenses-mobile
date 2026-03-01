@@ -8,6 +8,7 @@ import { MoneyScreen } from '../screens/MoneyScreen';
 import { AddTransactionScreen } from '../screens/AddTransactionScreen';
 import { TransactionsScreen } from '../screens/TransactionsScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { useTheme } from '../contexts/ThemeContext';
 
 export type RootTabParamList = {
   Accounts: undefined;
@@ -25,6 +26,10 @@ const ICON_COLOR_ACTIVE_DARK = '#d1d5db';
 
 export const AppNavigator = () => {
   const insets = useSafeAreaInsets();
+  const { isDark } = useTheme();
+
+  const TAB_BAR_BG_COLOR = isDark ? '#1f2937' : '#ffffff';
+  const TAB_BAR_BORDER_COLOR = isDark ? '#374151' : '#e5e7eb';
 
   return (
     <Tab.Navigator
@@ -33,7 +38,7 @@ export const AppNavigator = () => {
         tabBarStyle: {
           height: 64 + insets.bottom,
           paddingBottom: insets.bottom,
-          backgroundColor: '#ffffff',
+          backgroundColor: TAB_BAR_BG_COLOR,
           borderTopWidth: 0,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
@@ -88,7 +93,7 @@ export const AppNavigator = () => {
                   borderRadius: 28,
                   backgroundColor: '#374151',
                   borderWidth: 3,
-                  borderColor: '#ffffff',
+                  borderColor: TAB_BAR_BG_COLOR,
                   alignItems: 'center',
                   justifyContent: 'center',
                   shadowColor: '#000',
