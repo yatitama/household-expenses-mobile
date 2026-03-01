@@ -51,8 +51,10 @@ export const AddTransactionScreen = () => {
     setTransferFee('');
   };
 
-  const handleDateChange = (selectedDate: Date) => {
-    setDate(format(selectedDate, 'yyyy-MM-dd'));
+  const handleDateChange = (_event: unknown, selectedDate?: Date) => {
+    if (selectedDate) {
+      setDate(format(selectedDate, 'yyyy-MM-dd'));
+    }
     setShowDatePicker(false);
   };
 
@@ -242,8 +244,8 @@ export const AddTransactionScreen = () => {
                       </TouchableOpacity>
                     </View>
                     <DatePickerIOS
-                      date={parseDate(date)}
-                      onDateChange={handleDateChange}
+                      value={parseDate(date)}
+                      onChange={handleDateChange}
                       mode="date"
                       locale="ja-JP"
                     />
