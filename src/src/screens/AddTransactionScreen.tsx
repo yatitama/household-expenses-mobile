@@ -238,13 +238,15 @@ export const AddTransactionScreen = () => {
             </TouchableOpacity>
             {Platform.OS === 'ios' && showDatePicker && (
               <View className="mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800">
-                <DatePickerIOS
-                  value={pickerDate}
-                  onChange={handleDateChange}
-                  mode="date"
-                  display="inline"
-                  locale="ja-JP"
-                />
+                <View className="items-center">
+                  <DatePickerIOS
+                    value={pickerDate}
+                    onChange={handleDateChange}
+                    mode="date"
+                    display="inline"
+                    locale="ja-JP"
+                  />
+                </View>
                 <TouchableOpacity
                   onPress={handleDateConfirm}
                   className="items-center py-3 border-t border-gray-200 dark:border-gray-600"
