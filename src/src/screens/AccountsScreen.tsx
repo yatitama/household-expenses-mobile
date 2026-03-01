@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
@@ -30,11 +31,19 @@ export const AccountsScreen = () => {
   const [pieYear, setPieYear] = useState(() => now.getFullYear());
   const [pieMonth, setPieMonth] = useState(() => now.getMonth() + 1);
   const [pieGroupMode, setPieGroupMode] = useState<PieGroupMode>('category');
+  const [, setRefresh] = useState(false);
 
-  const [allTransactions] = useState(() => transactionService.getAll());
-  const [categories] = useState(() => categoryService.getAll());
-  const [paymentMethods] = useState(() => paymentMethodService.getAll());
-  const [accounts] = useState(() => accountService.getAll());
+  useFocusEffect(
+    useCallback(() => {
+      setRefresh((prev) => !prev);
+      return () => {};
+    }, []),
+  );
+
+  const allTransactions = transactionService.getAll();
+  const categories = categoryService.getAll();
+  const paymentMethods = paymentMethodService.getAll();
+  const accounts = accountService.getAll();
 
   // 月別データ
   const monthCount = trendPeriod === '3months' ? 3 : trendPeriod === '6months' ? 6 : 12;
