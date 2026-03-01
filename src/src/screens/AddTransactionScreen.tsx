@@ -37,6 +37,7 @@ export const AddTransactionScreen = () => {
   const [transferFromAccountId, setTransferFromAccountId] = useState('');
   const [transferFee, setTransferFee] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [pickerDate, setPickerDate] = useState<Date>(() => parseDate(format(new Date(), 'yyyy-MM-dd')));
 
   const type: TransactionType = tab === 'transfer' ? 'income' : tab;
   const filteredCategories = categories.filter((c) => c.type === type);
@@ -51,10 +52,19 @@ export const AddTransactionScreen = () => {
     setTransferFee('');
   };
 
+  const openDatePicker = () => {
+    setPickerDate(parseDate(date));
+    setShowDatePicker(true);
+  };
+
   const handleDateChange = (_event: unknown, selectedDate?: Date) => {
     if (selectedDate) {
-      setDate(format(selectedDate, 'yyyy-MM-dd'));
+      setPickerDate(selectedDate);
     }
+  };
+
+  const handleDateConfirm = () => {
+    setDate(format(pickerDate, 'yyyy-MM-dd'));
     setShowDatePicker(false);
   };
 
@@ -220,7 +230,7 @@ export const AddTransactionScreen = () => {
           <View>
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">日付</Text>
             <TouchableOpacity
-              onPress={() => setShowDatePicker(true)}
+              onPress={openDatePicker}
               className="flex-row items-center justify-between bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12"
             >
               <Text className="text-base text-gray-900 dark:text-gray-100">{date}</Text>
@@ -239,12 +249,12 @@ export const AddTransactionScreen = () => {
                         <Text className="text-blue-500">キャンセル</Text>
                       </TouchableOpacity>
                       <Text className="font-bold text-gray-900 dark:text-gray-100">日付を選択</Text>
-                      <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                      <TouchableOpacity onPress={handleDateConfirm}>
                         <Text className="text-blue-500">完了</Text>
                       </TouchableOpacity>
                     </View>
                     <DatePickerIOS
-                      value={parseDate(date)}
+                      value={pickerDate}
                       onChange={handleDateChange}
                       mode="date"
                       locale="ja-JP"
