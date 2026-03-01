@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, DatePickerAndroid, Keyboard,
@@ -14,6 +14,7 @@ import {
 } from '../services/storage';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import type { TransactionType, TransactionInput, QuickAddTemplate } from '../types';
+import type { ScrollView as RNScrollView } from 'react-native';
 
 type TabType = TransactionType | 'transfer';
 
@@ -24,6 +25,7 @@ const parseDate = (dateString: string): Date => {
 
 export const AddTransactionScreen = () => {
   const insets = useSafeAreaInsets();
+  const scrollViewRef = useRef<RNScrollView>(null);
   const allAccounts = accountService.getAll();
   const allPaymentMethods = paymentMethodService.getAll();
   const categories = categoryService.getAll();
@@ -60,6 +62,8 @@ export const AddTransactionScreen = () => {
   const handleDateChange = (_event: unknown, selectedDate?: Date) => {
     if (selectedDate) {
       setPickerDate(selectedDate);
+      setDate(format(selectedDate, 'yyyy-MM-dd'));
+      setShowDatePicker(false);
     }
   };
 
@@ -124,6 +128,7 @@ export const AddTransactionScreen = () => {
 
       Toast.show({ type: 'success', text1: '振替を登録しました' });
       resetForm('transfer');
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
       return;
     }
 
@@ -172,6 +177,7 @@ export const AddTransactionScreen = () => {
 
     Toast.show({ type: 'success', text1: '取引を追加しました' });
     resetForm();
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
 
   const isSubmitDisabled = tab === 'transfer'
@@ -184,6 +190,7 @@ export const AddTransactionScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
+        ref={scrollViewRef}
         className="flex-1 bg-white dark:bg-slate-900"
         contentContainerStyle={{ paddingTop: insets.top + 8, paddingBottom: insets.bottom + 80 }}
         keyboardShouldPersistTaps="handled"
@@ -247,12 +254,6 @@ export const AddTransactionScreen = () => {
                     locale="ja-JP"
                   />
                 </View>
-                <TouchableOpacity
-                  onPress={handleDateConfirm}
-                  className="items-center py-3 border-t border-gray-200 dark:border-gray-600"
-                >
-                  <Text className="text-blue-500 font-semibold">完了</Text>
-                </TouchableOpacity>
               </View>
             )}
           </View>
