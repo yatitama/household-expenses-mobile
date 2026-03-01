@@ -56,13 +56,15 @@ export const CategoryModal = ({
         {/* 名前 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
-          <TextInput
-            className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-gray-900 dark:text-gray-100"
-            value={name}
-            onChangeText={setName}
-            placeholder="例: 食費"
-            placeholderTextColor="#9ca3af"
-          />
+          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+            <TextInput
+              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              value={name}
+              onChangeText={setName}
+              placeholder="例: 食費"
+              placeholderTextColor="#9ca3af"
+            />
+          </View>
         </View>
 
         {/* 種類（新規作成時のみ変更可） */}
