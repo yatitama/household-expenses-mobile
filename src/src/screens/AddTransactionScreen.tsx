@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, DatePickerAndroid, DatePickerIOS, Modal,
+  KeyboardAvoidingView, Platform, DatePickerAndroid, DatePickerIOS, Modal, Keyboard,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { format } from 'date-fns';
@@ -203,6 +203,8 @@ export const AddTransactionScreen = () => {
                 keyboardType="numeric"
                 placeholder="0"
                 placeholderTextColor="#9ca3af"
+                returnKeyType="done"
+                onSubmitEditing={() => Keyboard.dismiss()}
               />
             </View>
           </View>
@@ -399,15 +401,18 @@ export const AddTransactionScreen = () => {
               {/* 振替手数料 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">振替手数料（任意）</Text>
-                <View className="flex-row items-center bg-gray-50 border border-gray-200 rounded-lg px-3">
-                  <Text className="text-gray-500 mr-1">¥</Text>
+                <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12">
+                  <Text className="text-gray-500 mr-1 text-base">¥</Text>
                   <TextInput
-                    className="flex-1 py-3 text-gray-900"
+                    className="flex-1 text-gray-900 dark:text-gray-100 text-base"
+                    style={{ textAlignVertical: 'center', includeFontPadding: false }}
                     value={transferFee}
                     onChangeText={setTransferFee}
                     keyboardType="numeric"
                     placeholder="0"
                     placeholderTextColor="#9ca3af"
+                    returnKeyType="done"
+                    onSubmitEditing={() => Keyboard.dismiss()}
                   />
                 </View>
               </View>
