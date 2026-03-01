@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Trash2, User, Check } from 'lucide-react-native';
 import { ModalWrapper } from './ModalWrapper';
 import { ACCOUNT_TYPE_LABELS, COLORS } from '../constants';
 import { ACCOUNT_TYPE_ICONS } from '../AccountIcons';
 import { COMMON_MEMBER_ID } from '../../../types';
+import { DismissibleTextInput } from '../../inputs/DismissibleTextInput';
 import type { Account, AccountType, AccountInput, Member } from '../../../types';
 
 interface AccountModalProps {
@@ -59,7 +60,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
           <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
-            <TextInput
+            <DismissibleTextInput
               className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
               value={name}
               onChangeText={setName}
@@ -132,7 +133,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">残高</Text>
           <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
             <Text className="text-gray-500 mr-1">¥</Text>
-            <TextInput
+            <DismissibleTextInput
               className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
               value={balance}
               onChangeText={setBalance}

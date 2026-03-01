@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
@@ -10,6 +10,7 @@ import { categoryService, accountService, paymentMethodService, transactionServi
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import { revertTransactionBalance, applyTransactionBalance } from '../components/accounts/balanceHelpers';
+import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import type { Transaction } from '../types';
 
 export const TransactionsScreen = () => {
@@ -65,7 +66,7 @@ export const TransactionsScreen = () => {
         {/* 検索バー */}
         <View className="flex-row items-center bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 gap-2">
           <Search size={16} color="#9ca3af" />
-          <TextInput
+          <DismissibleTextInput
             className="flex-1 py-2.5 text-sm text-gray-900 dark:text-gray-100"
             placeholder="検索..."
             placeholderTextColor="#9ca3af"
