@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Trash2 } from 'lucide-react-native';
+import { Trash2, Check } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { COLORS } from '../accounts/constants';
 import { ICON_NAMES, getCategoryIcon } from '../../utils/categoryIcons';
@@ -112,13 +112,17 @@ export const CategoryModal = ({
               <TouchableOpacity
                 key={c}
                 onPress={() => setColor(c)}
-                className="w-8 h-8 rounded-full"
+                className="w-8 h-8 rounded-full relative"
                 style={{
                   backgroundColor: c,
-                  borderWidth: color === c ? 3 : 0,
-                  borderColor: '#374151',
                 }}
-              />
+              >
+                {color === c && (
+                  <View className="absolute inset-0 rounded-full items-center justify-center bg-black/40">
+                    <Check size={12} color="white" strokeWidth={2.5} />
+                  </View>
+                )}
+              </TouchableOpacity>
             ))}
           </View>
         </View>
