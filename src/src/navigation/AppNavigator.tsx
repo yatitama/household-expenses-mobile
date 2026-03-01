@@ -38,7 +38,6 @@ export const AppNavigator = () => {
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           elevation: 0,
-          overflow: 'hidden',
         },
         tabBarActiveTintColor: ICON_COLOR_ACTIVE,
         tabBarInactiveTintColor: ICON_COLOR_INACTIVE,
