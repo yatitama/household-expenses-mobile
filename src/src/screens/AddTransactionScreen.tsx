@@ -253,7 +253,7 @@ export const AddTransactionScreen = () => {
               {/* カテゴリ */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">カテゴリ</Text>
-                <View className="flex-row flex-wrap gap-3 justify-center">
+                <View className="flex-row flex-wrap gap-3 justify-start">
                   {filteredCategories.map((cat) => (
                     <TouchableOpacity
                       key={cat.id}
@@ -283,7 +283,7 @@ export const AddTransactionScreen = () => {
               {/* 支払い元 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い元</Text>
-                <View className="flex-row flex-wrap gap-3 justify-center">
+                <View className="flex-row flex-wrap gap-3 justify-start">
                   {allAccounts.map((acc) => (
                     <TouchableOpacity
                       key={acc.id}

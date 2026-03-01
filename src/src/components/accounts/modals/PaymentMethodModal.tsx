@@ -100,7 +100,7 @@ export const PaymentMethodModal = ({
         {/* 所有者 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">所有者</Text>
-          <View className="flex-row flex-wrap gap-2 justify-center">
+          <View className="flex-row flex-wrap gap-2 justify-start">
             {members.map((member) => (
               <TouchableOpacity
                 key={member.id}
@@ -195,7 +195,7 @@ export const PaymentMethodModal = ({
         {/* 色 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">色</Text>
-          <View className="flex-row flex-wrap gap-2 justify-center">
+          <View className="flex-row flex-wrap gap-2 justify-start">
             {COLORS.map((c) => (
               <TouchableOpacity
                 key={c}
