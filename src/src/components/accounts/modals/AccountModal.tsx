@@ -58,13 +58,15 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
         {/* 名前 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
-          <TextInput
-            className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-gray-900 dark:text-gray-100"
-            value={name}
-            onChangeText={setName}
-            placeholder="例: メイン銀行"
-            placeholderTextColor="#9ca3af"
-          />
+          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+            <TextInput
+              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              value={name}
+              onChangeText={setName}
+              placeholder="例: メイン銀行"
+              placeholderTextColor="#9ca3af"
+            />
+          </View>
         </View>
 
         {/* 所有者 */}
@@ -75,7 +77,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
               <TouchableOpacity
                 key={member.id}
                 onPress={() => setMemberId(member.id)}
-                className={`relative flex-col items-center p-2 rounded-lg min-w-[60px] ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                className={`relative flex-col items-center p-2 rounded-lg w-[30%] ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
               >
                 <View className="w-7 h-7 rounded-full items-center justify-center mb-1" style={{ backgroundColor: `${member.color}30` }}>
                   <User size={14} color={member.color} />
@@ -101,7 +103,9 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
                 onPress={() => setAccountType(value)}
                 className={`relative flex-col items-center p-2 rounded-lg flex-1 ${accountType === value ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
               >
-                <View className="mb-1">{ACCOUNT_TYPE_ICONS[value]}</View>
+                <View className="w-8 h-8 rounded-full bg-gray-400 dark:bg-slate-600 items-center justify-center mb-1">
+                  {ACCOUNT_TYPE_ICONS[value]}
+                </View>
                 <Text className="text-xs text-gray-900 dark:text-gray-200 text-center">{label}</Text>
                 {accountType === value && (
                   <View className="absolute top-0 right-0">

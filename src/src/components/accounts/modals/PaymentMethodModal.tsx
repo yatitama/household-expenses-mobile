@@ -68,13 +68,15 @@ export const PaymentMethodModal = ({
         {/* 名前 */}
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
-          <TextInput
-            className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-gray-900 dark:text-gray-100"
-            value={name}
-            onChangeText={setName}
-            placeholder="例: クレジットカード"
-            placeholderTextColor="#9ca3af"
-          />
+          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+            <TextInput
+              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              value={name}
+              onChangeText={setName}
+              placeholder="例: クレジットカード"
+              placeholderTextColor="#9ca3af"
+            />
+          </View>
         </View>
 
         {/* 種類 */}
@@ -163,25 +165,29 @@ export const PaymentMethodModal = ({
           <View className="flex-row gap-3">
             <View className="flex-1">
               <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">締め日</Text>
-              <TextInput
-                className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-gray-900 dark:text-gray-100"
-                value={closingDay}
-                onChangeText={setClosingDay}
-                keyboardType="numeric"
-                placeholder="15"
-                placeholderTextColor="#9ca3af"
-              />
+              <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+                <TextInput
+                  className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+                  value={closingDay}
+                  onChangeText={setClosingDay}
+                  keyboardType="numeric"
+                  placeholder="15"
+                  placeholderTextColor="#9ca3af"
+                />
+              </View>
             </View>
             <View className="flex-1">
               <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い日</Text>
-              <TextInput
-                className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-gray-900 dark:text-gray-100"
-                value={paymentDay}
-                onChangeText={setPaymentDay}
-                keyboardType="numeric"
-                placeholder="10"
-                placeholderTextColor="#9ca3af"
-              />
+              <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+                <TextInput
+                  className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+                  value={paymentDay}
+                  onChangeText={setPaymentDay}
+                  keyboardType="numeric"
+                  placeholder="10"
+                  placeholderTextColor="#9ca3af"
+                />
+              </View>
             </View>
           </View>
         )}
