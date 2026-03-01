@@ -93,7 +93,7 @@ export const AppNavigator = () => {
                   borderRadius: 28,
                   backgroundColor: '#374151',
                   borderWidth: 3,
-                  borderColor: TAB_BAR_BG_COLOR,
+                  borderColor: TAB_BAR_BORDER_COLOR,
                   alignItems: 'center',
                   justifyContent: 'center',
                   shadowColor: '#000',
