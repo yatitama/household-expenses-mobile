@@ -7,7 +7,7 @@ import DatePickerIOS from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { format } from 'date-fns';
 import Toast from 'react-native-toast-message';
-import { Wallet, CreditCard, ChevronDown } from 'lucide-react-native';
+import { Wallet, CreditCard, ChevronDown, Check } from 'lucide-react-native';
 import {
   accountService, transactionService, categoryService,
   paymentMethodService, quickAddTemplateService,
@@ -194,11 +194,10 @@ export const AddTransactionScreen = () => {
           {/* 金額 */}
           <View>
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">金額</Text>
-            <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12">
+            <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
               <Text className="text-gray-500 mr-1 text-base">¥</Text>
               <TextInput
-                className="flex-1 text-gray-900 dark:text-gray-100 text-base"
-                style={{ textAlignVertical: 'center', includeFontPadding: false }}
+                className="flex-1 py-2.5 text-gray-900 dark:text-gray-100 text-base"
                 value={amount}
                 onChangeText={setAmount}
                 keyboardType="numeric"
@@ -259,26 +258,23 @@ export const AddTransactionScreen = () => {
                     <TouchableOpacity
                       key={cat.id}
                       onPress={() => setCategoryId(cat.id)}
-                      className="w-[30%]"
+                      className={`relative w-[30%] items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                     >
-                      <View
-                        className={`items-center p-2 rounded-lg border ${
-                          categoryId === cat.id
-                            ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
-                            : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
-                        }`}
-                      >
-                        <View className="mb-1">
-                          {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
-                        </View>
-                        <Text
-                          className="text-xs text-gray-900 dark:text-gray-100 text-center"
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {cat.name}
-                        </Text>
+                      <View className="mb-1">
+                        {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
                       </View>
+                      <Text
+                        className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {cat.name}
+                      </Text>
+                      {categoryId === cat.id && (
+                        <View className="absolute top-0 right-0">
+                          <Check size={12} color="#374151" strokeWidth={2.5} />
+                        </View>
+                      )}
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -292,58 +288,52 @@ export const AddTransactionScreen = () => {
                     <TouchableOpacity
                       key={acc.id}
                       onPress={() => setSelectedSourceId(acc.id)}
-                      className="w-[30%]"
+                      className={`relative w-[30%] items-center p-2 rounded-lg ${selectedSourceId === acc.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                     >
                       <View
-                        className={`items-center p-2 rounded-lg border ${
-                          selectedSourceId === acc.id
-                            ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
-                            : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
-                        }`}
+                        className="w-8 h-8 rounded-full items-center justify-center mb-1"
+                        style={{ backgroundColor: acc.color }}
                       >
-                        <View
-                          className="w-8 h-8 rounded-full items-center justify-center mb-1"
-                          style={{ backgroundColor: acc.color }}
-                        >
-                          <Wallet size={16} color="#fff" />
-                        </View>
-                        <Text
-                          className="text-xs text-gray-900 dark:text-gray-100 text-center"
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {acc.name}
-                        </Text>
+                        <Wallet size={16} color="#fff" />
                       </View>
+                      <Text
+                        className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {acc.name}
+                      </Text>
+                      {selectedSourceId === acc.id && (
+                        <View className="absolute top-0 right-0">
+                          <Check size={12} color="#374151" strokeWidth={2.5} />
+                        </View>
+                      )}
                     </TouchableOpacity>
                   ))}
                   {allPaymentMethods.map((pm) => (
                     <TouchableOpacity
                       key={pm.id}
                       onPress={() => setSelectedSourceId(pm.id)}
-                      className="w-[30%]"
+                      className={`relative w-[30%] items-center p-2 rounded-lg ${selectedSourceId === pm.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                     >
                       <View
-                        className={`items-center p-2 rounded-lg border ${
-                          selectedSourceId === pm.id
-                            ? 'border-gray-800 bg-gray-50 dark:bg-slate-700'
-                            : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800'
-                        }`}
+                        className="w-8 h-8 rounded-full items-center justify-center mb-1"
+                        style={{ backgroundColor: pm.color }}
                       >
-                        <View
-                          className="w-8 h-8 rounded-full items-center justify-center mb-1"
-                          style={{ backgroundColor: pm.color }}
-                        >
-                          <CreditCard size={16} color="#fff" />
-                        </View>
-                        <Text
-                          className="text-xs text-gray-900 dark:text-gray-100 text-center"
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {pm.name}
-                        </Text>
+                        <CreditCard size={16} color="#fff" />
                       </View>
+                      <Text
+                        className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {pm.name}
+                      </Text>
+                      {selectedSourceId === pm.id && (
+                        <View className="absolute top-0 right-0">
+                          <Check size={12} color="#374151" strokeWidth={2.5} />
+                        </View>
+                      )}
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -402,11 +392,10 @@ export const AddTransactionScreen = () => {
               {/* 振替手数料 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">振替手数料（任意）</Text>
-                <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12">
+                <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
                   <Text className="text-gray-500 mr-1 text-base">¥</Text>
                   <TextInput
-                    className="flex-1 text-gray-900 dark:text-gray-100 text-base"
-                    style={{ textAlignVertical: 'center', includeFontPadding: false }}
+                    className="flex-1 py-2.5 text-gray-900 dark:text-gray-100 text-base"
                     value={transferFee}
                     onChangeText={setTransferFee}
                     keyboardType="numeric"
