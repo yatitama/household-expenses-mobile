@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import {
-  View, Text, TouchableOpacity, Dimensions,
+  View, Text, TouchableOpacity, useWindowDimensions,
 } from 'react-native';
 import { Trash2, Check, Wallet, CreditCard } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
@@ -27,6 +27,7 @@ export const RecurringPaymentModal = ({
   categories,
   paymentMethods,
 }: RecurringPaymentModalProps) => {
+  const { width: windowWidth } = useWindowDimensions();
   const [name, setName] = useState(recurringPayment?.name ?? '');
   const [amount, setAmount] = useState(recurringPayment?.amount.toString() ?? '');
   const [type, setType] = useState<TransactionType>(recurringPayment?.type ?? 'expense');
@@ -52,13 +53,11 @@ export const RecurringPaymentModal = ({
   );
   const filteredPaymentMethods = paymentMethods;
 
-  const gridItemWidth = useMemo(() => {
-    const screenWidth = Dimensions.get('window').width;
-    const itemsPerRow = 4;
-    const padding = 12 * 2;
-    const gap = 2 * 6;
-    return (screenWidth - padding - gap) / itemsPerRow;
-  }, []);
+  // ModalWrapper の padding: 12 (24px) + gap-2 (8px × 3) = 48px
+  const gridItemWidth = useMemo(
+    () => (windowWidth - 48) / 4,
+    [windowWidth],
+  );
 
   const handleSubmit = () => {
     if (!name.trim() || !amount.trim()) return;
