@@ -102,9 +102,27 @@ export const ModalWrapper = ({
       animationType="none"
       onRequestClose={close}
     >
-      {/* 暗転バックドロップ: animationType="none" により即時表示・非表示 */}
-      <TouchableWithoutFeedback onPress={isForm ? close : undefined}>
-        <View className="flex-1 bg-black/50 justify-end">
+      <View className="flex-1 justify-end">
+        {/* 暗転バックドロップ: 絶対配置でシートの背面をカバー */}
+        <TouchableWithoutFeedback onPress={isForm ? close : undefined}>
+          <View
+            style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}
+            className="bg-black/50"
+          />
+        </TouchableWithoutFeedback>
+
+        {/*
+          KeyboardAvoidingView を Animated.View の外に配置（iOS のみ有効）。
+          Animated.View の内側に置くと useNativeDriver: true のトランスフォームと
+          onLayout による位置計算がズレ、キーボード表示時にシートが画面外へ
+          飛び出すバグの原因となるため。
+          Android は softInputMode: adjustResize で OS が自動処理する。
+        */}
+        <KeyboardAvoidingView
+          behavior="padding"
+          enabled={Platform.OS === 'ios'}
+          keyboardVerticalOffset={insets.top}
+        >
           {/* シート本体: panHandlers をシート全体に適用 */}
           <Animated.View
             style={{ transform: [{ translateY }] }}
@@ -131,34 +149,29 @@ export const ModalWrapper = ({
               </TouchableOpacity>
             </View>
 
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100}
+            {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
+            <ScrollView
+              style={{ maxHeight: scrollMaxHeight }}
+              contentContainerStyle={{ padding: 12, paddingBottom: 8 }}
+              keyboardShouldPersistTaps="handled"
+              onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
+              scrollEventThrottle={16}
             >
-              {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
-              <ScrollView
-                style={{ maxHeight: scrollMaxHeight }}
-                contentContainerStyle={{ padding: 12, paddingBottom: 8 }}
-                keyboardShouldPersistTaps="handled"
-                onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
-                scrollEventThrottle={16}
-              >
-                {children}
-              </ScrollView>
+              {children}
+            </ScrollView>
 
-              {/* フッター: 常にスクロール領域の外に固定表示 */}
-              {footer && (
-                <View
-                  className="px-3 pt-3 border-t border-gray-200 dark:border-gray-700"
-                  style={{ paddingBottom: footerPaddingBottom }}
-                >
-                  {footer}
-                </View>
-              )}
-            </KeyboardAvoidingView>
+            {/* フッター: 常にスクロール領域の外に固定表示 */}
+            {footer && (
+              <View
+                className="px-3 pt-3 border-t border-gray-200 dark:border-gray-700"
+                style={{ paddingBottom: footerPaddingBottom }}
+              >
+                {footer}
+              </View>
+            )}
           </Animated.View>
-        </View>
-      </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 };
