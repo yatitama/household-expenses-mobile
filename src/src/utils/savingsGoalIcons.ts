@@ -1,3 +1,4 @@
+import { createElement } from 'react';
 import {
   Home,
   Car,
@@ -49,8 +50,8 @@ export const SAVINGS_GOAL_ICON_LABELS: Record<keyof typeof SAVINGS_GOAL_ICONS, s
   Utensils: 'グルメ',
 };
 
-export const getSavingsGoalIcon = (iconName?: string): LucideIcon => {
+export const getSavingsGoalIcon = (iconName: string, size: number = 16, color?: string) => {
   const name = (iconName as keyof typeof SAVINGS_GOAL_ICONS) || 'PiggyBank';
   const IconComponent = SAVINGS_GOAL_ICONS[name] || SAVINGS_GOAL_ICONS.PiggyBank;
-  return IconComponent;
+  return createElement(IconComponent, { size, color });
 };

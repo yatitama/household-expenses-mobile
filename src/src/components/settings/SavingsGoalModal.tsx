@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Trash2, Check } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { COLORS } from '../accounts/constants';
-import { SAVINGS_GOAL_ICON_NAMES, getSavingsGoalIcon, SAVINGS_GOAL_ICON_LABELS } from '../../utils/savingsGoalIcons';
+import { SAVINGS_GOAL_ICON_NAMES, getSavingsGoalIcon } from '../../utils/savingsGoalIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import { getCurrentMonth } from '../../utils/savingsUtils';
 import type { SavingsGoal, SavingsGoalInput } from '../../types';
@@ -119,24 +119,18 @@ export const SavingsGoalModal = ({
         <View>
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">アイコン</Text>
           <View className="flex-row flex-wrap gap-2 justify-start">
-            {SAVINGS_GOAL_ICON_NAMES.map((iconName) => {
-              const IconComponent = getSavingsGoalIcon(iconName);
-              return (
-                <TouchableOpacity
-                  key={iconName}
-                  onPress={() => setIcon(iconName)}
-                  className="w-12 h-12 rounded-lg items-center justify-center flex-col"
-                  style={{
-                    backgroundColor: icon === iconName ? color : '#f3f4f6',
-                  }}
-                >
-                  <IconComponent size={20} color={icon === iconName ? '#fff' : '#6b7280'} />
-                  <Text className={`text-xs mt-1 ${icon === iconName ? 'text-white' : 'text-gray-600'}`}>
-                    {SAVINGS_GOAL_ICON_LABELS[iconName as keyof typeof SAVINGS_GOAL_ICON_LABELS]}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+            {SAVINGS_GOAL_ICON_NAMES.map((iconName) => (
+              <TouchableOpacity
+                key={iconName}
+                onPress={() => setIcon(iconName)}
+                className="w-9 h-9 rounded-lg items-center justify-center"
+                style={{
+                  backgroundColor: icon === iconName ? color : '#f3f4f6',
+                }}
+              >
+                {getSavingsGoalIcon(iconName, 16, icon === iconName ? '#fff' : '#6b7280')}
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
