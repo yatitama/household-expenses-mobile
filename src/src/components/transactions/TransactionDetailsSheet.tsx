@@ -56,9 +56,9 @@ export const TransactionDetailsSheet = ({
       </TouchableOpacity>
       <TouchableOpacity
         onPress={handleDeleteClick}
-        className="p-1"
+        className="p-2 rounded-lg hover:bg-red-50 active:bg-red-100"
       >
-        <Trash2 size={15} color="#9ca3af" />
+        <Trash2 size={18} color="#ef4444" />
       </TouchableOpacity>
     </View>
   );
