@@ -1,23 +1,34 @@
 import { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
-import { Search, List } from 'lucide-react-native';
+import { Search, List, Settings2 } from 'lucide-react-native';
 import { useTransactionFilter } from '../hooks/useTransactionFilter';
 import { categoryService, accountService, paymentMethodService } from '../services/storage';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import { TransactionItem } from '../components/transactions/TransactionItem';
 import { TransactionDetailsSheet } from '../components/transactions/TransactionDetailsSheet';
+import { FilterModal } from '../components/transactions/FilterModal';
 import type { Transaction } from '../types';
 
 export const TransactionsScreen = () => {
   const insets = useSafeAreaInsets();
   const [, setFocused] = useState(false);
-  const { filters, filteredTransactions, updateFilter } = useTransactionFilter();
+  const {
+    filters,
+    filteredTransactions,
+    updateFilter,
+    activeFilterCount,
+    savedFilters,
+    saveFilter,
+    applySavedFilter,
+    deleteSavedFilter,
+  } = useTransactionFilter();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -66,7 +77,20 @@ export const TransactionsScreen = () => {
     <View className="flex-1 bg-gray-50 dark:bg-slate-900" style={{ paddingTop: insets.top }}>
       {/* ヘッダー */}
       <View className="px-4 pt-2 pb-2">
-        <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-3">履歴</Text>
+        <View className="flex-row items-center justify-between mb-3">
+          <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">履歴</Text>
+          <TouchableOpacity
+            onPress={() => setFilterModalOpen(true)}
+            className="relative p-2"
+          >
+            <Settings2 size={20} color="#6b7280" />
+            {activeFilterCount > 0 && (
+              <View className="absolute top-1 right-1 w-5 h-5 bg-blue-500 rounded-full items-center justify-center">
+                <Text className="text-xs font-bold text-white">{activeFilterCount}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
         {/* 検索バー */}
         <View className="flex-row items-center bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 gap-2">
           <Search size={16} color="#9ca3af" />
@@ -149,6 +173,21 @@ export const TransactionsScreen = () => {
         account={selectedTransaction ? accounts.find((a) => a.id === selectedTransaction.accountId) : undefined}
         paymentMethod={selectedTransaction ? paymentMethods.find((p) => p.id === selectedTransaction.paymentMethodId) : undefined}
         onEdit={handleEdit}
+      />
+
+      {/* フィルターモーダル */}
+      <FilterModal
+        visible={filterModalOpen}
+        onClose={() => setFilterModalOpen(false)}
+        filters={filters}
+        onFilterChange={updateFilter}
+        categories={categories}
+        accounts={accounts}
+        paymentMethods={paymentMethods}
+        savedFilters={savedFilters}
+        onSaveFilter={saveFilter}
+        onApplySavedFilter={applySavedFilter}
+        onDeleteSavedFilter={deleteSavedFilter}
       />
     </View>
   );
