@@ -590,34 +590,31 @@ export const SettingsScreen = () => {
                 貯金目標が登録されていません
               </Text>
             ) : (
-              savingsGoals.map((goal) => {
-                const IconComponent = getSavingsGoalIcon(goal.icon);
-                return (
-                  <TouchableOpacity
-                    key={goal.id}
-                    className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0"
-                    onPress={() => {
-                      setEditingSavingsGoal(goal);
-                      setIsSavingsGoalModalOpen(true);
-                    }}
+              savingsGoals.map((goal) => (
+                <TouchableOpacity
+                  key={goal.id}
+                  className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                  onPress={() => {
+                    setEditingSavingsGoal(goal);
+                    setIsSavingsGoalModalOpen(true);
+                  }}
+                >
+                  <View
+                    className="w-8 h-8 rounded-full items-center justify-center mr-3"
+                    style={{ backgroundColor: goal.color || '#3b82f6' }}
                   >
-                    <View
-                      className="w-8 h-8 rounded-full items-center justify-center mr-3"
-                      style={{ backgroundColor: goal.color || '#3b82f6' }}
-                    >
-                      <IconComponent size={14} color="#fff" />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {goal.name}
-                      </Text>
-                      <Text className="text-xs text-gray-500 dark:text-gray-400">
-                        目標: ¥{goal.targetAmount.toLocaleString()} ({goal.targetDate})
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })
+                    {getSavingsGoalIcon(goal.icon || 'PiggyBank', 14, '#fff')}
+                  </View>
+                  <View className="flex-1">
+                    <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {goal.name}
+                    </Text>
+                    <Text className="text-xs text-gray-500 dark:text-gray-400">
+                      目標: ¥{goal.targetAmount.toLocaleString()} ({goal.targetDate})
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))
             )}
             <TouchableOpacity
               onPress={() => {
