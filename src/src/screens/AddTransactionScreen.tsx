@@ -8,14 +8,15 @@ import DatePickerIOS from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { format } from 'date-fns';
 import Toast from 'react-native-toast-message';
-import { Wallet, CreditCard, ChevronDown, Check } from 'lucide-react-native';
+import { Wallet, CreditCard, ChevronDown, Check, Plus } from 'lucide-react-native';
 import {
   accountService, transactionService, categoryService,
   paymentMethodService, quickAddTemplateService,
 } from '../services/storage';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
-import type { TransactionType, TransactionInput, QuickAddTemplate } from '../types';
+import { QuickAddTemplateModal } from '../components/settings/QuickAddTemplateModal';
+import type { TransactionType, TransactionInput, QuickAddTemplate, QuickAddTemplateInput } from '../types';
 import type { ScrollView as RNScrollView } from 'react-native';
 
 type TabType = TransactionType | 'transfer';
@@ -45,6 +46,9 @@ export const AddTransactionScreen = () => {
   const [transferFee, setTransferFee] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pickerDate, setPickerDate] = useState<Date>(() => parseDate(format(new Date(), 'yyyy-MM-dd')));
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState<QuickAddTemplate | null>(null);
+  const [templates, setTemplates] = useState<QuickAddTemplate[]>(() => quickAddTemplateService.getAll());
 
   const type: TransactionType = tab === 'transfer' ? 'income' : tab;
   const filteredCategories = categories.filter((c) => c.type === type);
@@ -57,6 +61,39 @@ export const AddTransactionScreen = () => {
     setMemo('');
     setTransferFromAccountId('');
     setTransferFee('');
+  };
+
+  const applyTemplate = (template: QuickAddTemplate) => {
+    if (template.type === 'transfer') {
+      setTab('transfer');
+      setAmount(template.amount ? String(template.amount) : '');
+      setTransferFromAccountId(template.fromAccountId || '');
+      setSelectedSourceId(template.accountId || '');
+      setTransferFee(template.fee ? String(template.fee) : '');
+    } else {
+      setTab(template.type);
+      setAmount(template.amount ? String(template.amount) : '');
+      setCategoryId(template.categoryId || '');
+      setSelectedSourceId(template.accountId || template.paymentMethodId || '');
+    }
+  };
+
+  const handleSaveTemplate = (input: QuickAddTemplateInput) => {
+    if (editingTemplate) {
+      quickAddTemplateService.update(editingTemplate.id, input);
+    } else {
+      quickAddTemplateService.create(input);
+    }
+    setTemplates(quickAddTemplateService.getAll());
+    setShowTemplateModal(false);
+    setEditingTemplate(null);
+    Toast.show({ type: 'success', text1: editingTemplate ? 'テンプレートを更新しました' : 'テンプレートを作成しました' });
+  };
+
+  const handleDeleteTemplate = (id: string) => {
+    quickAddTemplateService.delete(id);
+    setTemplates(quickAddTemplateService.getAll());
+    Toast.show({ type: 'success', text1: 'テンプレートを削除しました' });
   };
 
   const openDatePicker = () => {
@@ -219,6 +256,39 @@ export const AddTransactionScreen = () => {
               </TouchableOpacity>
             ))}
           </View>
+
+          {/* クイック入力テンプレート */}
+          {templates.length > 0 && (
+            <View>
+              <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">クイック入力</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ gap: 8, paddingRight: 16 }}
+              >
+                {templates.map((template) => (
+                  <TouchableOpacity
+                    key={template.id}
+                    onPress={() => applyTemplate(template)}
+                    onLongPress={() => { setEditingTemplate(template); setShowTemplateModal(true); }}
+                    className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 min-w-max"
+                  >
+                    <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">{template.name}</Text>
+                    <Text className="text-xs text-gray-500 dark:text-gray-400">¥{template.amount?.toLocaleString()}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          {/* クイック入力を作成ボタン */}
+          <TouchableOpacity
+            onPress={() => { setEditingTemplate(null); setShowTemplateModal(true); }}
+            className="flex-row items-center gap-2 bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5"
+          >
+            <Plus size={16} color="#6b7280" />
+            <Text className="text-sm text-gray-700 dark:text-gray-300">クイック入力を作成</Text>
+          </TouchableOpacity>
 
           {/* 金額 */}
           <View>
@@ -424,6 +494,20 @@ export const AddTransactionScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* クイック入力テンプレートモーダル */}
+      {showTemplateModal && (
+        <QuickAddTemplateModal
+          template={editingTemplate}
+          onSave={handleSaveTemplate}
+          onClose={() => {
+            setShowTemplateModal(false);
+            setEditingTemplate(null);
+          }}
+          onDelete={handleDeleteTemplate}
+          defaultType={tab}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 };
