@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronDown, Trash2 } from 'lucide-react-native';
 import { startOfMonth, endOfMonth, subMonths, format, parseISO } from 'date-fns';
@@ -39,15 +39,17 @@ export const FilterModal = ({
   onDeleteSavedFilter,
 }: FilterModalProps) => {
   const insets = useSafeAreaInsets();
+  const { width: windowWidth } = useWindowDimensions();
+  const gridItemWidth = (windowWidth - 48) / 3;
   const [saveFilterName, setSaveFilterName] = useState('');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     period: true,
     transactionType: true,
     category: false,
-    account: false,
-    paymentMethod: false,
+    accountPaymentMethod: false,
     savedFilters: false,
   });
+  const [showCustomDateInput, setShowCustomDateInput] = useState(false);
 
   const expenseCategories = useMemo(() => categories.filter((c) => c.type === 'expense'), [categories]);
   const incomeCategories = useMemo(() => categories.filter((c) => c.type === 'income'), [categories]);
@@ -97,9 +99,10 @@ export const FilterModal = ({
 
   const handleSetPeriod = (period: PeriodType) => {
     if (period === 'custom') {
-      // Keep current values for custom
+      setShowCustomDateInput(true);
       return;
     }
+    setShowCustomDateInput(false);
     const dates = getPeriodDates(period);
     onFilterChange('dateRange', dates);
   };
@@ -128,10 +131,11 @@ export const FilterModal = ({
                     : [...filters.categoryIds, cat.id];
                   onFilterChange('categoryIds', newIds);
                 }}
-                className={`px-3 py-1.5 rounded-full ${
+                style={{ width: gridItemWidth }}
+                className={`py-2.5 rounded-lg items-center justify-center ${
                   isSelected
-                    ? 'bg-blue-500'
-                    : 'bg-gray-200 dark:bg-gray-700'
+                    ? 'bg-gray-800 dark:bg-gray-700'
+                    : 'bg-gray-200 dark:bg-gray-600'
                 }`}
               >
                 <Text className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
@@ -175,13 +179,13 @@ export const FilterModal = ({
         <View className="gap-2">
           <TouchableOpacity
             onPress={() => onFilterChange('dateRange', { start: '', end: '' })}
-            className="bg-gray-200 dark:bg-gray-700 py-2 rounded-lg items-center justify-center"
+            className="bg-gray-300 dark:bg-gray-700 py-2.5 rounded-lg items-center justify-center"
           >
             <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100">リセット</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={onClose}
-            className="bg-blue-500 py-2 rounded-lg items-center justify-center"
+            className="bg-gray-800 dark:bg-gray-700 py-2.5 rounded-lg items-center justify-center"
           >
             <Text className="text-sm font-bold text-white">適用</Text>
           </TouchableOpacity>
@@ -191,7 +195,7 @@ export const FilterModal = ({
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Period Section */}
         <ToggleSection title="期間" section="period">
-          <View className="gap-2 mb-3">
+          <View className="flex-row flex-wrap gap-2 mb-3">
             {[
               { label: '今月', value: 'thisMonth' as PeriodType },
               { label: '先月', value: 'lastMonth' as PeriodType },
@@ -202,19 +206,46 @@ export const FilterModal = ({
               <TouchableOpacity
                 key={value}
                 onPress={() => handleSetPeriod(value)}
-                className="py-2"
+                style={{ width: gridItemWidth }}
+                className={`py-2.5 rounded-lg items-center justify-center ${
+                  filters.dateRange.start && filters.dateRange.end && value !== 'custom'
+                    ? 'bg-gray-800 dark:bg-gray-700'
+                    : 'bg-gray-200 dark:bg-gray-600'
+                }`}
               >
-                <Text className="text-sm text-gray-900 dark:text-gray-100">{label}</Text>
+                <Text className={`text-sm font-medium ${
+                  filters.dateRange.start && filters.dateRange.end && value !== 'custom'
+                    ? 'text-white'
+                    : 'text-gray-700 dark:text-gray-300'
+                }`}>
+                  {label}
+                </Text>
               </TouchableOpacity>
             ))}
+            <TouchableOpacity
+              onPress={() => handleSetPeriod('custom')}
+              style={{ width: gridItemWidth }}
+              className={`py-2.5 rounded-lg items-center justify-center ${
+                showCustomDateInput
+                  ? 'bg-gray-800 dark:bg-gray-700'
+                  : 'bg-gray-200 dark:bg-gray-600'
+              }`}
+            >
+              <Text className={`text-sm font-medium ${
+                showCustomDateInput
+                  ? 'text-white'
+                  : 'text-gray-700 dark:text-gray-300'
+              }`}>
+                カスタム
+              </Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Custom Date Range */}
-          <View className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 gap-2">
-            <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400">カスタム</Text>
-            <View className="gap-2">
+          {/* Custom Date Range - Show only when custom is selected */}
+          {showCustomDateInput && (
+            <View className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 gap-3">
               <View>
-                <Text className="text-xs text-gray-600 dark:text-gray-400 mb-1">開始日</Text>
+                <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">開始日</Text>
                 <DismissibleTextInput
                   placeholder="yyyy-MM-dd"
                   placeholderTextColor="#9ca3af"
@@ -224,7 +255,7 @@ export const FilterModal = ({
                 />
               </View>
               <View>
-                <Text className="text-xs text-gray-600 dark:text-gray-400 mb-1">終了日</Text>
+                <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">終了日</Text>
                 <DismissibleTextInput
                   placeholder="yyyy-MM-dd"
                   placeholderTextColor="#9ca3af"
@@ -234,12 +265,12 @@ export const FilterModal = ({
                 />
               </View>
             </View>
-          </View>
+          )}
         </ToggleSection>
 
         {/* Transaction Type Section */}
         <ToggleSection title="取引種別" section="transactionType">
-          <View className="flex-row gap-2">
+          <View className="flex-row flex-wrap gap-2">
             {[
               { label: 'すべて', value: 'all' as const },
               { label: '支出', value: 'expense' as const },
@@ -248,10 +279,11 @@ export const FilterModal = ({
               <TouchableOpacity
                 key={value}
                 onPress={() => onFilterChange('transactionType', value)}
-                className={`flex-1 py-2 rounded-lg items-center justify-center ${
+                style={{ width: gridItemWidth }}
+                className={`py-2.5 rounded-lg items-center justify-center ${
                   filters.transactionType === value
-                    ? 'bg-blue-500'
-                    : 'bg-gray-200 dark:bg-gray-700'
+                    ? 'bg-gray-800 dark:bg-gray-700'
+                    : 'bg-gray-200 dark:bg-gray-600'
                 }`}
               >
                 <Text className={`text-sm font-medium ${
@@ -270,83 +302,86 @@ export const FilterModal = ({
           <CategorySection title="収入" cats={incomeCategories} />
         </ToggleSection>
 
-        {/* Account Section */}
-        <ToggleSection title="口座" section="account">
+        {/* Account & Payment Method Section */}
+        <ToggleSection title="口座・支払い手段" section="accountPaymentMethod">
           <View className="gap-2">
-            {accounts.map((acc) => {
-              const isSelected = filters.accountIds.includes(acc.id);
-              return (
-                <TouchableOpacity
-                  key={acc.id}
-                  onPress={() => {
-                    const newIds = isSelected
-                      ? filters.accountIds.filter((id) => id !== acc.id)
-                      : [...filters.accountIds, acc.id];
-                    onFilterChange('accountIds', newIds);
-                  }}
-                  className={`p-3 rounded-lg flex-row items-center gap-3 ${
-                    isSelected
-                      ? 'bg-blue-100 dark:bg-blue-900 border border-blue-500'
-                      : 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-                  }`}
-                >
-                  <View
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: acc.color }}
-                  />
-                  <Text className={`text-sm font-medium flex-1 ${
-                    isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100'
-                  }`}>
-                    {acc.name}
-                  </Text>
-                  {isSelected && (
-                    <View className="w-5 h-5 rounded-full bg-blue-500 items-center justify-center">
-                      <Text className="text-white text-xs font-bold">✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </ToggleSection>
+            {/* Accounts */}
+            {accounts.length > 0 && (
+              <View>
+                <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">口座</Text>
+                <View className="flex-row flex-wrap gap-2 mb-3">
+                  {accounts.map((acc) => {
+                    const isSelected = filters.accountIds.includes(acc.id);
+                    return (
+                      <TouchableOpacity
+                        key={acc.id}
+                        onPress={() => {
+                          const newIds = isSelected
+                            ? filters.accountIds.filter((id) => id !== acc.id)
+                            : [...filters.accountIds, acc.id];
+                          onFilterChange('accountIds', newIds);
+                        }}
+                        style={{ width: gridItemWidth }}
+                        className={`py-2.5 rounded-lg items-center justify-center flex-row gap-2 ${
+                          isSelected
+                            ? 'bg-gray-800 dark:bg-gray-700'
+                            : 'bg-gray-200 dark:bg-gray-600'
+                        }`}
+                      >
+                        <View
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: acc.color }}
+                        />
+                        <Text className={`text-sm font-medium ${
+                          isSelected ? 'text-white' : 'text-gray-700 dark:text-gray-300'
+                        }`}>
+                          {acc.name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
 
-        {/* Payment Method Section */}
-        <ToggleSection title="支払い手段" section="paymentMethod">
-          <View className="gap-2">
-            {paymentMethods.map((pm) => {
-              const isSelected = filters.paymentMethodIds.includes(pm.id);
-              return (
-                <TouchableOpacity
-                  key={pm.id}
-                  onPress={() => {
-                    const newIds = isSelected
-                      ? filters.paymentMethodIds.filter((id) => id !== pm.id)
-                      : [...filters.paymentMethodIds, pm.id];
-                    onFilterChange('paymentMethodIds', newIds);
-                  }}
-                  className={`p-3 rounded-lg flex-row items-center gap-3 ${
-                    isSelected
-                      ? 'bg-blue-100 dark:bg-blue-900 border border-blue-500'
-                      : 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-                  }`}
-                >
-                  <View
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: pm.color }}
-                  />
-                  <Text className={`text-sm font-medium flex-1 ${
-                    isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100'
-                  }`}>
-                    {pm.name}
-                  </Text>
-                  {isSelected && (
-                    <View className="w-5 h-5 rounded-full bg-blue-500 items-center justify-center">
-                      <Text className="text-white text-xs font-bold">✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
+            {/* Payment Methods */}
+            {paymentMethods.length > 0 && (
+              <View>
+                <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">支払い手段</Text>
+                <View className="flex-row flex-wrap gap-2">
+                  {paymentMethods.map((pm) => {
+                    const isSelected = filters.paymentMethodIds.includes(pm.id);
+                    return (
+                      <TouchableOpacity
+                        key={pm.id}
+                        onPress={() => {
+                          const newIds = isSelected
+                            ? filters.paymentMethodIds.filter((id) => id !== pm.id)
+                            : [...filters.paymentMethodIds, pm.id];
+                          onFilterChange('paymentMethodIds', newIds);
+                        }}
+                        style={{ width: gridItemWidth }}
+                        className={`py-2.5 rounded-lg items-center justify-center flex-row gap-2 ${
+                          isSelected
+                            ? 'bg-gray-800 dark:bg-gray-700'
+                            : 'bg-gray-200 dark:bg-gray-600'
+                        }`}
+                      >
+                        <View
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: pm.color }}
+                        />
+                        <Text className={`text-sm font-medium ${
+                          isSelected ? 'text-white' : 'text-gray-700 dark:text-gray-300'
+                        }`}>
+                          {pm.name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
           </View>
         </ToggleSection>
 
@@ -366,7 +401,7 @@ export const FilterModal = ({
             <TouchableOpacity
               onPress={handleSaveFilter}
               disabled={!saveFilterName.trim()}
-              className="bg-blue-500 disabled:bg-gray-300 dark:disabled:bg-gray-600 px-4 py-2 rounded items-center justify-center"
+              className="bg-gray-800 dark:bg-gray-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 px-4 py-2 rounded items-center justify-center"
             >
               <Text className="text-sm font-bold text-white">保存</Text>
             </TouchableOpacity>
