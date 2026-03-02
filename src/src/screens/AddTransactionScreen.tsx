@@ -261,23 +261,25 @@ export const AddTransactionScreen = () => {
           {templates.length > 0 && (
             <View>
               <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">クイック入力</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 8, paddingRight: 16 }}
-              >
+              <View className="flex-row flex-wrap gap-2">
                 {templates.map((template) => (
                   <TouchableOpacity
                     key={template.id}
                     onPress={() => applyTemplate(template)}
                     onLongPress={() => { setEditingTemplate(template); setShowTemplateModal(true); }}
-                    className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 min-w-max"
+                    style={{ width: gridItemWidth }}
+                    className="relative items-center p-2 rounded-lg bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600"
                   >
-                    <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">{template.name}</Text>
-                    <Text className="text-xs text-gray-500 dark:text-gray-400">¥{template.amount?.toLocaleString()}</Text>
+                    <Text
+                      className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {template.name}
+                    </Text>
                   </TouchableOpacity>
                 ))}
-              </ScrollView>
+              </View>
             </View>
           )}
 
