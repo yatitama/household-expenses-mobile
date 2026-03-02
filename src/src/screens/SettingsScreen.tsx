@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-  Users, Tag, CreditCard, Database, Wallet,
+  Users, Tag, CreditCard, Database, Wallet, Repeat2,
   ChevronDown, ChevronUp, Plus, Trash2,
 } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
@@ -22,11 +22,12 @@ import { AccountModal } from '../components/accounts/modals/AccountModal';
 import { PaymentMethodModal } from '../components/accounts/modals/PaymentMethodModal';
 import { MemberModal } from '../components/settings/MemberModal';
 import { CategoryModal } from '../components/settings/CategoryModal';
+import { RecurringPaymentModal } from '../components/settings/RecurringPaymentModal';
 import type {
   Member, Category, TransactionType,
-  Account, PaymentMethod,
+  Account, PaymentMethod, RecurringPayment,
   AccountInput, PaymentMethodInput,
-  MemberInput, CategoryInput,
+  MemberInput, CategoryInput, RecurringPaymentInput,
 } from '../types';
 
 const Section = ({
@@ -67,6 +68,7 @@ export const SettingsScreen = () => {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [accountsOpen, setAccountsOpen] = useState(false);
   const [cardsOpen, setCardsOpen] = useState(false);
+  const [recurringOpen, setRecurringOpen] = useState(false);
   const [dataOpen, setDataOpen] = useState(false);
 
   // メンバー
@@ -89,6 +91,13 @@ export const SettingsScreen = () => {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(() => paymentMethodService.getAll());
   const [editingPM, setEditingPM] = useState<PaymentMethod | null>(null);
   const [isPMModalOpen, setIsPMModalOpen] = useState(false);
+
+  // 定期取引
+  const [recurringPayments, setRecurringPayments] = useState<RecurringPayment[]>(
+    () => recurringPaymentService.getAll(),
+  );
+  const [editingRecurring, setEditingRecurring] = useState<RecurringPayment | null>(null);
+  const [isRecurringModalOpen, setIsRecurringModalOpen] = useState(false);
 
   // 確認ダイアログ
   const [confirmDialog, setConfirmDialog] = useState({
@@ -180,6 +189,27 @@ export const SettingsScreen = () => {
       paymentMethodService.delete(id);
       setPaymentMethods(paymentMethodService.getAll());
       Toast.show({ type: 'success', text1: 'カードを削除しました' });
+    });
+  };
+
+  // --- 定期取引操作 ---
+  const handleSaveRecurring = (input: RecurringPaymentInput) => {
+    if (editingRecurring) {
+      recurringPaymentService.update(editingRecurring.id, input);
+      Toast.show({ type: 'success', text1: '定期取引を更新しました' });
+    } else {
+      recurringPaymentService.create(input);
+      Toast.show({ type: 'success', text1: '定期取引を追加しました' });
+    }
+    setRecurringPayments(recurringPaymentService.getAll());
+    setIsRecurringModalOpen(false);
+  };
+
+  const handleDeleteRecurring = (id: string) => {
+    showConfirm('定期取引を削除', 'この定期取引を削除しますか？この操作は取り消せません。', () => {
+      recurringPaymentService.delete(id);
+      setRecurringPayments(recurringPaymentService.getAll());
+      Toast.show({ type: 'success', text1: '定期取引を削除しました' });
     });
   };
 
@@ -429,6 +459,80 @@ export const SettingsScreen = () => {
             </TouchableOpacity>
           </Section>
 
+          {/* 定期取引管理 */}
+          <Section
+            title="定期取引管理"
+            icon={<Repeat2 size={16} color="#6b7280" />}
+            isOpen={recurringOpen}
+            onToggle={() => setRecurringOpen(!recurringOpen)}
+            action={
+              recurringOpen ? (
+                <TouchableOpacity
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    setEditingRecurring(null);
+                    setIsRecurringModalOpen(true);
+                  }}
+                  className="p-1"
+                >
+                  <Plus size={16} color="#6b7280" />
+                </TouchableOpacity>
+              ) : undefined
+            }
+          >
+            {recurringPayments.length === 0 ? (
+              <Text className="text-sm text-gray-500 dark:text-gray-400 py-3">
+                定期取引が登録されていません
+              </Text>
+            ) : (
+              recurringPayments.map((rp) => {
+                const category = categories.find((c) => c.id === rp.categoryId);
+                return (
+                  <TouchableOpacity
+                    key={rp.id}
+                    className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                    onPress={() => {
+                      setEditingRecurring(rp);
+                      setIsRecurringModalOpen(true);
+                    }}
+                  >
+                    {category && (
+                      <View
+                        className="w-8 h-8 rounded-full items-center justify-center mr-3"
+                        style={{ backgroundColor: category.color }}
+                      >
+                        {getCategoryIcon(category.icon ?? '', 14, '#fff')}
+                      </View>
+                    )}
+                    <View className="flex-1">
+                      <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {rp.name}
+                      </Text>
+                      <Text className="text-xs text-gray-500 dark:text-gray-400">
+                        ¥{rp.amount.toLocaleString()}
+                        {' · '}
+                        {rp.periodValue}
+                        {rp.periodType === 'months' ? 'ヶ月' : '日'}
+                        に一回
+                        {!rp.isActive && ' · 無効'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                setEditingRecurring(null);
+                setIsRecurringModalOpen(true);
+              }}
+              className="flex-row items-center gap-1 mt-3 py-1"
+            >
+              <Plus size={13} color="#6b7280" />
+              <Text className="text-xs text-gray-500">定期取引を追加</Text>
+            </TouchableOpacity>
+          </Section>
+
           {/* データ管理 */}
           <Section
             title="データ管理"
@@ -490,6 +594,20 @@ export const SettingsScreen = () => {
           onDelete={editingPM ? (id) => {
             setIsPMModalOpen(false);
             handleDeletePM(id);
+          } : undefined}
+        />
+      )}
+
+      {isRecurringModalOpen && (
+        <RecurringPaymentModal
+          recurringPayment={editingRecurring}
+          categories={categories}
+          paymentMethods={paymentMethods}
+          onSave={handleSaveRecurring}
+          onClose={() => setIsRecurringModalOpen(false)}
+          onDelete={editingRecurring ? (id) => {
+            setIsRecurringModalOpen(false);
+            handleDeleteRecurring(id);
           } : undefined}
         />
       )}
