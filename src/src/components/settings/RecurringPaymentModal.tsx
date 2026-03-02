@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
-  View, Text, TouchableOpacity, ScrollView,
+  View, Text, TouchableOpacity, Dimensions,
 } from 'react-native';
-import { Trash2, Check } from 'lucide-react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Trash2, Check, Wallet, CreditCard } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
-import { COLORS } from '../accounts/constants';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import type {
@@ -20,11 +18,6 @@ interface RecurringPaymentModalProps {
   categories: Category[];
   paymentMethods: PaymentMethod[];
 }
-
-const FREQUENCY_OPTIONS = [
-  { label: 'ヶ月に一回', value: 'months', periodValue: 1 },
-  { label: '日に一回', value: 'days', periodValue: 1 },
-];
 
 export const RecurringPaymentModal = ({
   recurringPayment,
@@ -41,7 +34,6 @@ export const RecurringPaymentModal = ({
   const [paymentMethodId, setPaymentMethodId] = useState(
     recurringPayment?.paymentMethodId ?? '',
   );
-  const [accountId, setAccountId] = useState(recurringPayment?.accountId ?? '');
   const [periodType, setPeriodType] = useState<'months' | 'days'>(
     recurringPayment?.periodType ?? 'months',
   );
@@ -49,27 +41,24 @@ export const RecurringPaymentModal = ({
     recurringPayment?.periodValue.toString() ?? '1',
   );
   const [startDate, setStartDate] = useState(
-    recurringPayment?.startDate ? new Date(recurringPayment.startDate) : new Date(),
+    recurringPayment?.startDate ?? new Date().toISOString().split('T')[0],
   );
-  const [endDate, setEndDate] = useState(
-    recurringPayment?.endDate ? new Date(recurringPayment.endDate) : null,
-  );
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
+  const [endDate, setEndDate] = useState(recurringPayment?.endDate ?? '');
   const [isActive, setIsActive] = useState(recurringPayment?.isActive ?? true);
 
-  const filteredCategories = categories.filter((c) => c.type === type);
+  const filteredCategories = useMemo(
+    () => categories.filter((c) => c.type === type),
+    [categories, type],
+  );
   const filteredPaymentMethods = paymentMethods;
 
-  const handleStartDateChange = (event: any, date?: Date) => {
-    setShowStartPicker(false);
-    if (date) setStartDate(date);
-  };
-
-  const handleEndDateChange = (event: any, date?: Date) => {
-    setShowEndPicker(false);
-    if (date) setEndDate(date);
-  };
+  const gridItemWidth = useMemo(() => {
+    const screenWidth = Dimensions.get('window').width;
+    const itemsPerRow = 4;
+    const padding = 12 * 2;
+    const gap = 2 * 6;
+    return (screenWidth - padding - gap) / itemsPerRow;
+  }, []);
 
   const handleSubmit = () => {
     if (!name.trim() || !amount.trim()) return;
@@ -80,21 +69,19 @@ export const RecurringPaymentModal = ({
       type,
       periodType,
       periodValue: Number(periodValue),
-      startDate: startDate.toISOString().split('T')[0],
-      endDate: endDate ? endDate.toISOString().split('T')[0] : undefined,
+      startDate,
+      endDate: endDate || undefined,
       isActive,
       categoryId: categoryId || undefined,
       paymentMethodId: paymentMethodId || undefined,
-      accountId: accountId || undefined,
     };
 
     onSave(input);
   };
 
-  const formatDate = (date: Date): string => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return '';
+    const [y, m, d] = dateString.split('-');
     return `${y}年${m}月${d}日`;
   };
 
@@ -195,31 +182,34 @@ export const RecurringPaymentModal = ({
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
             カテゴリ
           </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
+          <View className="flex-row flex-wrap gap-2">
             {filteredCategories.map((cat) => (
               <TouchableOpacity
                 key={cat.id}
                 onPress={() => setCategoryId(cat.id)}
-                className="items-center gap-1"
+                style={{ width: gridItemWidth }}
+                className={`relative items-center p-2 rounded-lg ${
+                  categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''
+                }`}
               >
-                <View
-                  className="w-12 h-12 rounded-lg items-center justify-center"
-                  style={{
-                    backgroundColor: categoryId === cat.id ? cat.color : '#f3f4f6',
-                  }}
-                >
-                  {getCategoryIcon(
-                    cat.icon ?? '',
-                    18,
-                    categoryId === cat.id ? '#fff' : '#6b7280',
-                  )}
+                <View className="mb-1">
+                  {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
                 </View>
-                <Text className="text-xs text-gray-600 dark:text-gray-400 text-center w-12">
+                <Text
+                  className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
                   {cat.name}
                 </Text>
+                {categoryId === cat.id && (
+                  <View className="absolute top-0 right-0">
+                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                  </View>
+                )}
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </View>
         </View>
 
         {/* 支払い手段（オプション） */}
@@ -228,47 +218,63 @@ export const RecurringPaymentModal = ({
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
               支払い手段（任意）
             </Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
+            <View className="flex-row flex-wrap gap-2">
               <TouchableOpacity
+                key="none"
                 onPress={() => setPaymentMethodId('')}
-                className={`px-3 py-2 rounded-full ${
-                  paymentMethodId === ''
-                    ? 'bg-gray-800 dark:bg-gray-600'
-                    : 'bg-gray-100 dark:bg-slate-700'
+                style={{ width: gridItemWidth }}
+                className={`relative items-center p-2 rounded-lg ${
+                  paymentMethodId === '' ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
               >
+                <View className="w-8 h-8 rounded-full items-center justify-center mb-1 bg-gray-300 dark:bg-gray-500">
+                  <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400">
+                    -
+                  </Text>
+                </View>
                 <Text
-                  className={`text-xs font-medium ${
-                    paymentMethodId === ''
-                      ? 'text-white'
-                      : 'text-gray-600 dark:text-gray-300'
-                  }`}
+                  className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                 >
                   指定しない
                 </Text>
+                {paymentMethodId === '' && (
+                  <View className="absolute top-0 right-0">
+                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                  </View>
+                )}
               </TouchableOpacity>
               {filteredPaymentMethods.map((pm) => (
                 <TouchableOpacity
                   key={pm.id}
                   onPress={() => setPaymentMethodId(pm.id)}
-                  className={`px-3 py-2 rounded-full ${
-                    paymentMethodId === pm.id
-                      ? 'bg-gray-800 dark:bg-gray-600'
-                      : 'bg-gray-100 dark:bg-slate-700'
+                  style={{ width: gridItemWidth }}
+                  className={`relative items-center p-2 rounded-lg ${
+                    paymentMethodId === pm.id ? 'bg-gray-100 dark:bg-gray-700' : ''
                   }`}
                 >
+                  <View
+                    className="w-8 h-8 rounded-full items-center justify-center mb-1"
+                    style={{ backgroundColor: pm.color }}
+                  >
+                    <CreditCard size={16} color="#fff" />
+                  </View>
                   <Text
-                    className={`text-xs font-medium ${
-                      paymentMethodId === pm.id
-                        ? 'text-white'
-                        : 'text-gray-600 dark:text-gray-300'
-                    }`}
+                    className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
                   >
                     {pm.name}
                   </Text>
+                  {paymentMethodId === pm.id && (
+                    <View className="absolute top-0 right-0">
+                      <Check size={12} color="#374151" strokeWidth={2.5} />
+                    </View>
+                  )}
                 </TouchableOpacity>
               ))}
-            </ScrollView>
+            </View>
           </View>
         )}
 
@@ -306,20 +312,15 @@ export const RecurringPaymentModal = ({
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
             開始日
           </Text>
-          <TouchableOpacity
-            onPress={() => setShowStartPicker(true)}
-            className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5"
-          >
-            <Text className="text-sm text-gray-900 dark:text-gray-100">{formatDate(startDate)}</Text>
-          </TouchableOpacity>
-          {showStartPicker && (
-            <DateTimePicker
+          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+            <DismissibleTextInput
+              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
               value={startDate}
-              mode="date"
-              display="spinner"
-              onChange={handleStartDateChange}
+              onChangeText={setStartDate}
+              placeholder="YYYY-MM-DD"
+              placeholderTextColor="#9ca3af"
             />
-          )}
+          </View>
         </View>
 
         {/* 終了日 */}
@@ -327,22 +328,15 @@ export const RecurringPaymentModal = ({
           <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
             終了日（任意）
           </Text>
-          <TouchableOpacity
-            onPress={() => setShowEndPicker(true)}
-            className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5"
-          >
-            <Text className="text-sm text-gray-900 dark:text-gray-100">
-              {endDate ? formatDate(endDate) : '未設定'}
-            </Text>
-          </TouchableOpacity>
-          {showEndPicker && (
-            <DateTimePicker
-              value={endDate || new Date()}
-              mode="date"
-              display="spinner"
-              onChange={handleEndDateChange}
+          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+            <DismissibleTextInput
+              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              value={endDate}
+              onChangeText={setEndDate}
+              placeholder="YYYY-MM-DD"
+              placeholderTextColor="#9ca3af"
             />
-          )}
+          </View>
         </View>
 
         {/* 有効/無効 */}
