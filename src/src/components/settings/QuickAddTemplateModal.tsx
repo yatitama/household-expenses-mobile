@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, useWindowDimensions } from 'r
 import { Trash2, Check } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
+import { ConfirmDialog } from '../feedback/ConfirmDialog';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import {
   accountService, paymentMethodService, categoryService,
@@ -41,6 +42,7 @@ export const QuickAddTemplateModal = ({
   const [selectedSourceId, setSelectedSourceId] = useState(template?.accountId ?? template?.paymentMethodId ?? '');
   const [transferFromAccountId, setTransferFromAccountId] = useState(template?.fromAccountId ?? '');
   const [transferFee, setTransferFee] = useState(template?.fee ? String(template.fee) : '');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const transactionType: TransactionType = type === 'transfer' ? 'income' : type;
   const filteredCategories = categories.filter((c) => c.type === transactionType);
@@ -49,33 +51,29 @@ export const QuickAddTemplateModal = ({
     if (!name.trim()) return;
 
     if (type === 'transfer') {
-      if (!amount || !transferFromAccountId || !selectedSourceId) return;
-
       const input: QuickAddTemplateInput = {
         name: name.trim(),
         type: 'transfer',
-        amount: parseInt(amount, 10),
-        fromAccountId: transferFromAccountId,
-        accountId: selectedSourceId,
+        amount: amount ? parseInt(amount, 10) : undefined,
+        fromAccountId: transferFromAccountId || undefined,
+        accountId: selectedSourceId || undefined,
         fee: transferFee ? parseInt(transferFee, 10) : undefined,
       };
       onSave(input);
       return;
     }
 
-    if (!amount || !categoryId || !selectedSourceId) return;
-
     const input: QuickAddTemplateInput = {
       name: name.trim(),
       type: type as TransactionType,
-      amount: parseInt(amount, 10),
-      categoryId,
-      accountId: selectedSourceId,
+      amount: amount ? parseInt(amount, 10) : undefined,
+      categoryId: categoryId || undefined,
+      accountId: selectedSourceId || undefined,
     };
     onSave(input);
   };
 
-  const isValid = name.trim() && amount && selectedSourceId && (type === 'transfer' ? transferFromAccountId : categoryId);
+  const isValid = name.trim();
 
   return (
     <ModalWrapper
@@ -84,7 +82,7 @@ export const QuickAddTemplateModal = ({
       isForm
       headerAction={
         template && onDelete ? (
-          <TouchableOpacity onPress={() => { onDelete(template.id); onClose(); }} className="p-1">
+          <TouchableOpacity onPress={() => setShowDeleteConfirm(true)} className="p-1">
             <Trash2 size={15} color="#9ca3af" />
           </TouchableOpacity>
         ) : undefined
@@ -291,6 +289,22 @@ export const QuickAddTemplateModal = ({
           </>
         )}
       </ScrollView>
+
+      {/* 削除確認ダイアログ */}
+      {template && onDelete && (
+        <ConfirmDialog
+          isOpen={showDeleteConfirm}
+          title="テンプレートを削除"
+          message="このテンプレートを削除してもよろしいですか？"
+          confirmText="削除"
+          confirmVariant="danger"
+          onConfirm={() => {
+            onDelete(template.id);
+            onClose();
+          }}
+          onClose={() => setShowDeleteConfirm(false)}
+        />
+      )}
     </ModalWrapper>
   );
 };
