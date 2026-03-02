@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-  Users, Tag, CreditCard, Database, Wallet, Repeat2,
+  Users, Tag, CreditCard, Database, Wallet, Repeat2, PiggyBank,
   ChevronDown, ChevronUp, Plus, Trash2,
 } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
@@ -15,6 +15,7 @@ import {
 } from '../services/storage';
 import { initializeDefaultData } from '../services/initialData';
 import { getCategoryIcon } from '../utils/categoryIcons';
+import { getSavingsGoalIcon } from '../utils/savingsGoalIcons';
 import { ACCOUNT_TYPE_LABELS, PM_TYPE_LABELS } from '../components/accounts/constants';
 import { ACCOUNT_TYPE_ICONS } from '../components/accounts/AccountIcons';
 import { ConfirmDialog } from '../components/feedback/ConfirmDialog';
@@ -23,11 +24,12 @@ import { PaymentMethodModal } from '../components/accounts/modals/PaymentMethodM
 import { MemberModal } from '../components/settings/MemberModal';
 import { CategoryModal } from '../components/settings/CategoryModal';
 import { RecurringPaymentModal } from '../components/settings/RecurringPaymentModal';
+import { SavingsGoalModal } from '../components/settings/SavingsGoalModal';
 import type {
   Member, Category, TransactionType,
-  Account, PaymentMethod, RecurringPayment,
+  Account, PaymentMethod, RecurringPayment, SavingsGoal,
   AccountInput, PaymentMethodInput,
-  MemberInput, CategoryInput, RecurringPaymentInput,
+  MemberInput, CategoryInput, RecurringPaymentInput, SavingsGoalInput,
 } from '../types';
 
 const Section = ({
@@ -69,6 +71,7 @@ export const SettingsScreen = () => {
   const [accountsOpen, setAccountsOpen] = useState(false);
   const [cardsOpen, setCardsOpen] = useState(false);
   const [recurringOpen, setRecurringOpen] = useState(false);
+  const [savingsOpen, setSavingsOpen] = useState(false);
   const [dataOpen, setDataOpen] = useState(false);
 
   // メンバー
@@ -98,6 +101,13 @@ export const SettingsScreen = () => {
   );
   const [editingRecurring, setEditingRecurring] = useState<RecurringPayment | null>(null);
   const [isRecurringModalOpen, setIsRecurringModalOpen] = useState(false);
+
+  // 貯金目標
+  const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>(
+    () => savingsGoalService.getAll(),
+  );
+  const [editingSavingsGoal, setEditingSavingsGoal] = useState<SavingsGoal | null>(null);
+  const [isSavingsGoalModalOpen, setIsSavingsGoalModalOpen] = useState(false);
 
   // 確認ダイアログ
   const [confirmDialog, setConfirmDialog] = useState({
@@ -210,6 +220,27 @@ export const SettingsScreen = () => {
       recurringPaymentService.delete(id);
       setRecurringPayments(recurringPaymentService.getAll());
       Toast.show({ type: 'success', text1: '定期取引を削除しました' });
+    });
+  };
+
+  // --- 貯金目標操作 ---
+  const handleSaveSavingsGoal = (input: SavingsGoalInput) => {
+    if (editingSavingsGoal) {
+      savingsGoalService.update(editingSavingsGoal.id, input);
+      Toast.show({ type: 'success', text1: '貯金目標を更新しました' });
+    } else {
+      savingsGoalService.create(input);
+      Toast.show({ type: 'success', text1: '貯金目標を追加しました' });
+    }
+    setSavingsGoals(savingsGoalService.getAll());
+    setIsSavingsGoalModalOpen(false);
+  };
+
+  const handleDeleteSavingsGoal = (id: string) => {
+    showConfirm('貯金目標を削除', 'この貯金目標を削除しますか？この操作は取り消せません。', () => {
+      savingsGoalService.delete(id);
+      setSavingsGoals(savingsGoalService.getAll());
+      Toast.show({ type: 'success', text1: '貯金目標を削除しました' });
     });
   };
 
@@ -533,6 +564,73 @@ export const SettingsScreen = () => {
             </TouchableOpacity>
           </Section>
 
+          {/* 貯金管理 */}
+          <Section
+            title="貯金管理"
+            icon={<PiggyBank size={16} color="#6b7280" />}
+            isOpen={savingsOpen}
+            onToggle={() => setSavingsOpen(!savingsOpen)}
+            action={
+              savingsOpen ? (
+                <TouchableOpacity
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    setEditingSavingsGoal(null);
+                    setIsSavingsGoalModalOpen(true);
+                  }}
+                  className="p-1"
+                >
+                  <Plus size={16} color="#6b7280" />
+                </TouchableOpacity>
+              ) : undefined
+            }
+          >
+            {savingsGoals.length === 0 ? (
+              <Text className="text-sm text-gray-500 dark:text-gray-400 py-3">
+                貯金目標が登録されていません
+              </Text>
+            ) : (
+              savingsGoals.map((goal) => {
+                const IconComponent = getSavingsGoalIcon(goal.icon);
+                return (
+                  <TouchableOpacity
+                    key={goal.id}
+                    className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                    onPress={() => {
+                      setEditingSavingsGoal(goal);
+                      setIsSavingsGoalModalOpen(true);
+                    }}
+                  >
+                    <View
+                      className="w-8 h-8 rounded-full items-center justify-center mr-3"
+                      style={{ backgroundColor: goal.color || '#3b82f6' }}
+                    >
+                      <IconComponent size={14} color="#fff" />
+                    </View>
+                    <View className="flex-1">
+                      <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {goal.name}
+                      </Text>
+                      <Text className="text-xs text-gray-500 dark:text-gray-400">
+                        目標: ¥{goal.targetAmount.toLocaleString()} ({goal.targetDate})
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                setEditingSavingsGoal(null);
+                setIsSavingsGoalModalOpen(true);
+              }}
+              className="flex-row items-center gap-1 mt-3 py-1"
+            >
+              <Plus size={13} color="#6b7280" />
+              <Text className="text-xs text-gray-500">貯金目標を追加</Text>
+            </TouchableOpacity>
+          </Section>
+
           {/* データ管理 */}
           <Section
             title="データ管理"
@@ -608,6 +706,18 @@ export const SettingsScreen = () => {
           onDelete={editingRecurring ? (id) => {
             setIsRecurringModalOpen(false);
             handleDeleteRecurring(id);
+          } : undefined}
+        />
+      )}
+
+      {isSavingsGoalModalOpen && (
+        <SavingsGoalModal
+          goal={editingSavingsGoal}
+          onSave={handleSaveSavingsGoal}
+          onClose={() => setIsSavingsGoalModalOpen(false)}
+          onDelete={editingSavingsGoal ? (id) => {
+            setIsSavingsGoalModalOpen(false);
+            handleDeleteSavingsGoal(id);
           } : undefined}
         />
       )}
