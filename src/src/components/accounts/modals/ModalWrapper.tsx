@@ -133,12 +133,12 @@ export const ModalWrapper = ({
 
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+              keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100}
             >
               {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
               <ScrollView
                 style={{ maxHeight: scrollMaxHeight }}
-                contentContainerStyle={{ padding: 12, paddingBottom: 20 }}
+                contentContainerStyle={{ padding: 12, paddingBottom: 8 }}
                 keyboardShouldPersistTaps="handled"
                 onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
                 scrollEventThrottle={16}

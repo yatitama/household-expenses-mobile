@@ -261,7 +261,7 @@ export const AddTransactionScreen = () => {
           {templates.length > 0 && (
             <View>
               <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">クイック入力</Text>
-              <View className="flex-row flex-wrap gap-2">
+              <View className="flex-row flex-wrap gap-2 mx-0">
                 {templates.map((template) => (
                   <TouchableOpacity
                     key={template.id}
@@ -338,7 +338,7 @@ export const AddTransactionScreen = () => {
               {/* カテゴリ */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">カテゴリ</Text>
-                <View className="flex-row flex-wrap gap-2">
+                <View className="flex-row flex-wrap gap-2 mx-0">
                   {filteredCategories.map((cat) => (
                     <TouchableOpacity
                       key={cat.id}
@@ -369,7 +369,7 @@ export const AddTransactionScreen = () => {
               {/* 支払い元 */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い元</Text>
-                <View className="flex-row flex-wrap gap-2">
+                <View className="flex-row flex-wrap gap-2 mx-0">
                   {[
                     ...allAccounts.map((acc) => ({ id: acc.id, name: acc.name, color: acc.color, isAccount: true as const })),
                     ...allPaymentMethods.map((pm) => ({ id: pm.id, name: pm.name, color: pm.color, isAccount: false as const })),
