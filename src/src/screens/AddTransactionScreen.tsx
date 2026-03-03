@@ -14,7 +14,7 @@ import {
   paymentMethodService, quickAddTemplateService,
 } from '../services/storage';
 import { getCategoryIcon } from '../utils/categoryIcons';
-import { COLORS_GRAY, UI_COLORS } from '../constants/colors';
+import { COLORS_GRAY, UI_COLORS, COLORS_SEMANTIC } from '../constants/colors';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import { QuickAddTemplateModal } from '../components/settings/QuickAddTemplateModal';
 import type { TransactionType, TransactionInput, QuickAddTemplate, QuickAddTemplateInput } from '../types';
@@ -194,33 +194,52 @@ export const AddTransactionScreen = () => {
       memo: memo || undefined,
     };
 
-    transactionService.create(input);
+    try {
+      // トランザクション作成
+      const createdTransaction = transactionService.create(input);
 
-    if (paymentMethod) {
-      if (paymentMethod.billingType === 'immediate' && paymentMethod.linkedAccountId) {
-        const linkedAccount = accountService.getById(paymentMethod.linkedAccountId);
-        if (linkedAccount) {
-          const newBalance = type === 'expense'
-            ? linkedAccount.balance - parsedAmount
-            : linkedAccount.balance + parsedAmount;
-          accountService.update(paymentMethod.linkedAccountId, { balance: newBalance });
+      // 口座残高の更新（原子性を確保するため、トランザクション作成後に実行）
+      if (paymentMethod) {
+        if (paymentMethod.billingType === 'immediate' && paymentMethod.linkedAccountId) {
+          const linkedAccount = accountService.getById(paymentMethod.linkedAccountId);
+          if (linkedAccount) {
+            try {
+              const newBalance = type === 'expense'
+                ? linkedAccount.balance - parsedAmount
+                : linkedAccount.balance + parsedAmount;
+              accountService.update(paymentMethod.linkedAccountId, { balance: newBalance });
+              // 決済済みとしてマーク
+              transactionService.update(createdTransaction.id, { settledAt: new Date().toISOString() });
+            } catch (accountError) {
+              // 残高更新失敗時はトランザクションを削除（ロールバック）
+              transactionService.delete(createdTransaction.id);
+              throw accountError;
+            }
+          }
         }
-        const allTx = transactionService.getAll();
-        const lastTx = allTx[allTx.length - 1];
-        if (lastTx) {
-          transactionService.update(lastTx.id, { settledAt: new Date().toISOString() });
+      } else if (account) {
+        try {
+          const newBalance = type === 'expense'
+            ? account.balance - parsedAmount
+            : account.balance + parsedAmount;
+          accountService.update(account.id, { balance: newBalance });
+        } catch (accountError) {
+          // 残高更新失敗時はトランザクションを削除（ロールバック）
+          transactionService.delete(createdTransaction.id);
+          throw accountError;
         }
       }
-    } else if (account) {
-      const newBalance = type === 'expense'
-        ? account.balance - parsedAmount
-        : account.balance + parsedAmount;
-      accountService.update(account.id, { balance: newBalance });
-    }
 
-    Toast.show({ type: 'success', text1: '取引を追加しました' });
-    resetForm();
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+      Toast.show({ type: 'success', text1: '取引を追加しました' });
+      resetForm();
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: '取引の追加に失敗しました',
+        text2: error instanceof Error ? error.message : '不明なエラーが発生しました',
+      });
+    }
   };
 
   const isSubmitDisabled = tab === 'transfer'
@@ -505,7 +524,7 @@ export const AddTransactionScreen = () => {
               value={memo}
               onChangeText={setMemo}
               placeholder="メモを入力..."
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
               multiline
             />
           </View>

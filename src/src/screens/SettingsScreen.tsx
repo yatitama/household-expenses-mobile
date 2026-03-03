@@ -8,6 +8,7 @@ import {
   ChevronDown, ChevronUp, Plus, Trash2,
 } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../constants/colors';
 import {
   accountService, transactionService, categoryService,
   memberService, paymentMethodService, recurringPaymentService,
@@ -53,7 +54,7 @@ const Section = ({
       </View>
       <View className="flex-row items-center gap-2">
         {action}
-        {isOpen ? <ChevronUp size={16} color="#9ca3af" /> : <ChevronDown size={16} color="#9ca3af" />}
+        {isOpen ? <ChevronUp size={16} color={COLORS_GRAY[400]} /> : <ChevronDown size={16} color={COLORS_GRAY[400]} />}
       </View>
     </TouchableOpacity>
     {isOpen && (
@@ -286,7 +287,7 @@ export const SettingsScreen = () => {
           {/* メンバー管理 */}
           <Section
             title="メンバー管理"
-            icon={<Users size={16} color="#6b7280" />}
+            icon={<Users size={16} color={COLORS_GRAY[500]} />}
             isOpen={membersOpen}
             onToggle={() => setMembersOpen(!membersOpen)}
             action={
@@ -299,7 +300,7 @@ export const SettingsScreen = () => {
                   }}
                   className="p-1"
                 >
-                  <Plus size={16} color="#6b7280" />
+                  <Plus size={16} color={COLORS_GRAY[500]} />
                 </TouchableOpacity>
               ) : undefined
             }
@@ -311,7 +312,7 @@ export const SettingsScreen = () => {
                 onPress={() => { setEditingMember(m); setIsMemberModalOpen(true); }}
               >
                 <View className="w-8 h-8 rounded-full items-center justify-center mr-3" style={{ backgroundColor: m.color }}>
-                  <Users size={14} color="#fff" />
+                  <Users size={14} color={COLORS_SEMANTIC.white} />
                 </View>
                 <Text className="flex-1 text-sm text-gray-900 dark:text-gray-100">{m.name}</Text>
               </TouchableOpacity>
@@ -320,7 +321,7 @@ export const SettingsScreen = () => {
               onPress={() => { setEditingMember(null); setIsMemberModalOpen(true); }}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
-              <Plus size={13} color="#6b7280" />
+              <Plus size={13} color={COLORS_GRAY[500]} />
               <Text className="text-xs text-gray-500">メンバーを追加</Text>
             </TouchableOpacity>
           </Section>
@@ -328,7 +329,7 @@ export const SettingsScreen = () => {
           {/* カテゴリ管理 */}
           <Section
             title="カテゴリ管理"
-            icon={<Tag size={16} color="#6b7280" />}
+            icon={<Tag size={16} color={COLORS_GRAY[500]} />}
             isOpen={categoriesOpen}
             onToggle={() => setCategoriesOpen(!categoriesOpen)}
             action={
@@ -341,7 +342,7 @@ export const SettingsScreen = () => {
                   }}
                   className="p-1"
                 >
-                  <Plus size={16} color="#6b7280" />
+                  <Plus size={16} color={COLORS_GRAY[500]} />
                 </TouchableOpacity>
               ) : undefined
             }
@@ -366,7 +367,7 @@ export const SettingsScreen = () => {
                 onPress={() => { setEditingCategory(cat); setIsCategoryModalOpen(true); }}
               >
                 <View className="w-7 h-7 rounded-full items-center justify-center mr-3" style={{ backgroundColor: cat.color }}>
-                  {getCategoryIcon(cat.icon ?? '', 13, '#fff')}
+                  {getCategoryIcon(cat.icon ?? '', 13, COLORS_SEMANTIC.white)}
                 </View>
                 <Text className="flex-1 text-sm text-gray-900 dark:text-gray-100">{cat.name}</Text>
               </TouchableOpacity>
@@ -375,7 +376,7 @@ export const SettingsScreen = () => {
               onPress={() => { setEditingCategory(null); setIsCategoryModalOpen(true); }}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
-              <Plus size={13} color="#6b7280" />
+              <Plus size={13} color={COLORS_GRAY[500]} />
               <Text className="text-xs text-gray-500">カテゴリを追加</Text>
             </TouchableOpacity>
           </Section>
@@ -383,7 +384,7 @@ export const SettingsScreen = () => {
           {/* 口座管理 */}
           <Section
             title="口座管理"
-            icon={<Wallet size={16} color="#6b7280" />}
+            icon={<Wallet size={16} color={COLORS_GRAY[500]} />}
             isOpen={accountsOpen}
             onToggle={() => setAccountsOpen(!accountsOpen)}
             action={
@@ -396,7 +397,7 @@ export const SettingsScreen = () => {
                   }}
                   className="p-1"
                 >
-                  <Plus size={16} color="#6b7280" />
+                  <Plus size={16} color={COLORS_GRAY[500]} />
                 </TouchableOpacity>
               ) : undefined
             }
@@ -429,7 +430,7 @@ export const SettingsScreen = () => {
               onPress={() => { setEditingAccount(null); setIsAccountModalOpen(true); }}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
-              <Plus size={13} color="#6b7280" />
+              <Plus size={13} color={COLORS_GRAY[500]} />
               <Text className="text-xs text-gray-500">口座を追加</Text>
             </TouchableOpacity>
           </Section>
@@ -437,7 +438,7 @@ export const SettingsScreen = () => {
           {/* カード管理 */}
           <Section
             title="カード管理"
-            icon={<CreditCard size={16} color="#6b7280" />}
+            icon={<CreditCard size={16} color={COLORS_GRAY[500]} />}
             isOpen={cardsOpen}
             onToggle={() => setCardsOpen(!cardsOpen)}
             action={
@@ -450,7 +451,7 @@ export const SettingsScreen = () => {
                   }}
                   className="p-1"
                 >
-                  <Plus size={16} color="#6b7280" />
+                  <Plus size={16} color={COLORS_GRAY[500]} />
                 </TouchableOpacity>
               ) : undefined
             }
@@ -468,7 +469,7 @@ export const SettingsScreen = () => {
                     className="w-8 h-8 rounded-full items-center justify-center mr-3"
                     style={{ backgroundColor: pm.color }}
                   >
-                    <CreditCard size={14} color="#fff" />
+                    <CreditCard size={14} color={COLORS_SEMANTIC.white} />
                   </View>
                   <View className="flex-1">
                     <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">{pm.name}</Text>
@@ -485,7 +486,7 @@ export const SettingsScreen = () => {
               onPress={() => { setEditingPM(null); setIsPMModalOpen(true); }}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
-              <Plus size={13} color="#6b7280" />
+              <Plus size={13} color={COLORS_GRAY[500]} />
               <Text className="text-xs text-gray-500">カードを追加</Text>
             </TouchableOpacity>
           </Section>
@@ -493,7 +494,7 @@ export const SettingsScreen = () => {
           {/* 定期取引管理 */}
           <Section
             title="定期取引管理"
-            icon={<Repeat2 size={16} color="#6b7280" />}
+            icon={<Repeat2 size={16} color={COLORS_GRAY[500]} />}
             isOpen={recurringOpen}
             onToggle={() => setRecurringOpen(!recurringOpen)}
             action={
@@ -506,7 +507,7 @@ export const SettingsScreen = () => {
                   }}
                   className="p-1"
                 >
-                  <Plus size={16} color="#6b7280" />
+                  <Plus size={16} color={COLORS_GRAY[500]} />
                 </TouchableOpacity>
               ) : undefined
             }
@@ -532,7 +533,7 @@ export const SettingsScreen = () => {
                         className="w-8 h-8 rounded-full items-center justify-center mr-3"
                         style={{ backgroundColor: category.color }}
                       >
-                        {getCategoryIcon(category.icon ?? '', 14, '#fff')}
+                        {getCategoryIcon(category.icon ?? '', 14, COLORS_SEMANTIC.white)}
                       </View>
                     )}
                     <View className="flex-1">
@@ -559,7 +560,7 @@ export const SettingsScreen = () => {
               }}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
-              <Plus size={13} color="#6b7280" />
+              <Plus size={13} color={COLORS_GRAY[500]} />
               <Text className="text-xs text-gray-500">定期取引を追加</Text>
             </TouchableOpacity>
           </Section>
@@ -567,7 +568,7 @@ export const SettingsScreen = () => {
           {/* 貯金管理 */}
           <Section
             title="貯金管理"
-            icon={<PiggyBank size={16} color="#6b7280" />}
+            icon={<PiggyBank size={16} color={COLORS_GRAY[500]} />}
             isOpen={savingsOpen}
             onToggle={() => setSavingsOpen(!savingsOpen)}
             action={
@@ -580,7 +581,7 @@ export const SettingsScreen = () => {
                   }}
                   className="p-1"
                 >
-                  <Plus size={16} color="#6b7280" />
+                  <Plus size={16} color={COLORS_GRAY[500]} />
                 </TouchableOpacity>
               ) : undefined
             }
@@ -603,7 +604,7 @@ export const SettingsScreen = () => {
                     className="w-8 h-8 rounded-full items-center justify-center mr-3"
                     style={{ backgroundColor: goal.color || '#3b82f6' }}
                   >
-                    {getSavingsGoalIcon(goal.icon || 'PiggyBank', 14, '#fff')}
+                    {getSavingsGoalIcon(goal.icon || 'PiggyBank', 14, COLORS_SEMANTIC.white)}
                   </View>
                   <View className="flex-1">
                     <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">
@@ -623,7 +624,7 @@ export const SettingsScreen = () => {
               }}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
-              <Plus size={13} color="#6b7280" />
+              <Plus size={13} color={COLORS_GRAY[500]} />
               <Text className="text-xs text-gray-500">貯金目標を追加</Text>
             </TouchableOpacity>
           </Section>
@@ -631,7 +632,7 @@ export const SettingsScreen = () => {
           {/* データ管理 */}
           <Section
             title="データ管理"
-            icon={<Database size={16} color="#6b7280" />}
+            icon={<Database size={16} color={COLORS_GRAY[500]} />}
             isOpen={dataOpen}
             onToggle={() => setDataOpen(!dataOpen)}
           >
@@ -639,7 +640,7 @@ export const SettingsScreen = () => {
               onPress={handleDeleteAllData}
               className="flex-row items-center gap-2 py-2.5 px-3 bg-red-50 dark:bg-red-900/20 rounded-lg"
             >
-              <Trash2 size={15} color="#ef4444" />
+              <Trash2 size={15} color={COLORS_SEMANTIC.danger500} />
               <Text className="text-sm text-red-600 dark:text-red-400 font-medium">全データを削除</Text>
             </TouchableOpacity>
           </Section>

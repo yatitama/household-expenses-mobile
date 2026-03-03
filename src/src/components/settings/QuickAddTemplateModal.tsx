@@ -9,6 +9,7 @@ import {
   accountService, categoryService, paymentMethodService,
 } from '../../services/storage';
 import { getCategoryIcon } from '../../utils/categoryIcons';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type { QuickAddTemplate, QuickAddTemplateInput, TransactionType } from '../../types';
 
 interface QuickAddTemplateModalProps {
@@ -83,7 +84,7 @@ export const QuickAddTemplateModal = ({
       headerAction={
         template && onDelete ? (
           <TouchableOpacity onPress={() => setShowDeleteConfirm(true)} className="p-1">
-            <Trash2 size={15} color="#9ca3af" />
+            <Trash2 size={15} color={COLORS_GRAY[400]} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -107,7 +108,7 @@ export const QuickAddTemplateModal = ({
               value={name}
               onChangeText={setName}
               placeholder="例: コンビニ"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -146,7 +147,7 @@ export const QuickAddTemplateModal = ({
               onChangeText={setAmount}
               keyboardType="numeric"
               placeholder="0"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -176,7 +177,7 @@ export const QuickAddTemplateModal = ({
                     </Text>
                     {categoryId === cat.id && (
                       <View className="absolute top-0 right-0">
-                        <Check size={12} color="#374151" strokeWidth={2.5} />
+                        <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                       </View>
                     )}
                   </TouchableOpacity>
@@ -202,7 +203,7 @@ export const QuickAddTemplateModal = ({
                       className="w-8 h-8 rounded-full items-center justify-center mb-1"
                       style={{ backgroundColor: src.color }}
                     >
-                      {src.isAccount ? <Wallet size={16} color="#fff" /> : <CreditCard size={16} color="#fff" />}
+                      {src.isAccount ? <Wallet size={16} color={COLORS_SEMANTIC.white} /> : <CreditCard size={16} color={COLORS_SEMANTIC.white} />}
                     </View>
                     <Text
                       className="text-xs text-gray-900 dark:text-gray-100 text-center"
@@ -213,7 +214,7 @@ export const QuickAddTemplateModal = ({
                     </Text>
                     {selectedSourceId === src.id && (
                       <View className="absolute top-0 right-0">
-                        <Check size={12} color="#374151" strokeWidth={2.5} />
+                        <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                       </View>
                     )}
                   </TouchableOpacity>
@@ -238,7 +239,7 @@ export const QuickAddTemplateModal = ({
                     }`}
                   >
                     <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
-                      <Wallet size={12} color="#fff" />
+                      <Wallet size={12} color={COLORS_SEMANTIC.white} />
                     </View>
                     <Text className="text-sm text-gray-900 flex-1">{acc.name}</Text>
                   </TouchableOpacity>
@@ -263,7 +264,7 @@ export const QuickAddTemplateModal = ({
                       }`}
                     >
                       <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
-                        <Wallet size={12} color="#fff" />
+                        <Wallet size={12} color={COLORS_SEMANTIC.white} />
                       </View>
                       <Text className="text-sm text-gray-900 flex-1">{acc.name}</Text>
                     </TouchableOpacity>
@@ -282,7 +283,7 @@ export const QuickAddTemplateModal = ({
                   onChangeText={setTransferFee}
                   keyboardType="numeric"
                   placeholder="0"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={COLORS_GRAY[400]}
                 />
               </View>
             </View>

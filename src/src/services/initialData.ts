@@ -1,12 +1,13 @@
 import type { Category, Member } from '../types';
 import { COMMON_MEMBER_ID } from '../types';
 import { categoryService, memberService } from './storage';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../constants/colors';
 
 // デフォルトメンバー
 const defaultMembers: Member[] = [
-  { id: COMMON_MEMBER_ID, name: '共通', color: '#6b7280', isDefault: true },
-  { id: 'member-husband', name: '夫', color: '#374151', isDefault: true },
-  { id: 'member-wife', name: '妻', color: '#9ca3af', isDefault: true },
+  { id: COMMON_MEMBER_ID, name: '共通', color: COLORS_GRAY[500], isDefault: true },
+  { id: 'member-husband', name: '夫', color: COLORS_GRAY[700], isDefault: true },
+  { id: 'member-wife', name: '妻', color: COLORS_GRAY[400], isDefault: true },
 ];
 
 // デフォルトカテゴリ（支出）

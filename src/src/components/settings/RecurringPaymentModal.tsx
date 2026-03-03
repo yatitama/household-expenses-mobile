@@ -6,6 +6,7 @@ import { Trash2, Check, Wallet, CreditCard } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
+import { COLORS_GRAY } from '../../constants/colors';
 import type {
   RecurringPayment, RecurringPaymentInput, TransactionType, Category, PaymentMethod,
 } from '../../types';
@@ -98,7 +99,7 @@ export const RecurringPaymentModal = ({
             }}
             className="p-1"
           >
-            <Trash2 size={15} color="#9ca3af" />
+            <Trash2 size={15} color={COLORS_GRAY[400]} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -153,7 +154,7 @@ export const RecurringPaymentModal = ({
               value={name}
               onChangeText={setName}
               placeholder="例: 家賃, 携帯料金, Netflix"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -170,7 +171,7 @@ export const RecurringPaymentModal = ({
               value={amount}
               onChangeText={(text) => setAmount(text.replace(/[^0-9]/g, ''))}
               placeholder="0"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
               keyboardType="numeric"
             />
           </View>
@@ -203,7 +204,7 @@ export const RecurringPaymentModal = ({
                 </Text>
                 {categoryId === cat.id && (
                   <View className="absolute top-0 right-0">
-                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                    <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -240,7 +241,7 @@ export const RecurringPaymentModal = ({
                 </Text>
                 {paymentMethodId === '' && (
                   <View className="absolute top-0 right-0">
-                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                    <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -257,7 +258,7 @@ export const RecurringPaymentModal = ({
                     className="w-8 h-8 rounded-full items-center justify-center mb-1"
                     style={{ backgroundColor: pm.color }}
                   >
-                    <CreditCard size={16} color="#fff" />
+                    <CreditCard size={16} color={COLORS_SEMANTIC.white} />
                   </View>
                   <Text
                     className="text-xs text-gray-900 dark:text-gray-100 text-center"
@@ -268,7 +269,7 @@ export const RecurringPaymentModal = ({
                   </Text>
                   {paymentMethodId === pm.id && (
                     <View className="absolute top-0 right-0">
-                      <Check size={12} color="#374151" strokeWidth={2.5} />
+                      <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                     </View>
                   )}
                 </TouchableOpacity>
@@ -289,7 +290,7 @@ export const RecurringPaymentModal = ({
                 value={periodValue}
                 onChangeText={(text) => setPeriodValue(text.replace(/[^0-9]/g, '') || '1')}
                 placeholder="1"
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor={COLORS_GRAY[400]}
                 keyboardType="numeric"
               />
             </View>
@@ -317,7 +318,7 @@ export const RecurringPaymentModal = ({
               value={startDate}
               onChangeText={setStartDate}
               placeholder="YYYY-MM-DD"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -333,7 +334,7 @@ export const RecurringPaymentModal = ({
               value={endDate}
               onChangeText={setEndDate}
               placeholder="YYYY-MM-DD"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>

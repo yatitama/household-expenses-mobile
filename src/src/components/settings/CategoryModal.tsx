@@ -5,6 +5,7 @@ import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { COLORS } from '../accounts/constants';
 import { ICON_NAMES, getCategoryIcon } from '../../utils/categoryIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type { Category, CategoryInput, TransactionType } from '../../types';
 
 interface CategoryModalProps {
@@ -40,7 +41,7 @@ export const CategoryModal = ({
       headerAction={
         category && onDelete ? (
           <TouchableOpacity onPress={() => { onDelete(category.id); onClose(); }} className="p-1">
-            <Trash2 size={15} color="#9ca3af" />
+            <Trash2 size={15} color={COLORS_GRAY[400]} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -63,7 +64,7 @@ export const CategoryModal = ({
               value={name}
               onChangeText={setName}
               placeholder="例: 食費"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -96,10 +97,10 @@ export const CategoryModal = ({
                 onPress={() => setIcon(iconName)}
                 className="w-9 h-9 rounded-lg items-center justify-center"
                 style={{
-                  backgroundColor: icon === iconName ? color : '#f3f4f6',
+                  backgroundColor: icon === iconName ? color : COLORS_GRAY[100],
                 }}
               >
-                {getCategoryIcon(iconName, 16, icon === iconName ? '#fff' : '#6b7280')}
+                {getCategoryIcon(iconName, 16, icon === iconName ? COLORS_SEMANTIC.white : COLORS_GRAY[500])}
               </TouchableOpacity>
             ))}
           </View>

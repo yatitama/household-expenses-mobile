@@ -7,6 +7,7 @@ import { ja } from 'date-fns/locale';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import { getCategoryIcon } from '../../utils/categoryIcons';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type { FilterOptions } from '../../contexts/TransactionFilterContext';
 import type { Category, Account, PaymentMethod, SavedFilter } from '../../types';
 
@@ -197,7 +198,7 @@ export const FilterModal = ({
           <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100">{title}</Text>
           <ChevronDown
             size={16}
-            color="#6b7280"
+            color={COLORS_GRAY[500]}
             style={{ transform: [{ rotate: isExpanded ? '180deg' : '0deg' }] }}
           />
         </TouchableOpacity>
@@ -271,7 +272,7 @@ export const FilterModal = ({
                 <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">開始日</Text>
                 <DismissibleTextInput
                   placeholder="yyyy-MM-dd"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={COLORS_GRAY[400]}
                   value={filters.dateRange.start}
                   onChangeText={(v) => onFilterChange('dateRange', { ...filters.dateRange, start: v })}
                   className="bg-white dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600"
@@ -281,7 +282,7 @@ export const FilterModal = ({
                 <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">終了日</Text>
                 <DismissibleTextInput
                   placeholder="yyyy-MM-dd"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={COLORS_GRAY[400]}
                   value={filters.dateRange.end}
                   onChangeText={(v) => onFilterChange('dateRange', { ...filters.dateRange, end: v })}
                   className="bg-white dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600"
@@ -416,7 +417,7 @@ export const FilterModal = ({
           <View className="flex-row gap-2">
             <DismissibleTextInput
               placeholder="フィルター名"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
               value={saveFilterName}
               onChangeText={setSaveFilterName}
               className="flex-1 bg-white dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600"
@@ -452,7 +453,7 @@ export const FilterModal = ({
                     onPress={() => onDeleteSavedFilter(filter.id)}
                     className="p-1.5"
                   >
-                    <Trash2 size={16} color="#ef4444" />
+                    <Trash2 size={16} color={COLORS_SEMANTIC.danger500} />
                   </TouchableOpacity>
                 </View>
               ))}

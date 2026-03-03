@@ -8,7 +8,7 @@ import { useTransactionFilterContext } from '../contexts/TransactionFilterContex
 import { categoryService, accountService, paymentMethodService } from '../services/storage';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { logger } from '../services/logger';
-import { COLORS_GRAY, UI_COLORS } from '../constants/colors';
+import { COLORS_GRAY, UI_COLORS, COLORS_SEMANTIC } from '../constants/colors';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import { TransactionItem } from '../components/transactions/TransactionItem';
 import { TransactionDetailsSheet } from '../components/transactions/TransactionDetailsSheet';
@@ -50,8 +50,12 @@ export const TransactionsScreen = () => {
     const map = new Map<string, Transaction[]>();
     for (const t of filteredTransactions) {
       const dateKey = t.date.slice(0, 10);
-      if (!map.has(dateKey)) map.set(dateKey, []);
-      map.get(dateKey)!.push(t);
+      const existing = map.get(dateKey);
+      if (existing) {
+        existing.push(t);
+      } else {
+        map.set(dateKey, [t]);
+      }
     }
     return Array.from(map.entries()).sort(([a], [b]) => b.localeCompare(a));
   }, [filteredTransactions]);
@@ -127,7 +131,7 @@ export const TransactionsScreen = () => {
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
         {grouped.length === 0 ? (
           <View className="items-center justify-center py-16">
-            <List size={40} color="#d1d5db" />
+            <List size={40} color={COLORS_GRAY[300]} />
             <Text className="text-gray-400 mt-3">取引がありません</Text>
           </View>
         ) : (

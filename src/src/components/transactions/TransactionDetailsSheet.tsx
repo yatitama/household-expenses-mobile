@@ -7,6 +7,7 @@ import { formatCurrency, formatDate } from '../../utils/formatters';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { ConfirmDialog } from '../feedback/ConfirmDialog';
 import { revertTransactionBalance, transactionService } from '../../services/storage';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type { Transaction } from '../../types';
 
 interface TransactionDetailsSheetProps {
@@ -52,13 +53,13 @@ export const TransactionDetailsSheet = ({
         }}
         className="p-1"
       >
-        <Pencil size={15} color="#9ca3af" />
+        <Pencil size={15} color={COLORS_GRAY[400]} />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={handleDeleteClick}
         className="p-2 rounded-lg hover:bg-red-50 active:bg-red-100"
       >
-        <Trash2 size={18} color="#ef4444" />
+        <Trash2 size={18} color={COLORS_SEMANTIC.danger500} />
       </TouchableOpacity>
     </View>
   );
@@ -76,9 +77,9 @@ export const TransactionDetailsSheet = ({
         <View className="flex-row items-center gap-lg mb-lg">
           <View
             className="w-12 h-12 rounded-full items-center justify-center"
-            style={{ backgroundColor: category?.color ?? '#9ca3af' }}
+            style={{ backgroundColor: category?.color ?? COLORS_GRAY[400] }}
           >
-            {getCategoryIcon(category?.icon ?? '', 20, '#fff')}
+            {getCategoryIcon(category?.icon ?? '', 20, COLORS_SEMANTIC.white)}
           </View>
           <View>
             <Text className="text-label text-primary-600 dark:text-primary-400">カテゴリ</Text>
