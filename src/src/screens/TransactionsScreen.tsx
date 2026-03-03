@@ -78,12 +78,14 @@ export const TransactionsScreen = () => {
       {/* ヘッダー */}
       <View className="px-4 pt-2 pb-2">
         <View className="flex-row items-center justify-between mb-3">
-          <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">履歴</Text>
+          {/* iOS Large Title (34pt) */}
+          <Text className="text-largeTitle font-bold text-gray-900 dark:text-gray-50">履歴</Text>
+          {/* 44pt minimum touch target (iOS HIG) */}
           <TouchableOpacity
             onPress={() => setFilterModalOpen(true)}
-            className="relative p-2"
+            style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Settings2 size={20} color="#6b7280" />
+            <Settings2 size={22} color="#6b7280" />
             {activeFilterCount > 0 && (
               <View className="absolute top-1 right-1 w-5 h-5 bg-blue-500 rounded-full items-center justify-center">
                 <Text className="text-xs font-bold text-white">{activeFilterCount}</Text>

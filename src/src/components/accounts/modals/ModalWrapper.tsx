@@ -146,8 +146,12 @@ export const ModalWrapper = ({
               <Text className="text-lg font-bold text-primary-900 dark:text-primary-50">{title}</Text>
               {headerAction}
             </View>
-            <TouchableOpacity onPress={close} className="p-sm">
-              <X size={18} color="#9ca3af" />
+            {/* 44pt minimum touch target (iOS HIG) */}
+            <TouchableOpacity
+              onPress={close}
+              style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <X size={20} color="#9ca3af" />
             </TouchableOpacity>
           </View>
 

@@ -15,6 +15,9 @@ module.exports = {
         xl: ['17px', { lineHeight: '1.6' }],
         '2xl': ['19px', { lineHeight: '1.5' }],
         '3xl': ['21px', { lineHeight: '1.4' }],
+        // iOS Human Interface Guidelines typography
+        '4xl': ['28px', { lineHeight: '1.3' }],
+        'largeTitle': ['34px', { lineHeight: '1.2' }],
       },
       fontWeight: {
         light: '300',

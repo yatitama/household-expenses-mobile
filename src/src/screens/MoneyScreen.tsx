@@ -59,9 +59,9 @@ export const MoneyScreen = () => {
   return (
     <View className="flex-1 bg-gray-50 dark:bg-slate-900" style={{ paddingTop: insets.top }}>
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
-        {/* ヘッダー */}
+        {/* iOS Large Title (34pt) */}
         <View className="px-4 pt-2 pb-3">
-          <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">お金</Text>
+          <Text className="text-largeTitle font-bold text-gray-900 dark:text-gray-50">お金</Text>
         </View>
 
         {/* 総資産カード */}

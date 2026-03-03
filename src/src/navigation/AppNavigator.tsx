@@ -20,33 +20,36 @@ export type RootTabParamList = {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const ICON_COLOR_ACTIVE = '#374151';
+// iOS Human Interface Guidelines: system blue for interactive elements
+const ICON_COLOR_ACTIVE = '#007AFF';
 const ICON_COLOR_INACTIVE = '#9ca3af';
-const ICON_COLOR_ACTIVE_DARK = '#d1d5db';
 
 export const AppNavigator = () => {
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
 
-  const TAB_BAR_BG_COLOR = isDark ? '#1f2937' : '#ffffff';
-  const TAB_BAR_BORDER_COLOR = isDark ? '#374151' : '#e5e7eb';
+  const TAB_BAR_BG_COLOR = isDark ? '#1c1c1e' : '#ffffff';
+  // iOS-standard hairline separator (0.5pt)
+  const TAB_BAR_BORDER_COLOR = isDark ? '#38383a' : '#c6c6c8';
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: 64 + insets.bottom,
+          // iOS standard tab bar height is 49pt
+          height: 49 + insets.bottom,
           paddingBottom: insets.bottom,
           backgroundColor: TAB_BAR_BG_COLOR,
-          borderTopWidth: 0,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
+          // iOS hairline top border (no rounded corners — those are Android/Material)
+          borderTopWidth: 0.5,
+          borderTopColor: TAB_BAR_BORDER_COLOR,
           elevation: 0,
         },
         tabBarActiveTintColor: ICON_COLOR_ACTIVE,
         tabBarInactiveTintColor: ICON_COLOR_INACTIVE,
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
+        // iOS standard tab label: 10pt
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '500' },
       }}
     >
       <Tab.Screen
@@ -55,7 +58,8 @@ export const AppNavigator = () => {
         options={{
           title: '収支',
           tabBarIcon: ({ focused }) => (
-            <TrendingUp size={22} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
+            // iOS standard tab bar icon: 25pt
+            <TrendingUp size={25} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
           ),
         }}
       />
@@ -65,7 +69,7 @@ export const AppNavigator = () => {
         options={{
           title: 'お金',
           tabBarIcon: ({ focused }) => (
-            <Wallet size={22} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
+            <Wallet size={25} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
           ),
         }}
       />
@@ -83,27 +87,25 @@ export const AppNavigator = () => {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginTop: -24,
+                marginTop: -20,
               }}
             >
               <View
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 28,
-                  backgroundColor: '#374151',
-                  borderWidth: 3,
-                  borderColor: TAB_BAR_BORDER_COLOR,
+                  width: 52,
+                  height: 52,
+                  borderRadius: 26,
+                  backgroundColor: '#007AFF',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  shadowColor: '#000',
+                  shadowColor: '#007AFF',
                   shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 8,
+                  shadowOpacity: 0.35,
+                  shadowRadius: 10,
                   elevation: 8,
                 }}
               >
-                <Plus size={24} color="#ffffff" />
+                <Plus size={24} color="#ffffff" strokeWidth={2.5} />
               </View>
             </TouchableOpacity>
           ),
@@ -115,7 +117,7 @@ export const AppNavigator = () => {
         options={{
           title: '履歴',
           tabBarIcon: ({ focused }) => (
-            <List size={22} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
+            <List size={25} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
           ),
         }}
       />
@@ -125,7 +127,7 @@ export const AppNavigator = () => {
         options={{
           title: '設定',
           tabBarIcon: ({ focused }) => (
-            <SettingsIcon size={22} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
+            <SettingsIcon size={25} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
           ),
         }}
       />

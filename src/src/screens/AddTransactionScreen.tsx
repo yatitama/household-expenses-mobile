@@ -238,18 +238,19 @@ export const AddTransactionScreen = () => {
         contentContainerStyle={{ paddingTop: insets.top + 8, paddingBottom: insets.bottom + 80 }}
         keyboardShouldPersistTaps="handled"
       >
+        {/* iOS Large Title (34pt) */}
         <View className="px-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-          <Text className="text-xl font-bold text-gray-900 dark:text-gray-100">取引を追加</Text>
+          <Text className="text-largeTitle font-bold text-gray-900 dark:text-gray-100">取引を追加</Text>
         </View>
 
         <View className="px-4 pt-4 gap-5">
-          {/* タブ */}
+          {/* タブ — h-11 (44pt) for iOS minimum touch target */}
           <View className="flex-row rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-700">
             {(['expense', 'income', 'transfer'] as TabType[]).map((t) => (
               <TouchableOpacity
                 key={t}
                 onPress={() => { setTab(t); setCategoryId(''); setSelectedSourceId(''); }}
-                className={`flex-1 py-2.5 items-center ${tab === t ? 'bg-gray-800 dark:bg-gray-600' : ''}`}
+                className={`flex-1 h-11 items-center justify-center ${tab === t ? 'bg-gray-800 dark:bg-gray-600' : ''}`}
               >
                 <Text className={`text-sm font-medium ${tab === t ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
                   {t === 'expense' ? '支出' : t === 'income' ? '収入' : '振替'}
@@ -293,13 +294,13 @@ export const AddTransactionScreen = () => {
             <Text className="text-sm text-gray-700 dark:text-gray-300">クイック入力を作成</Text>
           </TouchableOpacity>
 
-          {/* 金額 */}
+          {/* 金額 — h-11 (44pt) for iOS minimum touch target */}
           <View>
             <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">金額</Text>
-            <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
+            <View className="flex-row items-center h-11 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
               <Text className="text-gray-500 mr-1 text-base">¥</Text>
               <DismissibleTextInput
-                className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+                className="flex-1 text-gray-900 dark:text-gray-100"
                 value={amount}
                 onChangeText={setAmount}
                 keyboardType="numeric"
@@ -406,7 +407,7 @@ export const AddTransactionScreen = () => {
             </>
           ) : (
             <>
-              {/* 振替: 入金元 */}
+              {/* 振替: 入金元 — min h-11 (44pt) touch targets */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">入金元</Text>
                 <View className="gap-2">
@@ -414,7 +415,7 @@ export const AddTransactionScreen = () => {
                     <TouchableOpacity
                       key={acc.id}
                       onPress={() => setTransferFromAccountId(acc.id)}
-                      className={`flex-row items-center gap-2 px-3 py-2.5 rounded-lg border ${
+                      className={`flex-row items-center gap-2 px-3 h-11 rounded-lg border ${
                         transferFromAccountId === acc.id
                           ? 'border-gray-800 bg-gray-50'
                           : 'border-gray-200'
@@ -429,7 +430,7 @@ export const AddTransactionScreen = () => {
                 </View>
               </View>
 
-              {/* 振替: 入金先 */}
+              {/* 振替: 入金先 — min h-11 (44pt) touch targets */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">入金先</Text>
                 <View className="gap-2">
@@ -439,7 +440,7 @@ export const AddTransactionScreen = () => {
                       <TouchableOpacity
                         key={acc.id}
                         onPress={() => setSelectedSourceId(acc.id)}
-                        className={`flex-row items-center gap-2 px-3 py-2.5 rounded-lg border ${
+                        className={`flex-row items-center gap-2 px-3 h-11 rounded-lg border ${
                           selectedSourceId === acc.id
                             ? 'border-gray-800 bg-gray-50'
                             : 'border-gray-200'
@@ -454,13 +455,13 @@ export const AddTransactionScreen = () => {
                 </View>
               </View>
 
-              {/* 振替手数料 */}
+              {/* 振替手数料 — h-11 (44pt) for iOS minimum touch target */}
               <View>
                 <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">振替手数料（任意）</Text>
-                <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
+                <View className="flex-row items-center h-11 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
                   <Text className="text-gray-500 mr-1 text-base">¥</Text>
                   <DismissibleTextInput
-                    className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+                    className="flex-1 text-gray-900 dark:text-gray-100"
                     value={transferFee}
                     onChangeText={setTransferFee}
                     keyboardType="numeric"
@@ -485,13 +486,14 @@ export const AddTransactionScreen = () => {
             />
           </View>
 
-          {/* 追加ボタン */}
+          {/* 追加ボタン — iOS system blue (#007AFF), h-11 (44pt) */}
           <TouchableOpacity
             onPress={handleSubmit}
             disabled={isSubmitDisabled}
-            className={`py-3 rounded-lg items-center ${isSubmitDisabled ? 'bg-gray-300' : 'bg-gray-800'}`}
+            className="h-11 rounded-lg items-center justify-center"
+            style={{ backgroundColor: isSubmitDisabled ? '#d1d5db' : '#007AFF' }}
           >
-            <Text className={`font-semibold text-sm ${isSubmitDisabled ? 'text-gray-500' : 'text-white'}`}>
+            <Text className={`font-semibold text-base ${isSubmitDisabled ? 'text-gray-500' : 'text-white'}`}>
               追加する
             </Text>
           </TouchableOpacity>

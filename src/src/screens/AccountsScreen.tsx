@@ -156,8 +156,9 @@ export const AccountsScreen = () => {
       className="flex-1 bg-gray-50 dark:bg-slate-900"
       contentContainerStyle={{ paddingTop: insets.top + 8, paddingBottom: insets.bottom + 80 }}
     >
+      {/* iOS Large Title (34pt) */}
       <View className="px-4 pb-2">
-        <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">収支</Text>
+        <Text className="text-largeTitle font-bold text-gray-900 dark:text-gray-50">収支</Text>
       </View>
 
       {/* トレンドカード */}
@@ -226,7 +227,7 @@ export const AccountsScreen = () => {
 
       {/* 円グラフカード */}
       <View className="mx-4 mb-4 bg-white dark:bg-slate-800 rounded-xl p-4">
-        {/* 月選択 */}
+        {/* 月選択 — 44pt minimum touch targets (iOS HIG) */}
         <View className="flex-row items-center justify-between mb-3">
           <TouchableOpacity
             onPress={() => {
@@ -234,7 +235,7 @@ export const AccountsScreen = () => {
               setPieYear(d.getFullYear());
               setPieMonth(d.getMonth() + 1);
             }}
-            className="p-1"
+            style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
           >
             <ChevronLeft size={20} color="#374151" />
           </TouchableOpacity>
@@ -247,7 +248,7 @@ export const AccountsScreen = () => {
               setPieYear(d.getFullYear());
               setPieMonth(d.getMonth() + 1);
             }}
-            className="p-1"
+            style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
           >
             <ChevronRight size={20} color="#374151" />
           </TouchableOpacity>
