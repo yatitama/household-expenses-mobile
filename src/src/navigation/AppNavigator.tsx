@@ -52,7 +52,7 @@ export const AppNavigator = () => {
         options={{
           title: '収支',
           tabBarIcon: ({ focused }) => (
-            <TrendingUp size={22} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
+            <TrendingUp size={22} color={focused ? UI_COLORS.iconActive : UI_COLORS.iconInactive} />
           ),
         }}
       />
@@ -62,7 +62,7 @@ export const AppNavigator = () => {
         options={{
           title: 'お金',
           tabBarIcon: ({ focused }) => (
-            <Wallet size={22} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
+            <Wallet size={22} color={focused ? UI_COLORS.iconActive : UI_COLORS.iconInactive} />
           ),
         }}
       />
@@ -112,7 +112,7 @@ export const AppNavigator = () => {
         options={{
           title: '履歴',
           tabBarIcon: ({ focused }) => (
-            <List size={22} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
+            <List size={22} color={focused ? UI_COLORS.iconActive : UI_COLORS.iconInactive} />
           ),
         }}
       />
@@ -122,7 +122,7 @@ export const AppNavigator = () => {
         options={{
           title: '設定',
           tabBarIcon: ({ focused }) => (
-            <SettingsIcon size={22} color={focused ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE} />
+            <SettingsIcon size={22} color={focused ? UI_COLORS.iconActive : UI_COLORS.iconInactive} />
           ),
         }}
       />

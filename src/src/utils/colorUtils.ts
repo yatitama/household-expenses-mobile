@@ -1,6 +1,7 @@
 /**
  * Dark mode対応のカラーユーティリティ
  */
+import type { ViewStyle, TextStyle } from 'react-native';
 
 /**
  * 16進数カラーコードをrgba形式に変換
@@ -44,23 +45,21 @@ export const getDarkModeAwareColor = (
  * @param color - カラーコード
  * @param isDark - ダークモード判定
  */
-export const getCustomColorBgStyle = (color: string, isDark: boolean = false): React.CSSProperties => {
+export const getCustomColorBgStyle = (color: string, isDark: boolean = false): ViewStyle => {
   if (isDark) {
     // ダークモードでは透明度を上げて見やすくする
     return {
       backgroundColor: hexToRgba(color, 0.25),
-      color: color,
     };
   }
   return {
     backgroundColor: hexToRgba(color, 0.15),
-    color: color,
   };
 };
 
 /**
  * アカウントやカテゴリのアイコン背景色スタイル
  */
-export const getIconBgStyle = (color: string, isDark: boolean = false): React.CSSProperties => {
+export const getIconBgStyle = (color: string, isDark: boolean = false): ViewStyle => {
   return getCustomColorBgStyle(color, isDark);
 };

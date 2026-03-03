@@ -12,6 +12,8 @@ interface ButtonProps {
   disabled?: boolean;
   className?: string;
   style?: ViewStyle;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -46,6 +48,8 @@ export const Button = ({
   disabled = false,
   className = '',
   style,
+  accessibilityLabel,
+  accessibilityHint,
 }: ButtonProps) => {
   const baseStyles = 'items-center justify-center flex-row gap-sm';
   const disabledStyles = disabled ? 'opacity-50' : '';
@@ -56,6 +60,10 @@ export const Button = ({
       disabled={disabled}
       className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${disabledStyles} ${className}`}
       style={style}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled }}
     >
       {typeof children === 'string' ? (
         <Text className={`font-medium ${textColorStyles[variant]}`}>

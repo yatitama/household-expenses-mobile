@@ -13,29 +13,29 @@ interface BadgeProps {
 
 const variantStyles: Record<BadgeVariant, { bg: string; text: string; border: string }> = {
   success: {
-    bg: 'bg-success-50',
-    text: 'text-success-700',
-    border: 'border-success-200',
+    bg: 'bg-success-50 dark:bg-success-900/30',
+    text: 'text-success-700 dark:text-success-400',
+    border: 'border-success-200 dark:border-success-700',
   },
   danger: {
-    bg: 'bg-danger-50',
-    text: 'text-danger-700',
-    border: 'border-danger-200',
+    bg: 'bg-danger-50 dark:bg-danger-900/30',
+    text: 'text-danger-700 dark:text-danger-400',
+    border: 'border-danger-200 dark:border-danger-700',
   },
   warning: {
-    bg: 'bg-warning-50',
-    text: 'text-warning-700',
-    border: 'border-warning-200',
+    bg: 'bg-warning-50 dark:bg-warning-900/30',
+    text: 'text-warning-700 dark:text-warning-400',
+    border: 'border-warning-200 dark:border-warning-700',
   },
   info: {
-    bg: 'bg-info-50',
-    text: 'text-info-700',
-    border: 'border-info-200',
+    bg: 'bg-info-50 dark:bg-info-900/30',
+    text: 'text-info-700 dark:text-info-400',
+    border: 'border-info-200 dark:border-info-700',
   },
   default: {
-    bg: 'bg-primary-100',
-    text: 'text-primary-700',
-    border: 'border-primary-300',
+    bg: 'bg-primary-100 dark:bg-primary-800',
+    text: 'text-primary-700 dark:text-primary-300',
+    border: 'border-primary-300 dark:border-primary-600',
   },
 };
 

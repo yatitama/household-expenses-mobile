@@ -19,7 +19,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <View className="flex flex-col items-center justify-center py-12 px-4">
-      <View className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+      <View className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
         {icon}
       </View>
       <Text className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">{title}</Text>
