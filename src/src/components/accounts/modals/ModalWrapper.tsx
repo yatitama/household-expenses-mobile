@@ -77,6 +77,8 @@ export const ModalWrapper = ({
     }).start(() => onClose());
   };
 
+  const scrollViewRef = useRef<ScrollView>(null);
+
   const panResponder = useRef(
     PanResponder.create({
       // キャプチャフェーズで ScrollView からジェスチャーを奪う
@@ -152,16 +154,17 @@ export const ModalWrapper = ({
             </TouchableOpacity>
           </View>
 
-          {/* KeyboardAvoidingView: iOS ではシートを動かさずに内部余白でフッターを押し上げる */}
-          {/* Android は adjustResize でウィンドウ自体が縮小されるので無効 */}
-          <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+          {/* KeyboardAvoidingView: キーボード表示時にシートの高さを調整して入力フィールドを見えるようにする */}
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enabled={true}>
             {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
             <ScrollView
+              ref={scrollViewRef}
               style={{ maxHeight: scrollMaxHeight }}
               contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12, paddingBottom: 8 }}
               keyboardShouldPersistTaps="handled"
               onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
               scrollEventThrottle={16}
+              scrollEnabled={true}
             >
               {children}
             </ScrollView>
