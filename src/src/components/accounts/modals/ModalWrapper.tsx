@@ -128,25 +128,25 @@ export const ModalWrapper = ({
         {/* シート本体: panHandlers をシート全体に適用 */}
         <Animated.View
           style={{ transform: [{ translateY }] }}
-          className={`bg-white dark:bg-slate-800 w-full ${isForm ? 'rounded-t-xl' : ''}`}
+          className={`bg-white dark:bg-primary-800 w-full ${isForm ? 'rounded-t-xl' : ''}`}
           {...(isForm ? panResponder.panHandlers : {})}
           // タッチをここで消費してバックドロップへのタップ伝播を防ぐ
           onStartShouldSetResponder={() => true}
         >
           {/* ドラッグハンドル */}
           {isForm && (
-            <View className="items-center py-2.5">
-              <View className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+            <View className="items-center py-sm">
+              <View className="w-10 h-1 bg-primary-300 dark:bg-primary-600 rounded-full" />
             </View>
           )}
 
           {/* ヘッダー */}
-          <View className="flex-row items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
-            <View className="flex-row items-center gap-2 flex-1">
-              <Text className="text-base font-bold text-gray-900 dark:text-gray-100">{title}</Text>
+          <View className="flex-row items-center justify-between p-lg border-b border-primary-200 dark:border-primary-700">
+            <View className="flex-row items-center gap-md flex-1">
+              <Text className="text-lg font-bold text-primary-900 dark:text-primary-50">{title}</Text>
               {headerAction}
             </View>
-            <TouchableOpacity onPress={close} className="p-1.5">
+            <TouchableOpacity onPress={close} className="p-sm">
               <X size={18} color="#9ca3af" />
             </TouchableOpacity>
           </View>
@@ -157,7 +157,7 @@ export const ModalWrapper = ({
             {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
             <ScrollView
               style={{ maxHeight: scrollMaxHeight }}
-              contentContainerStyle={{ padding: 12, paddingBottom: 8 }}
+              contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12, paddingBottom: 8 }}
               keyboardShouldPersistTaps="handled"
               onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
               scrollEventThrottle={16}
@@ -168,7 +168,7 @@ export const ModalWrapper = ({
             {/* フッター: 常にスクロール領域の外に固定表示 */}
             {footer && (
               <View
-                className="px-3 pt-3 border-t border-gray-200 dark:border-gray-700"
+                className="px-lg pt-lg border-t border-primary-200 dark:border-primary-700"
                 style={{ paddingBottom: footerPaddingBottom }}
               >
                 {footer}
