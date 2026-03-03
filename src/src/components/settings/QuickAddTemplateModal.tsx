@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
 import { Trash2, Check } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
+import { Button } from '../ui/Button';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import { ConfirmDialog } from '../feedback/ConfirmDialog';
 import { getCategoryIcon } from '../../utils/categoryIcons';
@@ -88,22 +89,18 @@ export const QuickAddTemplateModal = ({
         ) : undefined
       }
       footer={
-        <TouchableOpacity
-          onPress={handleSubmit}
-          disabled={!isValid}
-          className={`w-full py-3 rounded-lg items-center ${isValid ? 'bg-gray-800' : 'bg-gray-300'}`}
-        >
-          <Text className={`font-semibold text-sm ${isValid ? 'text-white' : 'text-gray-500'}`}>保存</Text>
-        </TouchableOpacity>
+        <Button variant="primary" size="lg" onPress={handleSubmit} disabled={!isValid}>
+          保存
+        </Button>
       }
     >
-      <ScrollView contentContainerStyle={{ gap: 20 }} scrollEnabled={false}>
+      <ScrollView contentContainerStyle={{ gap: 16 }} scrollEnabled={false}>
         {/* 名前 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">テンプレート名</Text>
-          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">テンプレート名</Text>
+          <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
             <DismissibleTextInput
-              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm text-primary-900 dark:text-primary-100"
               value={name}
               onChangeText={setName}
               placeholder="例: コンビニ"
@@ -114,8 +111,8 @@ export const QuickAddTemplateModal = ({
 
         {/* 種類 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">種類</Text>
-          <View className="flex-row rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-700">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">種類</Text>
+          <View className="flex-row rounded-md overflow-hidden bg-primary-100 dark:bg-primary-700">
             {(['expense', 'income', 'transfer'] as TemplateType[]).map((t) => (
               <TouchableOpacity
                 key={t}
@@ -125,9 +122,9 @@ export const QuickAddTemplateModal = ({
                   setSelectedSourceId('');
                   setTransferFromAccountId('');
                 }}
-                className={`flex-1 py-2.5 items-center ${type === t ? 'bg-gray-800 dark:bg-gray-600' : ''}`}
+                className={`flex-1 py-sm items-center ${type === t ? 'bg-primary-800 dark:bg-primary-600' : ''}`}
               >
-                <Text className={`text-sm font-medium ${type === t ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                <Text className={`text-base font-medium ${type === t ? 'text-white' : 'text-primary-700 dark:text-primary-300'}`}>
                   {t === 'expense' ? '支出' : t === 'income' ? '収入' : '振替'}
                 </Text>
               </TouchableOpacity>
@@ -137,11 +134,11 @@ export const QuickAddTemplateModal = ({
 
         {/* 金額 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">金額</Text>
-          <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
-            <Text className="text-gray-500 mr-1 text-base">¥</Text>
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">金額</Text>
+          <View className="flex-row items-center bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md">
+            <Text className="text-primary-500 mr-sm text-base">¥</Text>
             <DismissibleTextInput
-              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm text-primary-900 dark:text-primary-100"
               value={amount}
               onChangeText={setAmount}
               keyboardType="numeric"
@@ -155,14 +152,14 @@ export const QuickAddTemplateModal = ({
           <>
             {/* カテゴリ */}
             <View>
-              <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">カテゴリ</Text>
-              <View className="flex-row flex-wrap gap-2 mx-0">
+              <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">カテゴリ</Text>
+              <View className="flex-row flex-wrap gap-sm mx-0">
                 {filteredCategories.map((cat) => (
                   <TouchableOpacity
                     key={cat.id}
                     onPress={() => setCategoryId(cat.id)}
                     style={{ width: gridItemWidth }}
-                    className={`relative items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                    className={`relative items-center p-sm rounded-md ${categoryId === cat.id ? 'bg-primary-100 dark:bg-primary-700' : ''}`}
                   >
                     <View className="mb-1">
                       {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
@@ -186,8 +183,8 @@ export const QuickAddTemplateModal = ({
 
             {/* 支払い元 */}
             <View>
-              <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い元</Text>
-              <View className="flex-row flex-wrap gap-2 mx-0">
+              <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">支払い元</Text>
+              <View className="flex-row flex-wrap gap-sm mx-0">
                 {[
                   ...allAccounts.map((acc) => ({ id: acc.id, name: acc.name, color: acc.color, isAccount: true as const })),
                   ...allPaymentMethods.map((pm) => ({ id: pm.id, name: pm.name, color: pm.color, isAccount: false as const })),
@@ -196,7 +193,7 @@ export const QuickAddTemplateModal = ({
                     key={src.id}
                     onPress={() => setSelectedSourceId(src.id)}
                     style={{ width: gridItemWidth }}
-                    className={`relative items-center p-2 rounded-lg ${selectedSourceId === src.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                    className={`relative items-center p-sm rounded-md ${selectedSourceId === src.id ? 'bg-primary-100 dark:bg-primary-700' : ''}`}
                   >
                     <View
                       className="w-8 h-8 rounded-full items-center justify-center mb-1"
@@ -225,22 +222,22 @@ export const QuickAddTemplateModal = ({
           <>
             {/* 振替: 入金元 */}
             <View>
-              <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">入金元</Text>
-              <View className="gap-2">
+              <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">入金元</Text>
+              <View className="gap-sm">
                 {allAccounts.map((acc) => (
                   <TouchableOpacity
                     key={acc.id}
                     onPress={() => setTransferFromAccountId(acc.id)}
-                    className={`flex-row items-center gap-2 px-3 py-2.5 rounded-lg border ${
+                    className={`flex-row items-center gap-md px-md py-sm rounded-md border ${
                       transferFromAccountId === acc.id
-                        ? 'border-gray-800 bg-gray-50'
-                        : 'border-gray-200'
+                        ? 'border-primary-800 bg-primary-50 dark:border-primary-600 dark:bg-primary-700'
+                        : 'border-primary-200 dark:border-primary-600'
                     }`}
                   >
                     <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
                       <Wallet size={12} color="#fff" />
                     </View>
-                    <Text className="text-sm text-gray-900 flex-1">{acc.name}</Text>
+                    <Text className="text-base text-primary-900 dark:text-primary-100 flex-1">{acc.name}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -248,24 +245,24 @@ export const QuickAddTemplateModal = ({
 
             {/* 振替: 入金先 */}
             <View>
-              <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">入金先</Text>
-              <View className="gap-2">
+              <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">入金先</Text>
+              <View className="gap-sm">
                 {allAccounts
                   .filter((a) => a.id !== transferFromAccountId)
                   .map((acc) => (
                     <TouchableOpacity
                       key={acc.id}
                       onPress={() => setSelectedSourceId(acc.id)}
-                      className={`flex-row items-center gap-2 px-3 py-2.5 rounded-lg border ${
+                      className={`flex-row items-center gap-md px-md py-sm rounded-md border ${
                         selectedSourceId === acc.id
-                          ? 'border-gray-800 bg-gray-50'
-                          : 'border-gray-200'
+                          ? 'border-primary-800 bg-primary-50 dark:border-primary-600 dark:bg-primary-700'
+                          : 'border-primary-200 dark:border-primary-600'
                       }`}
                     >
                       <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
                         <Wallet size={12} color="#fff" />
                       </View>
-                      <Text className="text-sm text-gray-900 flex-1">{acc.name}</Text>
+                      <Text className="text-base text-primary-900 dark:text-primary-100 flex-1">{acc.name}</Text>
                     </TouchableOpacity>
                   ))}
               </View>
@@ -273,11 +270,11 @@ export const QuickAddTemplateModal = ({
 
             {/* 振替手数料 */}
             <View>
-              <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">振替手数料（任意）</Text>
-              <View className="flex-row items-center bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
-                <Text className="text-gray-500 mr-1 text-base">¥</Text>
+              <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">振替手数料（任意）</Text>
+              <View className="flex-row items-center bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md">
+                <Text className="text-primary-500 mr-sm text-base">¥</Text>
                 <DismissibleTextInput
-                  className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+                  className="flex-1 py-sm text-primary-900 dark:text-primary-100"
                   value={transferFee}
                   onChangeText={setTransferFee}
                   keyboardType="numeric"

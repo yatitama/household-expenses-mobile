@@ -23,27 +23,27 @@ export const TransactionItem = ({
   return (
     <TouchableOpacity
       onPress={() => onPress(t)}
-      className={`flex-row items-center px-4 py-3 ${!isLast ? 'border-b border-gray-100 dark:border-gray-800' : ''}`}
+      className={`flex-row items-center px-lg py-lg ${!isLast ? 'border-b border-primary-100 dark:border-primary-800' : ''}`}
     >
       {/* カテゴリアイコン */}
       <View
-        className="w-8 h-8 rounded-full items-center justify-center mr-3"
+        className="w-8 h-8 rounded-full items-center justify-center mr-md"
         style={{ backgroundColor: cat?.color ?? '#9ca3af' }}
       >
         {getCategoryIcon(cat?.icon ?? '', 14, '#fff')}
       </View>
       {/* 情報 */}
       <View className="flex-1 min-w-0">
-        <Text className="text-sm font-medium text-gray-900 dark:text-gray-100" numberOfLines={1}>
+        <Text className="text-base font-medium text-primary-900 dark:text-primary-100" numberOfLines={1}>
           {cat?.name ?? '不明'}
         </Text>
-        <Text className="text-xs text-gray-500 dark:text-gray-400" numberOfLines={1}>
+        <Text className="text-label text-primary-500 dark:text-primary-400" numberOfLines={1}>
           {pm?.name ?? acc?.name ?? ''}
           {t.memo ? ` · ${t.memo}` : ''}
         </Text>
       </View>
       {/* 金額 */}
-      <Text className={`text-sm font-semibold ${t.type === 'expense' ? 'text-red-500' : 'text-green-600'}`}>
+      <Text className={`text-base font-semibold ${t.type === 'expense' ? 'text-red-500' : 'text-green-600'}`}>
         {t.type === 'expense' ? '-' : '+'}
         {formatCurrency(t.amount)}
       </Text>

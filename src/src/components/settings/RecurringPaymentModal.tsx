@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { Trash2, Check, Wallet, CreditCard } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
+import { Button } from '../ui/Button';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import type {
@@ -103,22 +104,18 @@ export const RecurringPaymentModal = ({
         ) : undefined
       }
       footer={
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="w-full py-3 bg-gray-800 rounded-lg items-center"
-          disabled={!name.trim() || !amount.trim()}
-        >
-          <Text className="text-white font-semibold text-sm">保存</Text>
-        </TouchableOpacity>
+        <Button variant="primary" size="lg" onPress={handleSubmit} disabled={!name.trim() || !amount.trim()}>
+          保存
+        </Button>
       }
     >
-      <View className="gap-5">
+      <View className="gap-lg">
         {/* 種類（支出/収入） */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
             種類
           </Text>
-          <View className="flex-row rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-700">
+          <View className="flex-row rounded-md overflow-hidden bg-primary-100 dark:bg-primary-700">
             {(['expense', 'income'] as TransactionType[]).map((t) => (
               <TouchableOpacity
                 key={t}
@@ -126,13 +123,13 @@ export const RecurringPaymentModal = ({
                   setType(t);
                   setCategoryId('');
                 }}
-                className={`flex-1 py-2.5 items-center ${
-                  type === t ? 'bg-gray-800 dark:bg-gray-600' : ''
+                className={`flex-1 py-sm items-center ${
+                  type === t ? 'bg-primary-800 dark:bg-primary-600' : ''
                 }`}
               >
                 <Text
-                  className={`text-sm font-medium ${
-                    type === t ? 'text-white' : 'text-gray-700 dark:text-gray-300'
+                  className={`text-base font-medium ${
+                    type === t ? 'text-white' : 'text-primary-700 dark:text-primary-300'
                   }`}
                 >
                   {t === 'expense' ? '支出' : '収入'}
@@ -144,12 +141,12 @@ export const RecurringPaymentModal = ({
 
         {/* 名前 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
             名前
           </Text>
-          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+          <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
             <DismissibleTextInput
-              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm text-primary-900 dark:text-primary-100"
               value={name}
               onChangeText={setName}
               placeholder="例: 家賃, 携帯料金, Netflix"
@@ -160,13 +157,13 @@ export const RecurringPaymentModal = ({
 
         {/* 金額 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
             金額
           </Text>
-          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
-            <Text className="text-gray-600 dark:text-gray-400">¥</Text>
+          <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
+            <Text className="text-primary-600 dark:text-primary-400">¥</Text>
             <DismissibleTextInput
-              className="flex-1 py-2.5 ml-1 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm ml-sm text-primary-900 dark:text-primary-100"
               value={amount}
               onChangeText={(text) => setAmount(text.replace(/[^0-9]/g, ''))}
               placeholder="0"
@@ -178,24 +175,24 @@ export const RecurringPaymentModal = ({
 
         {/* カテゴリ */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
             カテゴリ
           </Text>
-          <View className="flex-row flex-wrap gap-2">
+          <View className="flex-row flex-wrap gap-sm">
             {filteredCategories.map((cat) => (
               <TouchableOpacity
                 key={cat.id}
                 onPress={() => setCategoryId(cat.id)}
                 style={{ width: gridItemWidth }}
-                className={`relative items-center p-2 rounded-lg ${
-                  categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''
+                className={`relative items-center p-sm rounded-md ${
+                  categoryId === cat.id ? 'bg-primary-100 dark:bg-primary-700' : ''
                 }`}
               >
                 <View className="mb-1">
                   {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
                 </View>
                 <Text
-                  className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                  className="text-label text-primary-900 dark:text-primary-100 text-center"
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
@@ -214,25 +211,25 @@ export const RecurringPaymentModal = ({
         {/* 支払い手段（オプション） */}
         {filteredPaymentMethods.length > 0 && (
           <View>
-            <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+            <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
               支払い手段（任意）
             </Text>
-            <View className="flex-row flex-wrap gap-2">
+            <View className="flex-row flex-wrap gap-sm">
               <TouchableOpacity
                 key="none"
                 onPress={() => setPaymentMethodId('')}
                 style={{ width: gridItemWidth }}
-                className={`relative items-center p-2 rounded-lg ${
-                  paymentMethodId === '' ? 'bg-gray-100 dark:bg-gray-700' : ''
+                className={`relative items-center p-sm rounded-md ${
+                  paymentMethodId === '' ? 'bg-primary-100 dark:bg-primary-700' : ''
                 }`}
               >
-                <View className="w-8 h-8 rounded-full items-center justify-center mb-1 bg-gray-300 dark:bg-gray-500">
-                  <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400">
+                <View className="w-8 h-8 rounded-full items-center justify-center mb-1 bg-primary-300 dark:bg-primary-500">
+                  <Text className="text-label font-semibold text-primary-600 dark:text-primary-400">
                     -
                   </Text>
                 </View>
                 <Text
-                  className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                  className="text-label text-primary-900 dark:text-primary-100 text-center"
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
@@ -249,8 +246,8 @@ export const RecurringPaymentModal = ({
                   key={pm.id}
                   onPress={() => setPaymentMethodId(pm.id)}
                   style={{ width: gridItemWidth }}
-                  className={`relative items-center p-2 rounded-lg ${
-                    paymentMethodId === pm.id ? 'bg-gray-100 dark:bg-gray-700' : ''
+                  className={`relative items-center p-sm rounded-md ${
+                    paymentMethodId === pm.id ? 'bg-primary-100 dark:bg-primary-700' : ''
                   }`}
                 >
                   <View
@@ -260,7 +257,7 @@ export const RecurringPaymentModal = ({
                     <CreditCard size={16} color="#fff" />
                   </View>
                   <Text
-                    className="text-xs text-gray-900 dark:text-gray-100 text-center"
+                    className="text-label text-primary-900 dark:text-primary-100 text-center"
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
@@ -279,13 +276,13 @@ export const RecurringPaymentModal = ({
 
         {/* 頻度 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
             頻度
           </Text>
           <View className="flex-row gap-2 items-center">
             <View className="flex-1 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
               <DismissibleTextInput
-                className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+                className="flex-1 py-sm text-primary-900 dark:text-primary-100"
                 value={periodValue}
                 onChangeText={(text) => setPeriodValue(text.replace(/[^0-9]/g, '') || '1')}
                 placeholder="1"
@@ -296,9 +293,9 @@ export const RecurringPaymentModal = ({
             <View className="flex-1 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3">
               <TouchableOpacity
                 onPress={() => setPeriodType(periodType === 'months' ? 'days' : 'months')}
-                className="py-2.5"
+                className="py-sm"
               >
-                <Text className="text-sm text-gray-900 dark:text-gray-100">
+                <Text className="text-base text-primary-900 dark:text-primary-100">
                   {periodType === 'months' ? 'ヶ月' : '日'}
                 </Text>
               </TouchableOpacity>
@@ -308,12 +305,12 @@ export const RecurringPaymentModal = ({
 
         {/* 開始日 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
             開始日
           </Text>
-          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+          <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
             <DismissibleTextInput
-              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm text-primary-900 dark:text-primary-100"
               value={startDate}
               onChangeText={setStartDate}
               placeholder="YYYY-MM-DD"
@@ -324,12 +321,12 @@ export const RecurringPaymentModal = ({
 
         {/* 終了日 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
             終了日（任意）
           </Text>
-          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+          <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
             <DismissibleTextInput
-              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm text-primary-900 dark:text-primary-100"
               value={endDate}
               onChangeText={setEndDate}
               placeholder="YYYY-MM-DD"
@@ -340,10 +337,10 @@ export const RecurringPaymentModal = ({
 
         {/* 有効/無効 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">
             ステータス
           </Text>
-          <View className="flex-row rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-700">
+          <View className="flex-row rounded-md overflow-hidden bg-primary-100 dark:bg-primary-700">
             {[
               { label: '有効', value: true },
               { label: '無効', value: false },
@@ -351,8 +348,8 @@ export const RecurringPaymentModal = ({
               <TouchableOpacity
                 key={String(option.value)}
                 onPress={() => setIsActive(option.value)}
-                className={`flex-1 py-2.5 items-center ${
-                  isActive === option.value ? 'bg-gray-800 dark:bg-gray-600' : ''
+                className={`flex-1 py-sm items-center ${
+                  isActive === option.value ? 'bg-primary-800 dark:bg-primary-600' : ''
                 }`}
               >
                 <Text

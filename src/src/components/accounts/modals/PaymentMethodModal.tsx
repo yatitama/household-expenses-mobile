@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { Trash2, User, Check } from 'lucide-react-native';
 import { ModalWrapper } from './ModalWrapper';
+import { Button } from '../../ui/Button';
 import { PM_TYPE_LABELS, BILLING_TYPE_LABELS, COLORS } from '../constants';
 import { COMMON_MEMBER_ID } from '../../../types';
 import { DismissibleTextInput } from '../../inputs/DismissibleTextInput';
@@ -63,18 +64,18 @@ export const PaymentMethodModal = ({
         ) : undefined
       }
       footer={
-        <TouchableOpacity onPress={handleSubmit} className="w-full py-3 bg-gray-800 rounded-lg items-center">
-          <Text className="text-white font-semibold text-sm">保存</Text>
-        </TouchableOpacity>
+        <Button variant="primary" size="lg" onPress={handleSubmit}>
+          保存
+        </Button>
       }
     >
-      <View className="gap-5">
+      <View className="gap-lg">
         {/* 名前 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
-          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">名前</Text>
+          <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
             <DismissibleTextInput
-              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm text-primary-900 dark:text-primary-100"
               value={name}
               onChangeText={setName}
               placeholder="例: クレジットカード"
@@ -85,15 +86,15 @@ export const PaymentMethodModal = ({
 
         {/* 種類 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">種類</Text>
-          <View className="flex-row gap-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">種類</Text>
+          <View className="flex-row gap-sm">
             {(Object.entries(PM_TYPE_LABELS) as [PaymentMethodType, string][]).map(([value, label]) => (
               <TouchableOpacity
                 key={value}
                 onPress={() => setPmType(value)}
-                className={`flex-1 py-2 rounded-lg items-center ${pmType === value ? 'bg-gray-800' : 'bg-gray-100 dark:bg-slate-700'}`}
+                className={`flex-1 py-sm rounded-md items-center ${pmType === value ? 'bg-primary-800 dark:bg-primary-600' : 'bg-primary-100 dark:bg-primary-700'}`}
               >
-                <Text className={`text-xs font-medium ${pmType === value ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                <Text className={`text-label font-medium ${pmType === value ? 'text-white' : 'text-primary-700 dark:text-primary-300'}`}>
                   {label}
                 </Text>
               </TouchableOpacity>
@@ -103,19 +104,19 @@ export const PaymentMethodModal = ({
 
         {/* 所有者 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">所有者</Text>
-          <View className="flex-row flex-wrap gap-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">所有者</Text>
+          <View className="flex-row flex-wrap gap-sm">
             {members.map((member) => (
               <TouchableOpacity
                 key={member.id}
                 onPress={() => setMemberId(member.id)}
                 style={{ width: gridItemWidth }}
-                className={`relative items-center p-2 rounded-lg ${memberId === member.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                className={`relative items-center p-sm rounded-md ${memberId === member.id ? 'bg-primary-100 dark:bg-primary-700' : ''}`}
               >
-                <View className="w-7 h-7 rounded-full items-center justify-center mb-1" style={{ backgroundColor: `${member.color}30` }}>
+                <View className="w-7 h-7 rounded-full items-center justify-center mb-sm" style={{ backgroundColor: `${member.color}30` }}>
                   <User size={14} color={member.color} />
                 </View>
-                <Text className="text-xs text-gray-900 dark:text-gray-200 text-center">{member.name}</Text>
+                <Text className="text-label text-primary-900 dark:text-primary-200 text-center">{member.name}</Text>
                 {memberId === member.id && (
                   <View className="absolute top-0 right-0">
                     <Check size={12} color="#374151" strokeWidth={2.5} />
@@ -128,21 +129,21 @@ export const PaymentMethodModal = ({
 
         {/* 引き落とし口座 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">引き落とし口座</Text>
-          <View className="gap-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">引き落とし口座</Text>
+          <View className="gap-sm">
             <TouchableOpacity
               onPress={() => setLinkedAccountId('')}
-              className={`py-2 px-3 rounded-lg border ${!linkedAccountId ? 'border-gray-800 bg-gray-50 dark:bg-slate-700' : 'border-gray-200 dark:border-gray-600'}`}
+              className={`py-sm px-md rounded-md border ${!linkedAccountId ? 'border-primary-800 bg-primary-50 dark:bg-primary-700' : 'border-primary-200 dark:border-primary-600'}`}
             >
-              <Text className="text-sm text-gray-700 dark:text-gray-300">未設定</Text>
+              <Text className="text-base text-primary-700 dark:text-primary-300">未設定</Text>
             </TouchableOpacity>
             {accounts.map((acc) => (
               <TouchableOpacity
                 key={acc.id}
                 onPress={() => setLinkedAccountId(acc.id)}
-                className={`py-2 px-3 rounded-lg border ${linkedAccountId === acc.id ? 'border-gray-800 bg-gray-50 dark:bg-slate-700' : 'border-gray-200 dark:border-gray-600'}`}
+                className={`py-sm px-md rounded-md border ${linkedAccountId === acc.id ? 'border-primary-800 bg-primary-50 dark:bg-primary-700' : 'border-primary-200 dark:border-primary-600'}`}
               >
-                <Text className="text-sm text-gray-700 dark:text-gray-300">{acc.name}</Text>
+                <Text className="text-base text-primary-700 dark:text-primary-300">{acc.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -150,15 +151,15 @@ export const PaymentMethodModal = ({
 
         {/* 精算タイプ */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">精算タイプ</Text>
-          <View className="flex-row gap-2">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">精算タイプ</Text>
+          <View className="flex-row gap-sm">
             {(Object.entries(BILLING_TYPE_LABELS) as [BillingType, string][]).map(([value, label]) => (
               <TouchableOpacity
                 key={value}
                 onPress={() => setBillingType(value)}
-                className={`flex-1 py-2 rounded-lg items-center ${billingType === value ? 'bg-gray-800' : 'bg-gray-100 dark:bg-slate-700'}`}
+                className={`flex-1 py-sm rounded-md items-center ${billingType === value ? 'bg-primary-800 dark:bg-primary-600' : 'bg-primary-100 dark:bg-primary-700'}`}
               >
-                <Text className={`text-xs font-medium ${billingType === value ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                <Text className={`text-label font-medium ${billingType === value ? 'text-white' : 'text-primary-700 dark:text-primary-300'}`}>
                   {label}
                 </Text>
               </TouchableOpacity>
@@ -167,12 +168,12 @@ export const PaymentMethodModal = ({
         </View>
 
         {billingType === 'monthly' && (
-          <View className="flex-row gap-3">
+          <View className="flex-row gap-md">
             <View className="flex-1">
-              <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">締め日</Text>
-              <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+              <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">締め日</Text>
+              <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
                 <DismissibleTextInput
-                  className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+                  className="flex-1 py-sm text-primary-900 dark:text-primary-100"
                   value={closingDay}
                   onChangeText={setClosingDay}
                   keyboardType="numeric"
@@ -182,10 +183,10 @@ export const PaymentMethodModal = ({
               </View>
             </View>
             <View className="flex-1">
-              <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">支払い日</Text>
-              <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+              <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">支払い日</Text>
+              <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
                 <DismissibleTextInput
-                  className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+                  className="flex-1 py-sm text-primary-900 dark:text-primary-100"
                   value={paymentDay}
                   onChangeText={setPaymentDay}
                   keyboardType="numeric"
@@ -199,8 +200,8 @@ export const PaymentMethodModal = ({
 
         {/* 色 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">色</Text>
-          <View className="flex-row flex-wrap gap-2 justify-start">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">色</Text>
+          <View className="flex-row flex-wrap gap-sm justify-start">
             {COLORS.map((c) => (
               <TouchableOpacity
                 key={c}

@@ -5,6 +5,7 @@ import { ChevronDown, Trash2, Check } from 'lucide-react-native';
 import { startOfMonth, endOfMonth, subMonths, format, parseISO } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
+import { Button } from '../ui/Button';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import type { FilterOptions } from '../../contexts/TransactionFilterContext';
@@ -144,8 +145,8 @@ export const FilterModal = ({
   const CategorySection = ({ title, cats }: { title: string; cats: Category[] }) => {
     if (cats.length === 0) return null;
     return (
-      <View className="mb-3">
-        <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">{title}</Text>
+      <View className="mb-md">
+        <Text className="text-label font-semibold text-primary-600 dark:text-primary-400 mb-sm">{title}</Text>
         <View style={{ margin: -12, marginBottom: 12 }}>
           <View className="flex-row flex-wrap px-3">
             {cats.map((cat) => {
@@ -160,20 +161,20 @@ export const FilterModal = ({
                     onFilterChange('categoryIds', newIds);
                   }}
                   style={{ width: gridItemWidth, marginBottom: 8 }}
-                  className={`py-2.5 rounded-lg items-center justify-center mx-1 relative ${
+                  className={`py-sm rounded-md items-center justify-center mx-sm relative ${
                     isSelected
-                      ? 'bg-gray-800 dark:bg-gray-700'
-                      : 'bg-gray-200 dark:bg-gray-600'
+                      ? 'bg-primary-800 dark:bg-primary-700'
+                      : 'bg-primary-200 dark:bg-primary-600'
                   }`}
                 >
-                  <View className="items-center gap-1">
+                  <View className="items-center gap-sm">
                     {getCategoryIcon(cat.icon, 20, isSelected ? 'white' : cat.color)}
-                    <Text className={`text-xs font-medium text-center ${isSelected ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                    <Text className={`text-label font-medium text-center ${isSelected ? 'text-white' : 'text-primary-700 dark:text-primary-300'}`}>
                       {cat.name}
                     </Text>
                   </View>
                   {isSelected && (
-                    <View className="absolute top-1 right-1 bg-gray-600 dark:bg-gray-600 rounded-full p-0.5">
+                    <View className="absolute top-sm right-sm bg-primary-600 dark:bg-primary-600 rounded-full p-0.5">
                       <Check size={12} color="white" strokeWidth={2.5} />
                     </View>
                   )}
@@ -189,19 +190,19 @@ export const FilterModal = ({
   const ToggleSection = ({ title, section, children }: { title: string; section: string; children: React.ReactNode }) => {
     const isExpanded = expandedSections[section];
     return (
-      <View className="border-b border-gray-200 dark:border-gray-700">
+      <View className="border-b border-primary-200 dark:border-primary-700">
         <TouchableOpacity
           onPress={() => toggleSection(section)}
-          className="flex-row items-center justify-between px-4 py-3"
+          className="flex-row items-center justify-between px-md py-lg"
         >
-          <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100">{title}</Text>
+          <Text className="text-base font-semibold text-primary-900 dark:text-primary-100">{title}</Text>
           <ChevronDown
             size={16}
-            color="#6b7280"
+            color="#9ca3af"
             style={{ transform: [{ rotate: isExpanded ? '180deg' : '0deg' }] }}
           />
         </TouchableOpacity>
-        {isExpanded && <View className="px-4 pb-3">{children}</View>}
+        {isExpanded && <View className="px-md pb-lg">{children}</View>}
       </View>
     );
   };
@@ -213,19 +214,17 @@ export const FilterModal = ({
       title="フィルター"
       isForm={true}
       footer={
-        <View className="gap-2">
-          <TouchableOpacity
+        <View className="gap-sm">
+          <Button
+            variant="secondary"
+            size="lg"
             onPress={() => onFilterChange('dateRange', { start: '', end: '' })}
-            className="bg-gray-300 dark:bg-gray-700 py-2.5 rounded-lg items-center justify-center"
           >
-            <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100">リセット</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={onClose}
-            className="bg-gray-800 dark:bg-gray-700 py-2.5 rounded-lg items-center justify-center"
-          >
-            <Text className="text-sm font-bold text-white">適用</Text>
-          </TouchableOpacity>
+            リセット
+          </Button>
+          <Button variant="primary" size="lg" onPress={onClose}>
+            適用
+          </Button>
         </View>
       }
     >
@@ -246,16 +245,16 @@ export const FilterModal = ({
                   key={value}
                   onPress={() => handleSetPeriod(value)}
                   style={{ width: gridItemWidth, marginBottom: 8 }}
-                  className={`py-2.5 rounded-lg items-center justify-center mx-1 ${
+                  className={`py-sm rounded-md items-center justify-center mx-sm ${
                     selectedPeriod === value
-                      ? 'bg-gray-800 dark:bg-gray-700'
-                      : 'bg-gray-200 dark:bg-gray-600'
+                      ? 'bg-primary-800 dark:bg-primary-700'
+                      : 'bg-primary-200 dark:bg-primary-600'
                   }`}
                 >
-                  <Text className={`text-sm font-medium ${
+                  <Text className={`text-base font-medium ${
                     selectedPeriod === value
                       ? 'text-white'
-                      : 'text-gray-700 dark:text-gray-300'
+                      : 'text-primary-700 dark:text-primary-300'
                   }`}>
                     {label}
                   </Text>
@@ -266,25 +265,25 @@ export const FilterModal = ({
 
           {/* Custom Date Range - Show only when custom is selected */}
           {showCustomDateInput && (
-            <View className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 gap-3">
+            <View className="bg-primary-50 dark:bg-primary-800 rounded-md p-md gap-md">
               <View>
-                <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">開始日</Text>
+                <Text className="text-label font-semibold text-primary-600 dark:text-primary-400 mb-xs">開始日</Text>
                 <DismissibleTextInput
                   placeholder="yyyy-MM-dd"
                   placeholderTextColor="#9ca3af"
                   value={filters.dateRange.start}
                   onChangeText={(v) => onFilterChange('dateRange', { ...filters.dateRange, start: v })}
-                  className="bg-white dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600"
+                  className="bg-white dark:bg-primary-700 px-md py-sm rounded-sm text-base text-primary-900 dark:text-primary-100 border border-primary-200 dark:border-primary-600"
                 />
               </View>
               <View>
-                <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">終了日</Text>
+                <Text className="text-label font-semibold text-primary-600 dark:text-primary-400 mb-xs">終了日</Text>
                 <DismissibleTextInput
                   placeholder="yyyy-MM-dd"
                   placeholderTextColor="#9ca3af"
                   value={filters.dateRange.end}
                   onChangeText={(v) => onFilterChange('dateRange', { ...filters.dateRange, end: v })}
-                  className="bg-white dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600"
+                  className="bg-white dark:bg-primary-700 px-md py-sm rounded-sm text-base text-primary-900 dark:text-primary-100 border border-primary-200 dark:border-primary-600"
                 />
               </View>
             </View>
@@ -304,14 +303,14 @@ export const FilterModal = ({
                   key={value}
                   onPress={() => onFilterChange('transactionType', value)}
                   style={{ width: gridItemWidth, marginBottom: 8 }}
-                  className={`py-2.5 rounded-lg items-center justify-center mx-1 ${
+                  className={`py-sm rounded-md items-center justify-center mx-sm ${
                     filters.transactionType === value
-                      ? 'bg-gray-800 dark:bg-gray-700'
-                      : 'bg-gray-200 dark:bg-gray-600'
+                      ? 'bg-primary-800 dark:bg-primary-700'
+                      : 'bg-primary-200 dark:bg-primary-600'
                   }`}
                 >
-                  <Text className={`text-sm font-medium ${
-                    filters.transactionType === value ? 'text-white' : 'text-gray-700 dark:text-gray-300'
+                  <Text className={`text-base font-medium ${
+                    filters.transactionType === value ? 'text-white' : 'text-primary-700 dark:text-primary-300'
                   }`}>
                     {label}
                   </Text>
@@ -344,23 +343,23 @@ export const FilterModal = ({
                       onFilterChange('accountIds', newIds);
                     }}
                     style={{ width: gridItemWidth, marginBottom: 8 }}
-                    className={`py-2.5 rounded-lg items-center justify-center mx-1 relative ${
+                    className={`py-sm rounded-md items-center justify-center mx-sm relative ${
                       isSelected
-                        ? 'bg-gray-800 dark:bg-gray-700'
-                        : 'bg-gray-200 dark:bg-gray-600'
+                        ? 'bg-primary-800 dark:bg-primary-700'
+                        : 'bg-primary-200 dark:bg-primary-600'
                     }`}
                   >
-                    <View className="items-center gap-1">
+                    <View className="items-center gap-sm">
                       <View
                         className="w-5 h-5 rounded-full"
                         style={{ backgroundColor: acc.color }}
                       />
-                      <Text className={`text-xs font-medium text-center ${isSelected ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                      <Text className={`text-label font-medium text-center ${isSelected ? 'text-white' : 'text-primary-700 dark:text-primary-300'}`}>
                         {acc.name}
                       </Text>
                     </View>
                     {isSelected && (
-                      <View className="absolute top-1 right-1 bg-gray-600 dark:bg-gray-600 rounded-full p-0.5">
+                      <View className="absolute top-sm right-sm bg-primary-600 dark:bg-primary-600 rounded-full p-0.5">
                         <Check size={12} color="white" strokeWidth={2.5} />
                       </View>
                     )}
@@ -381,23 +380,23 @@ export const FilterModal = ({
                       onFilterChange('paymentMethodIds', newIds);
                     }}
                     style={{ width: gridItemWidth, marginBottom: 8 }}
-                    className={`py-2.5 rounded-lg items-center justify-center mx-1 relative ${
+                    className={`py-sm rounded-md items-center justify-center mx-sm relative ${
                       isSelected
-                        ? 'bg-gray-800 dark:bg-gray-700'
-                        : 'bg-gray-200 dark:bg-gray-600'
+                        ? 'bg-primary-800 dark:bg-primary-700'
+                        : 'bg-primary-200 dark:bg-primary-600'
                     }`}
                   >
-                    <View className="items-center gap-1">
+                    <View className="items-center gap-sm">
                       <View
                         className="w-5 h-5 rounded-full"
                         style={{ backgroundColor: pm.color }}
                       />
-                      <Text className={`text-xs font-medium text-center ${isSelected ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                      <Text className={`text-label font-medium text-center ${isSelected ? 'text-white' : 'text-primary-700 dark:text-primary-300'}`}>
                         {pm.name}
                       </Text>
                     </View>
                     {isSelected && (
-                      <View className="absolute top-1 right-1 bg-gray-600 dark:bg-gray-600 rounded-full p-0.5">
+                      <View className="absolute top-sm right-sm bg-primary-600 dark:bg-primary-600 rounded-full p-0.5">
                         <Check size={12} color="white" strokeWidth={2.5} />
                       </View>
                     )}
@@ -409,48 +408,49 @@ export const FilterModal = ({
         </ToggleSection>
 
         {/* Save Filter Section */}
-        <View className="border-b border-gray-200 dark:border-gray-700 px-4 py-3">
-          <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+        <View className="border-b border-primary-200 dark:border-primary-700 px-md py-lg">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-100 mb-md">
             フィルターを保存
           </Text>
-          <View className="flex-row gap-2">
+          <View className="flex-row gap-sm">
             <DismissibleTextInput
               placeholder="フィルター名"
               placeholderTextColor="#9ca3af"
               value={saveFilterName}
               onChangeText={setSaveFilterName}
-              className="flex-1 bg-white dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600"
+              className="flex-1 bg-white dark:bg-primary-700 px-md py-sm rounded-sm text-label text-primary-900 dark:text-primary-100 border border-primary-200 dark:border-primary-600"
             />
-            <TouchableOpacity
+            <Button
+              variant="primary"
+              size="md"
               onPress={handleSaveFilter}
               disabled={!saveFilterName.trim()}
-              className="bg-gray-800 dark:bg-gray-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 px-4 py-2 rounded items-center justify-center"
             >
-              <Text className="text-sm font-bold text-white">保存</Text>
-            </TouchableOpacity>
+              保存
+            </Button>
           </View>
         </View>
 
         {/* Saved Filters Section */}
         {savedFilters.length > 0 && (
           <ToggleSection title="保存済みフィルター" section="savedFilters">
-            <View className="gap-2">
+            <View className="gap-sm">
               {savedFilters.map((filter) => (
                 <View
                   key={filter.id}
-                  className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg flex-row items-center justify-between"
+                  className="bg-primary-100 dark:bg-primary-800 p-md rounded-md flex-row items-center justify-between"
                 >
                   <TouchableOpacity
                     onPress={() => onApplySavedFilter(filter.id)}
                     className="flex-1"
                   >
-                    <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <Text className="text-label font-medium text-primary-900 dark:text-primary-100">
                       {filter.name}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => onDeleteSavedFilter(filter.id)}
-                    className="p-1.5"
+                    className="p-sm"
                   >
                     <Trash2 size={16} color="#ef4444" />
                   </TouchableOpacity>

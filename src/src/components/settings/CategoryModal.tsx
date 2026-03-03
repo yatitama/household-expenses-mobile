@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Trash2, Check } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
+import { Button } from '../ui/Button';
 import { COLORS } from '../accounts/constants';
 import { ICON_NAMES, getCategoryIcon } from '../../utils/categoryIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
@@ -45,21 +46,18 @@ export const CategoryModal = ({
         ) : undefined
       }
       footer={
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="w-full py-3 bg-gray-800 rounded-lg items-center"
-        >
-          <Text className="text-white font-semibold text-sm">保存</Text>
-        </TouchableOpacity>
+        <Button variant="primary" size="lg" onPress={handleSubmit}>
+          保存
+        </Button>
       }
     >
-      <View className="gap-5">
+      <View className="gap-lg">
         {/* 名前 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
-          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">名前</Text>
+          <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
             <DismissibleTextInput
-              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm text-primary-900 dark:text-primary-100"
               value={name}
               onChangeText={setName}
               placeholder="例: 食費"
@@ -70,15 +68,15 @@ export const CategoryModal = ({
 
         {/* 種類（新規作成時のみ変更可） */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">種類</Text>
-          <View className={`flex-row rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-700 ${category ? 'opacity-50' : ''}`}>
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">種類</Text>
+          <View className={`flex-row rounded-md overflow-hidden bg-primary-100 dark:bg-primary-700 ${category ? 'opacity-50' : ''}`}>
             {(['expense', 'income'] as TransactionType[]).map((t) => (
               <TouchableOpacity
                 key={t}
                 onPress={() => !category && setType(t)}
-                className={`flex-1 py-2.5 items-center ${type === t ? 'bg-gray-800 dark:bg-gray-600' : ''}`}
+                className={`flex-1 py-sm items-center ${type === t ? 'bg-primary-800 dark:bg-primary-600' : ''}`}
               >
-                <Text className={`text-sm font-medium ${type === t ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                <Text className={`text-base font-medium ${type === t ? 'text-white' : 'text-primary-700 dark:text-primary-300'}`}>
                   {t === 'expense' ? '支出' : '収入'}
                 </Text>
               </TouchableOpacity>
@@ -88,13 +86,13 @@ export const CategoryModal = ({
 
         {/* アイコン */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">アイコン</Text>
-          <View className="flex-row flex-wrap gap-2 justify-start">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">アイコン</Text>
+          <View className="flex-row flex-wrap gap-sm justify-start">
             {ICON_NAMES.map((iconName) => (
               <TouchableOpacity
                 key={iconName}
                 onPress={() => setIcon(iconName)}
-                className="w-9 h-9 rounded-lg items-center justify-center"
+                className="w-9 h-9 rounded-md items-center justify-center"
                 style={{
                   backgroundColor: icon === iconName ? color : '#f3f4f6',
                 }}
@@ -107,8 +105,8 @@ export const CategoryModal = ({
 
         {/* 色 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">色</Text>
-          <View className="flex-row flex-wrap gap-2 justify-start">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">色</Text>
+          <View className="flex-row flex-wrap gap-sm justify-start">
             {COLORS.map((c) => (
               <TouchableOpacity
                 key={c}

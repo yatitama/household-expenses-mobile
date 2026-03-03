@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Trash2, Check } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
+import { Button } from '../ui/Button';
 import { COLORS } from '../accounts/constants';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import type { Member, MemberInput } from '../../types';
@@ -39,21 +40,18 @@ export const MemberModal = ({ member, onSave, onClose, onDelete }: MemberModalPr
         ) : undefined
       }
       footer={
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="w-full py-3 bg-gray-800 rounded-lg items-center"
-        >
-          <Text className="text-white font-semibold text-sm">保存</Text>
-        </TouchableOpacity>
+        <Button variant="primary" size="lg" onPress={handleSubmit}>
+          保存
+        </Button>
       }
     >
-      <View className="gap-5">
+      <View className="gap-lg">
         {/* 名前 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">名前</Text>
-          <View className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 flex-row items-center">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">名前</Text>
+          <View className="bg-primary-50 dark:bg-primary-700 border border-primary-200 dark:border-primary-600 rounded-md px-md flex-row items-center">
             <DismissibleTextInput
-              className="flex-1 py-2.5 text-gray-900 dark:text-gray-100"
+              className="flex-1 py-sm text-primary-900 dark:text-primary-100"
               value={name}
               onChangeText={setName}
               placeholder="例: 夫"
@@ -64,8 +62,8 @@ export const MemberModal = ({ member, onSave, onClose, onDelete }: MemberModalPr
 
         {/* 色 */}
         <View>
-          <Text className="text-xs font-semibold text-gray-900 dark:text-gray-200 mb-2">色</Text>
-          <View className="flex-row flex-wrap gap-2 justify-start">
+          <Text className="text-label font-semibold text-primary-900 dark:text-primary-200 mb-sm">色</Text>
+          <View className="flex-row flex-wrap gap-sm justify-start">
             {COLORS.map((c) => (
               <TouchableOpacity
                 key={c}

@@ -18,16 +18,16 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   action,
 }) => {
   return (
-    <View className="flex flex-col items-center justify-center py-12 px-4">
-      <View className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+    <View className="flex flex-col items-center justify-center py-2xl px-md">
+      <View className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-md">
         {icon}
       </View>
-      <Text className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">{title}</Text>
-      <Text className="text-gray-600 dark:text-gray-400 text-center mb-6">{description}</Text>
+      <Text className="text-xl font-bold mb-sm text-primary-900 dark:text-primary-100">{title}</Text>
+      <Text className="text-primary-600 dark:text-primary-400 text-center mb-lg">{description}</Text>
       {action && (
         <TouchableOpacity
           onPress={action.onClick}
-          className="px-6 py-2.5 bg-primary-700 rounded-lg"
+          className="px-lg py-sm bg-primary-700 rounded-md"
         >
           <Text className="text-white font-medium">{action.label}</Text>
         </TouchableOpacity>

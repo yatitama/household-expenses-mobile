@@ -48,8 +48,8 @@ export const DismissibleTextInput = React.forwardRef<
 
         {Platform.OS === 'ios' && (
           <InputAccessoryView nativeID={inputAccessoryViewID}>
-            <View className="flex-row justify-end items-center bg-gray-100 dark:bg-slate-700 px-4 py-2 border-t border-gray-200 dark:border-gray-600">
-              <TouchableOpacity onPress={handleDismiss} className="p-2">
+            <View className="flex-row justify-end items-center bg-primary-100 dark:bg-primary-700 px-lg py-sm border-t border-primary-200 dark:border-primary-600">
+              <TouchableOpacity onPress={handleDismiss} className="p-sm">
                 <X size={18} color="#9ca3af" />
               </TouchableOpacity>
             </View>
