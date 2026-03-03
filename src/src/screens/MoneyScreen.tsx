@@ -7,6 +7,7 @@ import { memberService, accountService, paymentMethodService, savingsGoalService
 import { formatCurrency } from '../utils/formatters';
 import { calculateAccumulatedAmount, toYearMonth } from '../utils/savingsUtils';
 import { getPendingAmountByPaymentMethod } from '../utils/billingUtils';
+import { UI_COLORS } from '../constants/colors';
 import { ACCOUNT_TYPE_LABELS, PM_TYPE_LABELS } from '../components/accounts/constants';
 import { ACCOUNT_TYPE_ICONS } from '../components/accounts/AccountIcons';
 
@@ -85,6 +86,9 @@ export const MoneyScreen = () => {
                 <TouchableOpacity
                   onPress={() => toggleExpand(account.id)}
                   className="flex-row items-center px-4 py-3"
+                  accessibilityRole="button"
+                  accessibilityLabel={`${account.name} を展開`}
+                  accessibilityHint={`${account.name} に紐づくカードを表示します`}
                 >
                   <View
                     className="w-10 h-10 rounded-full items-center justify-center mr-3"
@@ -106,9 +110,9 @@ export const MoneyScreen = () => {
                   </View>
                   {linkedPMs.length > 0 && (
                     isExpanded ? (
-                      <ChevronUp size={16} color="#9ca3af" style={{ marginLeft: 8 }} />
+                      <ChevronUp size={16} color={UI_COLORS.placeholder} style={{ marginLeft: 8 }} />
                     ) : (
-                      <ChevronDown size={16} color="#9ca3af" style={{ marginLeft: 8 }} />
+                      <ChevronDown size={16} color={UI_COLORS.placeholder} style={{ marginLeft: 8 }} />
                     )
                   )}
                 </TouchableOpacity>
@@ -127,7 +131,7 @@ export const MoneyScreen = () => {
                             className="w-7 h-7 rounded-full items-center justify-center"
                             style={{ backgroundColor: pm.color }}
                           >
-                            <CreditCard size={13} color="#fff" />
+                            <CreditCard size={13} color={UI_COLORS.white} />
                           </View>
                           <View className="flex-1">
                             <Text className="text-xs font-medium text-gray-800 dark:text-gray-200">{pm.name}</Text>
@@ -163,7 +167,7 @@ export const MoneyScreen = () => {
                     className="w-10 h-10 rounded-full items-center justify-center"
                     style={{ backgroundColor: pm.color }}
                   >
-                    <CreditCard size={18} color="#fff" />
+                    <CreditCard size={18} color={UI_COLORS.white} />
                   </View>
                   <View className="flex-1">
                     <Text className="text-sm font-semibold text-gray-900 dark:text-gray-100">{pm.name}</Text>

@@ -14,7 +14,7 @@ import {
   paymentMethodService, quickAddTemplateService,
 } from '../services/storage';
 import { getCategoryIcon } from '../utils/categoryIcons';
-import { COLORS_GRAY, COLORS_SEMANTIC, UI_COLORS } from '../constants/colors';
+import { COLORS_GRAY, UI_COLORS } from '../constants/colors';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import { QuickAddTemplateModal } from '../components/settings/QuickAddTemplateModal';
 import type { TransactionType, TransactionInput, QuickAddTemplate, QuickAddTemplateInput } from '../types';
@@ -404,7 +404,7 @@ export const AddTransactionScreen = () => {
                         className="w-8 h-8 rounded-full items-center justify-center mb-1"
                         style={{ backgroundColor: src.color }}
                       >
-                        {src.isAccount ? <Wallet size={16} color={COLORS_SEMANTIC.white} /> : <CreditCard size={16} color={COLORS_SEMANTIC.white} />}
+                        {src.isAccount ? <Wallet size={16} color={UI_COLORS.white} /> : <CreditCard size={16} color={UI_COLORS.white} />}
                       </View>
                       <Text
                         className="text-xs text-gray-900 dark:text-gray-100 text-center"
@@ -443,7 +443,7 @@ export const AddTransactionScreen = () => {
                       accessibilityState={{ selected: transferFromAccountId === acc.id }}
                     >
                       <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
-                        <Wallet size={12} color={COLORS_SEMANTIC.white} />
+                        <Wallet size={12} color={UI_COLORS.white} />
                       </View>
                       <Text className="text-sm text-gray-900 flex-1">{acc.name}</Text>
                     </TouchableOpacity>
@@ -471,7 +471,7 @@ export const AddTransactionScreen = () => {
                         accessibilityState={{ selected: selectedSourceId === acc.id }}
                       >
                         <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
-                          <Wallet size={12} color={COLORS_SEMANTIC.white} />
+                          <Wallet size={12} color={UI_COLORS.white} />
                         </View>
                         <Text className="text-sm text-gray-900 flex-1">{acc.name}</Text>
                       </TouchableOpacity>

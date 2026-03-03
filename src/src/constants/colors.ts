@@ -56,22 +56,30 @@ export const UI_COLORS = {
   iconActive: COLORS_GRAY[700],
   iconInactive: COLORS_GRAY[400],
   iconActiveDark: COLORS_GRAY[300],
+  iconSecondary: COLORS_GRAY[500],
+  iconTertiary: COLORS_GRAY[400],
 
   // Border colors
   border: COLORS_GRAY[200],
   borderDark: COLORS_GRAY[800],
 
   // Button backgrounds
-  buttonDelete: '#ef4444',
+  buttonDelete: COLORS_SEMANTIC.danger500,
   buttonDeleteLight: COLORS_SEMANTIC.danger500,
+  buttonPrimary: COLORS_GRAY[800],
 
   // Text
   textPrimary: COLORS_GRAY[900],
   textSecondary: COLORS_GRAY[500],
   textTertiary: COLORS_GRAY[400],
 
+  // Backgrounds
+  white: COLORS_SEMANTIC.white,
+  black: COLORS_SEMANTIC.black,
+
   // Default fallback colors
   defaultColor: COLORS_GRAY[400],
+  placeholder: COLORS_GRAY[400],
 } as const;
 
 /**
