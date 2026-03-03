@@ -73,24 +73,24 @@ export const TransactionDetailsSheet = ({
         headerAction={headerAction}
       >
         {/* カテゴリ */}
-        <View className="flex-row items-center mb-5">
+        <View className="flex-row items-center gap-lg mb-lg">
           <View
-            className="w-12 h-12 rounded-full items-center justify-center mr-4"
+            className="w-12 h-12 rounded-full items-center justify-center"
             style={{ backgroundColor: category?.color ?? '#9ca3af' }}
           >
             {getCategoryIcon(category?.icon ?? '', 20, '#fff')}
           </View>
           <View>
-            <Text className="text-sm text-gray-500 dark:text-gray-400">カテゴリ</Text>
-            <Text className="text-base font-semibold text-gray-900 dark:text-gray-100">{category?.name ?? '不明'}</Text>
+            <Text className="text-label text-primary-600 dark:text-primary-400">カテゴリ</Text>
+            <Text className="text-base font-semibold text-primary-900 dark:text-primary-50">{category?.name ?? '不明'}</Text>
           </View>
         </View>
 
         {/* 金額 */}
-        <View className="bg-gray-50 dark:bg-slate-800 rounded-lg p-4 mb-5">
-          <Text className="text-sm text-gray-500 dark:text-gray-400 mb-1">金額</Text>
+        <View className="bg-primary-50 dark:bg-primary-900 rounded-md p-lg mb-lg">
+          <Text className="text-label text-primary-600 dark:text-primary-400 mb-sm">金額</Text>
           <Text
-            className={`text-3xl font-bold ${transaction.type === 'expense' ? 'text-red-500' : 'text-green-600'}`}
+            className={`text-3xl font-bold ${transaction.type === 'expense' ? 'text-danger-500' : 'text-success-500'}`}
           >
             {transaction.type === 'expense' ? '-' : '+'}
             {formatCurrency(transaction.amount)}
@@ -98,16 +98,16 @@ export const TransactionDetailsSheet = ({
         </View>
 
         {/* 日付 */}
-        <View className="mb-4">
-          <Text className="text-sm text-gray-500 dark:text-gray-400 mb-1">日付</Text>
-          <Text className="text-base font-medium text-gray-900 dark:text-gray-100">{formatDate(transaction.date.slice(0, 10))}</Text>
+        <View className="mb-lg">
+          <Text className="text-label text-primary-600 dark:text-primary-400 mb-sm">日付</Text>
+          <Text className="text-base font-medium text-primary-900 dark:text-primary-50">{formatDate(transaction.date.slice(0, 10))}</Text>
         </View>
 
         {/* 支払い元 */}
         {(account || paymentMethod) && (
-          <View className="mb-4">
-            <Text className="text-sm text-gray-500 dark:text-gray-400 mb-1">支払い元</Text>
-            <Text className="text-base font-medium text-gray-900 dark:text-gray-100">
+          <View className="mb-lg">
+            <Text className="text-label text-primary-600 dark:text-primary-400 mb-sm">支払い元</Text>
+            <Text className="text-base font-medium text-primary-900 dark:text-primary-50">
               {paymentMethod?.name ?? account?.name ?? ''}
             </Text>
           </View>
@@ -115,9 +115,9 @@ export const TransactionDetailsSheet = ({
 
         {/* メモ */}
         {transaction.memo && (
-          <View className="mb-6">
-            <Text className="text-sm text-gray-500 dark:text-gray-400 mb-1">メモ</Text>
-            <Text className="text-base text-gray-900 dark:text-gray-100">{transaction.memo}</Text>
+          <View className="mb-2xl">
+            <Text className="text-label text-primary-600 dark:text-primary-400 mb-sm">メモ</Text>
+            <Text className="text-base text-primary-900 dark:text-primary-50">{transaction.memo}</Text>
           </View>
         )}
       </ModalWrapper>
