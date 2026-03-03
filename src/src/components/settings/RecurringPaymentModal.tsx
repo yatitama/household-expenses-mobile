@@ -171,7 +171,7 @@ export const RecurringPaymentModal = ({
               value={amount}
               onChangeText={(text) => setAmount(text.replace(/[^0-9]/g, ''))}
               placeholder="0"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
               keyboardType="numeric"
             />
           </View>
