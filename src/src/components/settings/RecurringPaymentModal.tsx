@@ -6,7 +6,7 @@ import { Trash2, Check, Wallet, CreditCard } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
-import { COLORS_GRAY } from '../../constants/colors';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type {
   RecurringPayment, RecurringPaymentInput, TransactionType, Category, PaymentMethod,
 } from '../../types';
