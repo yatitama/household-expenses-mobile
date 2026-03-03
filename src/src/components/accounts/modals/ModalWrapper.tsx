@@ -77,8 +77,6 @@ export const ModalWrapper = ({
     }).start(() => onClose());
   };
 
-  const scrollViewRef = useRef<ScrollView>(null);
-
   const panResponder = useRef(
     PanResponder.create({
       // キャプチャフェーズで ScrollView からジェスチャーを奪う
@@ -105,8 +103,9 @@ export const ModalWrapper = ({
   const DRAG_H = isForm ? 30 : 0;
   const HEADER_H = 52;
   const FOOTER_H = footer ? 72 : 0;
-  // キーボード表示時は利用可能高さを縮小（iOS: KAV の padding 分、Android: adjustResize でウィンドウ縮小分）
-  const availableHeight = SCREEN_HEIGHT - keyboardHeight;
+  // iOS では KeyboardAvoidingView が対応するため keyboardHeight を使わない
+  // Android ではこのコードは実行されない（adjustResize でウィンドウ自体が縮小される）
+  const availableHeight = Platform.OS === 'ios' ? SCREEN_HEIGHT : SCREEN_HEIGHT - keyboardHeight;
   const scrollMaxHeight = availableHeight * 0.9 - DRAG_H - HEADER_H - FOOTER_H - 8;
 
   // フッターの下余白: キーボード表示中はセーフエリア不要（キーボードがカバーするため）
@@ -154,17 +153,15 @@ export const ModalWrapper = ({
             </TouchableOpacity>
           </View>
 
-          {/* KeyboardAvoidingView: キーボード表示時にシートの高さを調整して入力フィールドを見えるようにする */}
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enabled={true}>
+          {/* KeyboardAvoidingView: iOS ではシートを動かさずに内部余白でフッターを押し上げる */}
+          <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
             {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
             <ScrollView
-              ref={scrollViewRef}
               style={{ maxHeight: scrollMaxHeight }}
               contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12, paddingBottom: 8 }}
               keyboardShouldPersistTaps="handled"
               onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
               scrollEventThrottle={16}
-              scrollEnabled={true}
             >
               {children}
             </ScrollView>
