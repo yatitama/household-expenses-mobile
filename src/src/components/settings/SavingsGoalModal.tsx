@@ -6,6 +6,7 @@ import { COLORS } from '../accounts/constants';
 import { SAVINGS_GOAL_ICON_NAMES, getSavingsGoalIcon } from '../../utils/savingsGoalIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import { getCurrentMonth } from '../../utils/savingsUtils';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type { SavingsGoal, SavingsGoalInput } from '../../types';
 
 interface SavingsGoalModalProps {
@@ -57,7 +58,7 @@ export const SavingsGoalModal = ({
       headerAction={
         goal && onDelete ? (
           <TouchableOpacity onPress={() => { onDelete(goal.id); onClose(); }} className="p-1">
-            <Trash2 size={15} color="#9ca3af" />
+            <Trash2 size={15} color={COLORS_GRAY[400]} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -80,7 +81,7 @@ export const SavingsGoalModal = ({
               value={name}
               onChangeText={setName}
               placeholder="例: ディズニー旅行"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -125,10 +126,10 @@ export const SavingsGoalModal = ({
                 onPress={() => setIcon(iconName)}
                 className="w-9 h-9 rounded-lg items-center justify-center"
                 style={{
-                  backgroundColor: icon === iconName ? color : '#f3f4f6',
+                  backgroundColor: icon === iconName ? color : COLORS_GRAY[100],
                 }}
               >
-                {getSavingsGoalIcon(iconName, 16, icon === iconName ? '#fff' : '#6b7280')}
+                {getSavingsGoalIcon(iconName, 16, icon === iconName ? COLORS_SEMANTIC.white : COLORS_GRAY[500])}
               </TouchableOpacity>
             ))}
           </View>

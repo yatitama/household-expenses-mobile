@@ -4,6 +4,7 @@ import { Trash2, Check } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { COLORS } from '../accounts/constants';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type { Member, MemberInput } from '../../types';
 
 interface MemberModalProps {
@@ -34,7 +35,7 @@ export const MemberModal = ({ member, onSave, onClose, onDelete }: MemberModalPr
       headerAction={
         member && onDelete && !member.isDefault ? (
           <TouchableOpacity onPress={() => { onDelete(member.id); onClose(); }} className="p-1">
-            <Trash2 size={15} color="#9ca3af" />
+            <Trash2 size={15} color={COLORS_GRAY[400]} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -57,7 +58,7 @@ export const MemberModal = ({ member, onSave, onClose, onDelete }: MemberModalPr
               value={name}
               onChangeText={setName}
               placeholder="例: 夫"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -77,7 +78,7 @@ export const MemberModal = ({ member, onSave, onClose, onDelete }: MemberModalPr
               >
                 {color === c && (
                   <View className="absolute inset-0 rounded-full items-center justify-center bg-black/40">
-                    <Check size={12} color="white" strokeWidth={2.5} />
+                    <Check size={12} color={COLORS_SEMANTIC.white} strokeWidth={2.5} />
                   </View>
                 )}
               </TouchableOpacity>

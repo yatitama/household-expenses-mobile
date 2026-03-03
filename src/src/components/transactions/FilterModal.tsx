@@ -7,7 +7,7 @@ import { ja } from 'date-fns/locale';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import { getCategoryIcon } from '../../utils/categoryIcons';
-import { COLORS_GRAY } from '../../constants/colors';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type { FilterOptions } from '../../contexts/TransactionFilterContext';
 import type { Category, Account, PaymentMethod, SavedFilter } from '../../types';
 
@@ -417,7 +417,7 @@ export const FilterModal = ({
           <View className="flex-row gap-2">
             <DismissibleTextInput
               placeholder="フィルター名"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
               value={saveFilterName}
               onChangeText={setSaveFilterName}
               className="flex-1 bg-white dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600"
@@ -453,7 +453,7 @@ export const FilterModal = ({
                     onPress={() => onDeleteSavedFilter(filter.id)}
                     className="p-1.5"
                   >
-                    <Trash2 size={16} color="#ef4444" />
+                    <Trash2 size={16} color={COLORS_SEMANTIC.danger500} />
                   </TouchableOpacity>
                 </View>
               ))}

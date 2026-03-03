@@ -6,6 +6,7 @@ import { Trash2, Check, Wallet, CreditCard } from 'lucide-react-native';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
+import { COLORS_GRAY } from '../../constants/colors';
 import type {
   RecurringPayment, RecurringPaymentInput, TransactionType, Category, PaymentMethod,
 } from '../../types';
@@ -98,7 +99,7 @@ export const RecurringPaymentModal = ({
             }}
             className="p-1"
           >
-            <Trash2 size={15} color="#9ca3af" />
+            <Trash2 size={15} color={COLORS_GRAY[400]} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -153,7 +154,7 @@ export const RecurringPaymentModal = ({
               value={name}
               onChangeText={setName}
               placeholder="例: 家賃, 携帯料金, Netflix"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -203,7 +204,7 @@ export const RecurringPaymentModal = ({
                 </Text>
                 {categoryId === cat.id && (
                   <View className="absolute top-0 right-0">
-                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                    <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -240,7 +241,7 @@ export const RecurringPaymentModal = ({
                 </Text>
                 {paymentMethodId === '' && (
                   <View className="absolute top-0 right-0">
-                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                    <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                   </View>
                 )}
               </TouchableOpacity>
