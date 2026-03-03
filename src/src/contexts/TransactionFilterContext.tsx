@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import type { ReactNode } from 'react';
 import { parseISO } from 'date-fns';
 import { transactionService, categoryService, savedFilterService, paymentMethodService } from '../services/storage';
 import type { SavedFilter } from '../types';
@@ -17,6 +18,19 @@ export interface FilterOptions {
   settlementAccountIds: string[];
 }
 
+interface TransactionFilterContextValue {
+  filters: FilterOptions;
+  filteredTransactions: any[];
+  updateFilter: <K extends keyof FilterOptions>(key: K, value: FilterOptions[K]) => void;
+  resetFilters: () => void;
+  activeFilterCount: number;
+  savedFilters: SavedFilter[];
+  saveFilter: (name: string, filterOptions?: Omit<FilterOptions, 'sortBy' | 'sortOrder'>) => void;
+  applySavedFilter: (filterId: string) => void;
+  deleteSavedFilter: (filterId: string) => void;
+  updateSavedFilter: (filterId: string, name: string, filterOptions?: Omit<FilterOptions, 'sortBy' | 'sortOrder'>) => void;
+}
+
 const createDefaultFilters = (): FilterOptions => ({
   searchQuery: '',
   dateRange: { start: '', end: '' },
@@ -30,12 +44,14 @@ const createDefaultFilters = (): FilterOptions => ({
   settlementAccountIds: [],
 });
 
-export const useTransactionFilter = () => {
+const TransactionFilterContext = createContext<TransactionFilterContextValue | undefined>(undefined);
+
+export const TransactionFilterProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFilters] = useState<FilterOptions>(createDefaultFilters);
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>(() => savedFilterService.getAll());
+
   const allTransactions = transactionService.getAll();
   const categories = categoryService.getAll();
-
   const allPaymentMethods = paymentMethodService.getAll();
 
   const filteredTransactions = useMemo(() => {
@@ -148,20 +164,23 @@ export const useTransactionFilter = () => {
     return count;
   }, [filters]);
 
-  const saveFilter = useCallback((name: string, filterOptions?: Omit<FilterOptions, 'sortBy' | 'sortOrder'>) => {
-    const opts = filterOptions ?? filters;
-    savedFilterService.create({
-      name,
-      searchQuery: opts.searchQuery,
-      dateRange: opts.dateRange,
-      categoryIds: opts.categoryIds,
-      transactionType: opts.transactionType,
-      accountIds: opts.accountIds,
-      paymentMethodIds: opts.paymentMethodIds,
-      unsettled: opts.unsettled,
-    });
-    setSavedFilters(savedFilterService.getAll());
-  }, [filters]);
+  const saveFilter = useCallback(
+    (name: string, filterOptions?: Omit<FilterOptions, 'sortBy' | 'sortOrder'>) => {
+      const opts = filterOptions ?? filters;
+      savedFilterService.create({
+        name,
+        searchQuery: opts.searchQuery,
+        dateRange: opts.dateRange,
+        categoryIds: opts.categoryIds,
+        transactionType: opts.transactionType,
+        accountIds: opts.accountIds,
+        paymentMethodIds: opts.paymentMethodIds,
+        unsettled: opts.unsettled,
+      });
+      setSavedFilters(savedFilterService.getAll());
+    },
+    [filters],
+  );
 
   const applySavedFilter = useCallback((filterId: string) => {
     const savedFilter = savedFilterService.getById(filterId);
@@ -185,31 +204,48 @@ export const useTransactionFilter = () => {
     setSavedFilters(savedFilterService.getAll());
   }, []);
 
-  const updateSavedFilter = useCallback((filterId: string, name: string, filterOptions?: Omit<FilterOptions, 'sortBy' | 'sortOrder'>) => {
-    const updateData: Record<string, unknown> = { name };
-    if (filterOptions) {
-      updateData.searchQuery = filterOptions.searchQuery;
-      updateData.dateRange = filterOptions.dateRange;
-      updateData.categoryIds = filterOptions.categoryIds;
-      updateData.transactionType = filterOptions.transactionType;
-      updateData.accountIds = filterOptions.accountIds;
-      updateData.paymentMethodIds = filterOptions.paymentMethodIds;
-      updateData.unsettled = filterOptions.unsettled;
-    }
-    savedFilterService.update(filterId, updateData);
-    setSavedFilters(savedFilterService.getAll());
-  }, []);
+  const updateSavedFilter = useCallback(
+    (filterId: string, name: string, filterOptions?: Omit<FilterOptions, 'sortBy' | 'sortOrder'>) => {
+      const updateData: Record<string, unknown> = { name };
+      if (filterOptions) {
+        updateData.searchQuery = filterOptions.searchQuery;
+        updateData.dateRange = filterOptions.dateRange;
+        updateData.categoryIds = filterOptions.categoryIds;
+        updateData.transactionType = filterOptions.transactionType;
+        updateData.accountIds = filterOptions.accountIds;
+        updateData.paymentMethodIds = filterOptions.paymentMethodIds;
+        updateData.unsettled = filterOptions.unsettled;
+      }
+      savedFilterService.update(filterId, updateData);
+      setSavedFilters(savedFilterService.getAll());
+    },
+    [],
+  );
 
-  return {
-    filters,
-    filteredTransactions,
-    updateFilter,
-    resetFilters,
-    activeFilterCount,
-    savedFilters,
-    saveFilter,
-    applySavedFilter,
-    deleteSavedFilter,
-    updateSavedFilter,
-  };
+  return (
+    <TransactionFilterContext.Provider
+      value={{
+        filters,
+        filteredTransactions,
+        updateFilter,
+        resetFilters,
+        activeFilterCount,
+        savedFilters,
+        saveFilter,
+        applySavedFilter,
+        deleteSavedFilter,
+        updateSavedFilter,
+      }}
+    >
+      {children}
+    </TransactionFilterContext.Provider>
+  );
+};
+
+export const useTransactionFilterContext = () => {
+  const context = useContext(TransactionFilterContext);
+  if (!context) {
+    throw new Error('useTransactionFilterContext must be used within TransactionFilterProvider');
+  }
+  return context;
 };

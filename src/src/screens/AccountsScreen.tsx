@@ -2,10 +2,10 @@ import { useState, useMemo, useCallback } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react-native';
 import { format, subMonths, addMonths, parseISO, startOfMonth, endOfMonth } from 'date-fns';
 import { BarChart, PieChart } from 'react-native-gifted-charts';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NavigationProp } from '@react-navigation/native';
 
 import {
   transactionService,
@@ -16,6 +16,7 @@ import {
 import { formatCurrency } from '../utils/formatters';
 import { getRecurringPaymentsForMonth } from '../utils/billingUtils';
 import { getEffectiveRecurringAmount } from '../utils/savingsUtils';
+import { useTransactionFilterContext } from '../contexts/TransactionFilterContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -25,7 +26,8 @@ type PieGroupMode = 'category' | 'payment' | 'account';
 
 export const AccountsScreen = () => {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const navigation = useNavigation<NavigationProp<any>>();
+  const { updateFilter } = useTransactionFilterContext();
   const now = useMemo(() => new Date(), []);
 
   const [trendPeriod, setTrendPeriod] = useState<TrendPeriod>('6months');
@@ -287,32 +289,38 @@ export const AccountsScreen = () => {
             {/* 凡例 */}
             <View className="w-full mt-3 gap-1">
               {pieData.map((d) => (
-                <TouchableOpacity
+                <View
                   key={d.id}
-                  onPress={() => {
-                    const params: any = {};
-                    if (pieGroupMode === 'category') {
-                      params.initialFilterCategoryId = d.id;
-                    } else if (pieGroupMode === 'payment') {
-                      params.initialFilterPaymentMethodId = d.id;
-                    } else {
-                      params.initialFilterAccountId = d.id;
-                    }
-                    navigation.navigate('Transactions', params);
-                  }}
-                  className="flex-row items-center justify-between px-2 py-1.5 rounded-lg hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-slate-700 dark:active:bg-slate-600"
+                  className="flex-row items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800"
                 >
-                  <View className="flex-row items-center gap-2">
+                  <View className="flex-row items-center gap-2 flex-1">
                     <View className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
-                    <Text className="text-xs text-gray-700 dark:text-gray-300">{d.name}</Text>
+                    <Text className="text-xs text-gray-700 dark:text-gray-300 flex-1">{d.name}</Text>
                   </View>
-                  <Text className="text-xs font-medium text-gray-900 dark:text-gray-100">
-                    {formatCurrency(d.value)}
-                    <Text className="text-gray-400">
-                      {' '}({pieTotal > 0 ? Math.round((d.value / pieTotal) * 100) : 0}%)
+                  <View className="flex-row items-center gap-2">
+                    <Text className="text-xs font-medium text-gray-900 dark:text-gray-100">
+                      {formatCurrency(d.value)}
+                      <Text className="text-gray-400">
+                        {' '}({pieTotal > 0 ? Math.round((d.value / pieTotal) * 100) : 0}%)
+                      </Text>
                     </Text>
-                  </Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (pieGroupMode === 'category') {
+                          updateFilter('categoryIds', [d.id]);
+                        } else if (pieGroupMode === 'payment') {
+                          updateFilter('paymentMethodIds', [d.id]);
+                        } else {
+                          updateFilter('accountIds', [d.id]);
+                        }
+                        navigation.navigate('Transactions');
+                      }}
+                      className="ml-2 p-1.5 rounded-lg active:bg-gray-200 dark:active:bg-slate-700"
+                    >
+                      <ArrowRight size={16} color="#6b7280" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               ))}
             </View>
           </View>
