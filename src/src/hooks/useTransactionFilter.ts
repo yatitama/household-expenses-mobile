@@ -80,7 +80,13 @@ export const useTransactionFilter = () => {
 
     // Payment method filter
     if (filters.paymentMethodIds.length > 0) {
-      result = result.filter((t) => t.paymentMethodId && filters.paymentMethodIds.includes(t.paymentMethodId));
+      result = result.filter((t) => {
+        // Special case: __direct__ matches transactions without paymentMethodId
+        if (filters.paymentMethodIds.includes('__direct__')) {
+          return !t.paymentMethodId;
+        }
+        return t.paymentMethodId && filters.paymentMethodIds.includes(t.paymentMethodId);
+      });
     }
 
     // Unsettled filter (only payment method transactions without settledAt)

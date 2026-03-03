@@ -1,10 +1,11 @@
 import { useState, useMemo, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { format, subMonths, addMonths, parseISO, startOfMonth, endOfMonth } from 'date-fns';
 import { BarChart, PieChart } from 'react-native-gifted-charts';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import {
   transactionService,
@@ -24,6 +25,7 @@ type PieGroupMode = 'category' | 'payment' | 'account';
 
 export const AccountsScreen = () => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const now = useMemo(() => new Date(), []);
 
   const [trendPeriod, setTrendPeriod] = useState<TrendPeriod>('6months');
@@ -88,25 +90,29 @@ export const AccountsScreen = () => {
       return t.type === 'expense' && d >= start && d <= end;
     });
 
-    const map = new Map<string, { name: string; value: number; color: string }>();
+    const map = new Map<string, { id: string; name: string; value: number; color: string }>();
     for (const t of monthTxns) {
       let key: string;
+      let id: string;
       let name: string;
       let color: string;
 
       if (pieGroupMode === 'category') {
         const cat = categories.find((c) => c.id === t.categoryId);
         key = t.categoryId;
+        id = t.categoryId;
         name = cat?.name ?? '不明';
         color = cat?.color ?? '#9ca3af';
       } else if (pieGroupMode === 'payment') {
         const pm = paymentMethods.find((p) => p.id === t.paymentMethodId);
         key = t.paymentMethodId ?? '__direct__';
+        id = t.paymentMethodId ?? '__direct__';
         name = pm?.name ?? '直接支払い';
         color = pm?.color ?? '#9ca3af';
       } else {
         const acc = accounts.find((a) => a.id === t.accountId);
         key = t.accountId;
+        id = t.accountId;
         name = acc?.name ?? '不明';
         color = acc?.color ?? '#9ca3af';
       }
@@ -115,7 +121,7 @@ export const AccountsScreen = () => {
       if (existing) {
         existing.value += t.amount;
       } else {
-        map.set(key, { name, value: t.amount, color });
+        map.set(key, { id, name, value: t.amount, color });
       }
     }
 
@@ -281,7 +287,21 @@ export const AccountsScreen = () => {
             {/* 凡例 */}
             <View className="w-full mt-3 gap-1">
               {pieData.map((d) => (
-                <View key={d.name} className="flex-row items-center justify-between">
+                <TouchableOpacity
+                  key={d.id}
+                  onPress={() => {
+                    const params: any = {};
+                    if (pieGroupMode === 'category') {
+                      params.initialFilterCategoryId = d.id;
+                    } else if (pieGroupMode === 'payment') {
+                      params.initialFilterPaymentMethodId = d.id;
+                    } else {
+                      params.initialFilterAccountId = d.id;
+                    }
+                    navigation.navigate('Transactions', params);
+                  }}
+                  className="flex-row items-center justify-between px-2 py-1.5 rounded-lg hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-slate-700 dark:active:bg-slate-600"
+                >
                   <View className="flex-row items-center gap-2">
                     <View className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
                     <Text className="text-xs text-gray-700 dark:text-gray-300">{d.name}</Text>
@@ -292,7 +312,7 @@ export const AccountsScreen = () => {
                       {' '}({pieTotal > 0 ? Math.round((d.value / pieTotal) * 100) : 0}%)
                     </Text>
                   </Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
           </View>
