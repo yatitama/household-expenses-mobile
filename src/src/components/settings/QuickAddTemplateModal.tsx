@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
-import { Trash2, Check } from 'lucide-react-native';
-import { ModalWrapper } from '../accounts/modals/ModalWrapper';
-import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
+import { Check, CreditCard, Trash2, Wallet } from 'lucide-react-native';
+
 import { ConfirmDialog } from '../feedback/ConfirmDialog';
-import { getCategoryIcon } from '../../utils/categoryIcons';
+import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
+import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import {
-  accountService, paymentMethodService, categoryService,
+  accountService, categoryService, paymentMethodService,
 } from '../../services/storage';
-import { Wallet, CreditCard } from 'lucide-react-native';
+import { getCategoryIcon } from '../../utils/categoryIcons';
 import type { QuickAddTemplate, QuickAddTemplateInput, TransactionType } from '../../types';
 
 interface QuickAddTemplateModalProps {

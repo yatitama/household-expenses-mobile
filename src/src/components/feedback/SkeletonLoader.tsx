@@ -5,7 +5,7 @@ export const Skeleton: React.FC<{ className?: string }> = ({ className = '' }) =
 );
 
 export const SkeletonCard: React.FC = () => (
-  <View className="bg-white rounded-xl p-4 gap-4">
+  <View className="bg-white dark:bg-primary-800 rounded-xl p-4 gap-4">
     <View className="flex-row items-center gap-3">
       <Skeleton className="w-10 h-10 rounded-full" />
       <View className="flex-1 gap-2">

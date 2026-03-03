@@ -169,6 +169,9 @@ export const AccountsScreen = () => {
               key={p}
               onPress={() => setTrendPeriod(p)}
               className={`px-3 py-1 rounded-full ${trendPeriod === p ? 'bg-gray-800' : 'bg-gray-100'}`}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: trendPeriod === p }}
+              accessibilityLabel={`${p === '3months' ? '3ヶ月' : p === '6months' ? '6ヶ月' : '1年'}を選択`}
             >
               <Text className={`text-xs font-medium ${trendPeriod === p ? 'text-white' : 'text-gray-600'}`}>
                 {p === '3months' ? '3ヶ月' : p === '6months' ? '6ヶ月' : '1年'}
@@ -184,6 +187,9 @@ export const AccountsScreen = () => {
               key={t}
               onPress={() => setTrendType(t)}
               className={`px-3 py-1 rounded-full ${trendType === t ? 'bg-gray-800' : 'bg-gray-100'}`}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: trendType === t }}
+              accessibilityLabel={`${t === 'expense' ? '支出' : t === 'income' ? '収入' : '収支'}を選択`}
             >
               <Text className={`text-xs font-medium ${trendType === t ? 'text-white' : 'text-gray-600'}`}>
                 {t === 'expense' ? '支出' : t === 'income' ? '収入' : '収支'}
@@ -235,6 +241,9 @@ export const AccountsScreen = () => {
               setPieMonth(d.getMonth() + 1);
             }}
             className="p-1"
+            accessibilityRole="button"
+            accessibilityLabel="前の月"
+            accessibilityHint="表示している月を1ヶ月前に移動します"
           >
             <ChevronLeft size={20} color="#374151" />
           </TouchableOpacity>
@@ -248,6 +257,9 @@ export const AccountsScreen = () => {
               setPieMonth(d.getMonth() + 1);
             }}
             className="p-1"
+            accessibilityRole="button"
+            accessibilityLabel="次の月"
+            accessibilityHint="表示している月を1ヶ月後に移動します"
           >
             <ChevronRight size={20} color="#374151" />
           </TouchableOpacity>
@@ -260,6 +272,9 @@ export const AccountsScreen = () => {
               key={m}
               onPress={() => setPieGroupMode(m)}
               className={`px-3 py-1 rounded-full ${pieGroupMode === m ? 'bg-gray-800' : 'bg-gray-100'}`}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: pieGroupMode === m }}
+              accessibilityLabel={`${m === 'category' ? 'カテゴリ' : m === 'payment' ? '支払い' : '口座'}で表示`}
             >
               <Text className={`text-xs font-medium ${pieGroupMode === m ? 'text-white' : 'text-gray-600'}`}>
                 {m === 'category' ? 'カテゴリ' : m === 'payment' ? '支払い' : '口座'}
