@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Keyboard,
+  KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   PanResponder,
@@ -101,7 +102,7 @@ export const ModalWrapper = ({
   const DRAG_H = isForm ? 30 : 0;
   const HEADER_H = 52;
   const FOOTER_H = footer ? 72 : 0;
-  // キーボード表示時は利用可能高さを縮小（iOS: marginBottom でシートを押し上げる分、Android: adjustResize でウィンドウ縮小分）
+  // キーボード表示時は利用可能高さを縮小（iOS: KAV の padding 分、Android: adjustResize でウィンドウ縮小分）
   const availableHeight = SCREEN_HEIGHT - keyboardHeight;
   const scrollMaxHeight = availableHeight * 0.9 - DRAG_H - HEADER_H - FOOTER_H - 8;
 
@@ -126,12 +127,7 @@ export const ModalWrapper = ({
 
         {/* シート本体: panHandlers をシート全体に適用 */}
         <Animated.View
-          style={{
-            transform: [{ translateY }],
-            // iOS はウィンドウがリサイズされないので、キーボード高さ分だけ上に押し上げる
-            // Android は adjustResize でウィンドウ自体が縮小されるので不要
-            marginBottom: Platform.OS === 'ios' ? keyboardHeight : 0,
-          }}
+          style={{ transform: [{ translateY }] }}
           className={`bg-white dark:bg-slate-800 w-full ${isForm ? 'rounded-t-xl' : ''}`}
           {...(isForm ? panResponder.panHandlers : {})}
           // タッチをここで消費してバックドロップへのタップ伝播を防ぐ
@@ -155,26 +151,30 @@ export const ModalWrapper = ({
             </TouchableOpacity>
           </View>
 
-          {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
-          <ScrollView
-            style={{ maxHeight: scrollMaxHeight }}
-            contentContainerStyle={{ padding: 12, paddingBottom: 8 }}
-            keyboardShouldPersistTaps="handled"
-            onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
-            scrollEventThrottle={16}
-          >
-            {children}
-          </ScrollView>
-
-          {/* フッター: 常にスクロール領域の外に固定表示 */}
-          {footer && (
-            <View
-              className="px-3 pt-3 border-t border-gray-200 dark:border-gray-700"
-              style={{ paddingBottom: footerPaddingBottom }}
+          {/* KeyboardAvoidingView: iOS ではシートを動かさずに内部余白でフッターを押し上げる */}
+          {/* Android は adjustResize でウィンドウ自体が縮小されるので無効 */}
+          <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+            {/* コンテンツ: maxHeight で ScrollView を明示的に制限してスクロールを保証 */}
+            <ScrollView
+              style={{ maxHeight: scrollMaxHeight }}
+              contentContainerStyle={{ padding: 12, paddingBottom: 8 }}
+              keyboardShouldPersistTaps="handled"
+              onScroll={(e) => { scrollY.current = e.nativeEvent.contentOffset.y; }}
+              scrollEventThrottle={16}
             >
-              {footer}
-            </View>
-          )}
+              {children}
+            </ScrollView>
+
+            {/* フッター: 常にスクロール領域の外に固定表示 */}
+            {footer && (
+              <View
+                className="px-3 pt-3 border-t border-gray-200 dark:border-gray-700"
+                style={{ paddingBottom: footerPaddingBottom }}
+              >
+                {footer}
+              </View>
+            )}
+          </KeyboardAvoidingView>
         </Animated.View>
       </View>
     </Modal>
