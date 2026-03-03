@@ -1,7 +1,7 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
 import { Search, List, Settings2 } from 'lucide-react-native';
 import { useTransactionFilter } from '../hooks/useTransactionFilter';
@@ -12,9 +12,12 @@ import { TransactionItem } from '../components/transactions/TransactionItem';
 import { TransactionDetailsSheet } from '../components/transactions/TransactionDetailsSheet';
 import { FilterModal } from '../components/transactions/FilterModal';
 import type { Transaction } from '../types';
+import type { RouteProp } from '@react-navigation/native';
+import type { RootTabParamList } from '../navigation/AppNavigator';
 
 export const TransactionsScreen = () => {
   const insets = useSafeAreaInsets();
+  const route = useRoute<RouteProp<RootTabParamList, 'Transactions'>>();
   const [, setFocused] = useState(false);
   const {
     filters,
@@ -29,6 +32,31 @@ export const TransactionsScreen = () => {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [initialFilterApplied, setInitialFilterApplied] = useState(false);
+
+  // Apply initial filters from route params
+  useEffect(() => {
+    if (!initialFilterApplied && route.params) {
+      const { initialFilterCategoryId, initialFilterPaymentMethodId, initialFilterAccountId } = route.params;
+
+      if (initialFilterCategoryId) {
+        updateFilter('categoryIds', [initialFilterCategoryId]);
+      } else if (initialFilterPaymentMethodId) {
+        if (initialFilterPaymentMethodId === '__direct__') {
+          // For direct payments (paymentMethodId is null), we need to filter by paymentMethodIds with null
+          // This is handled in useTransactionFilter as transactions without paymentMethodId
+          // We'll use a workaround by filtering empty paymentMethodIds
+          updateFilter('paymentMethodIds', ['__direct__']);
+        } else {
+          updateFilter('paymentMethodIds', [initialFilterPaymentMethodId]);
+        }
+      } else if (initialFilterAccountId) {
+        updateFilter('accountIds', [initialFilterAccountId]);
+      }
+
+      setInitialFilterApplied(true);
+    }
+  }, [route.params, initialFilterApplied, updateFilter]);
 
   useFocusEffect(
     useCallback(() => {
