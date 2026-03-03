@@ -283,7 +283,7 @@ export const QuickAddTemplateModal = ({
                   onChangeText={setTransferFee}
                   keyboardType="numeric"
                   placeholder="0"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={COLORS_GRAY[400]}
                 />
               </View>
             </View>
