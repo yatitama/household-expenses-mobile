@@ -306,6 +306,17 @@ export const AccountsScreen = () => {
                     </Text>
                     <TouchableOpacity
                       onPress={() => {
+                        // 選択している月の開始日と終了日を計算
+                        const selectedDate = new Date(pieYear, pieMonth - 1, 1);
+                        const start = startOfMonth(selectedDate);
+                        const end = endOfMonth(selectedDate);
+                        const startStr = format(start, 'yyyy-MM-dd');
+                        const endStr = format(end, 'yyyy-MM-dd');
+
+                        // 日付フィルターを設定
+                        updateFilter('dateRange', { start: startStr, end: endStr });
+
+                        // カテゴリ・支払い方法・口座のフィルターを設定
                         if (pieGroupMode === 'category') {
                           updateFilter('categoryIds', [d.id]);
                         } else if (pieGroupMode === 'payment') {
