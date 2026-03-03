@@ -96,7 +96,7 @@ export const SavingsGoalModal = ({
               value={targetAmount}
               onChangeText={setTargetAmount}
               placeholder="150000"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
               keyboardType="number-pad"
             />
           </View>
@@ -111,7 +111,7 @@ export const SavingsGoalModal = ({
               value={targetDate}
               onChangeText={setTargetDate}
               placeholder="2026-08"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>

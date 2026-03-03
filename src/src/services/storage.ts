@@ -723,8 +723,8 @@ export interface AppSettings {
 }
 
 const DEFAULT_APP_SETTINGS: AppSettings = {
-  totalAssetGradientFrom: '#3b82f6',
-  totalAssetGradientTo: '#2563eb',
+  totalAssetGradientFrom: '#3b82f6', // blue-500 (Tailwind - no direct constant mapping)
+  totalAssetGradientTo: '#2563eb', // blue-600 (Tailwind - no direct constant mapping)
 };
 
 export const appSettingsService = {

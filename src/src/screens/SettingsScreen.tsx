@@ -312,7 +312,7 @@ export const SettingsScreen = () => {
                 onPress={() => { setEditingMember(m); setIsMemberModalOpen(true); }}
               >
                 <View className="w-8 h-8 rounded-full items-center justify-center mr-3" style={{ backgroundColor: m.color }}>
-                  <Users size={14} color="#fff" />
+                  <Users size={14} color={COLORS_SEMANTIC.white} />
                 </View>
                 <Text className="flex-1 text-sm text-gray-900 dark:text-gray-100">{m.name}</Text>
               </TouchableOpacity>
@@ -367,7 +367,7 @@ export const SettingsScreen = () => {
                 onPress={() => { setEditingCategory(cat); setIsCategoryModalOpen(true); }}
               >
                 <View className="w-7 h-7 rounded-full items-center justify-center mr-3" style={{ backgroundColor: cat.color }}>
-                  {getCategoryIcon(cat.icon ?? '', 13, '#fff')}
+                  {getCategoryIcon(cat.icon ?? '', 13, COLORS_SEMANTIC.white)}
                 </View>
                 <Text className="flex-1 text-sm text-gray-900 dark:text-gray-100">{cat.name}</Text>
               </TouchableOpacity>
