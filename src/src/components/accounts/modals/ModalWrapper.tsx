@@ -46,14 +46,14 @@ export const ModalWrapper = ({
   // ScrollView のスクロール位置を追跡（先頭でのみスワイプ閉じを有効にする）
   const scrollY = useRef(0);
   // キーボード表示中はフッター下余白を詰める
-  const [keyboardShown, setKeyboardShown] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
-    // iOS は will 系、Android は did 系（adjustResize でウィンドウ縮小後）
+    // iOS は will 系（アニメーション前に高さを取得）、Android は did 系（adjustResize でウィンドウ縮小後）
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-    const showSub = Keyboard.addListener(showEvent, () => setKeyboardShown(true));
-    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardShown(false));
+    const showSub = Keyboard.addListener(showEvent, (e) => setKeyboardHeight(e.endCoordinates.height));
+    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardHeight(0));
     return () => { showSub.remove(); hideSub.remove(); };
   }, []);
 
@@ -101,10 +101,12 @@ export const ModalWrapper = ({
   const DRAG_H = isForm ? 30 : 0;
   const HEADER_H = 52;
   const FOOTER_H = footer ? 72 : 0;
-  const scrollMaxHeight = SCREEN_HEIGHT * 0.9 - DRAG_H - HEADER_H - FOOTER_H - 8;
+  // キーボード表示時は利用可能高さを縮小（iOS: marginBottom でシートを押し上げる分、Android: adjustResize でウィンドウ縮小分）
+  const availableHeight = SCREEN_HEIGHT - keyboardHeight;
+  const scrollMaxHeight = availableHeight * 0.9 - DRAG_H - HEADER_H - FOOTER_H - 8;
 
   // フッターの下余白: キーボード表示中はセーフエリア不要（キーボードがカバーするため）
-  const footerPaddingBottom = keyboardShown ? 8 : Math.max(insets.bottom, 8) + 12;
+  const footerPaddingBottom = keyboardHeight > 0 ? 8 : Math.max(insets.bottom, 8) + 12;
 
   return (
     <Modal
@@ -124,7 +126,12 @@ export const ModalWrapper = ({
 
         {/* シート本体: panHandlers をシート全体に適用 */}
         <Animated.View
-          style={{ transform: [{ translateY }] }}
+          style={{
+            transform: [{ translateY }],
+            // iOS はウィンドウがリサイズされないので、キーボード高さ分だけ上に押し上げる
+            // Android は adjustResize でウィンドウ自体が縮小されるので不要
+            marginBottom: Platform.OS === 'ios' ? keyboardHeight : 0,
+          }}
           className={`bg-white dark:bg-slate-800 w-full ${isForm ? 'rounded-t-xl' : ''}`}
           {...(isForm ? panResponder.panHandlers : {})}
           // タッチをここで消費してバックドロップへのタップ伝播を防ぐ
