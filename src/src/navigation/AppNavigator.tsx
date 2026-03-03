@@ -14,11 +14,7 @@ export type RootTabParamList = {
   Accounts: undefined;
   Money: undefined;
   AddTransaction: undefined;
-  Transactions: {
-    initialFilterCategoryId?: string;
-    initialFilterPaymentMethodId?: string;
-    initialFilterAccountId?: string;
-  } | undefined;
+  Transactions: undefined;
   Settings: undefined;
 };
 

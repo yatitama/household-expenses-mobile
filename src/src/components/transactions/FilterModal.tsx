@@ -7,7 +7,7 @@ import { ja } from 'date-fns/locale';
 import { ModalWrapper } from '../accounts/modals/ModalWrapper';
 import { DismissibleTextInput } from '../inputs/DismissibleTextInput';
 import { getCategoryIcon } from '../../utils/categoryIcons';
-import type { FilterOptions } from '../../hooks/useTransactionFilter';
+import type { FilterOptions } from '../../contexts/TransactionFilterContext';
 import type { Category, Account, PaymentMethod, SavedFilter } from '../../types';
 
 interface FilterModalProps {

@@ -11,6 +11,7 @@ import { runMigrations } from './src/services/storage';
 import { initializeDefaultData } from './src/services/initialData';
 import { settleOverdueTransactions } from './src/utils/billingUtils';
 import { ThemeProvider } from './src/contexts/ThemeContext';
+import { TransactionFilterProvider } from './src/contexts/TransactionFilterContext';
 import { AppNavigator } from './src/navigation/AppNavigator';
 
 export default function App() {
@@ -39,10 +40,12 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ThemeProvider>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
-          <Toast />
+          <TransactionFilterProvider>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+            <Toast />
+          </TransactionFilterProvider>
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
