@@ -9,6 +9,7 @@ import { AddTransactionScreen } from '../screens/AddTransactionScreen';
 import { TransactionsScreen } from '../screens/TransactionsScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { useTheme } from '../contexts/ThemeContext';
+import { ErrorBoundary } from '../components/feedback/ErrorBoundary';
 import { COLORS_GRAY, UI_COLORS } from '../constants/colors';
 
 export type RootTabParamList = {
@@ -48,27 +49,36 @@ export const AppNavigator = () => {
     >
       <Tab.Screen
         name="Accounts"
-        component={AccountsScreen}
         options={{
           title: '収支',
           tabBarIcon: ({ focused }) => (
             <TrendingUp size={22} color={focused ? UI_COLORS.iconActive : UI_COLORS.iconInactive} />
           ),
         }}
-      />
+      >
+        {() => (
+          <ErrorBoundary>
+            <AccountsScreen />
+          </ErrorBoundary>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="Money"
-        component={MoneyScreen}
         options={{
           title: 'お金',
           tabBarIcon: ({ focused }) => (
             <Wallet size={22} color={focused ? UI_COLORS.iconActive : UI_COLORS.iconInactive} />
           ),
         }}
-      />
+      >
+        {() => (
+          <ErrorBoundary>
+            <MoneyScreen />
+          </ErrorBoundary>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="AddTransaction"
-        component={AddTransactionScreen}
         options={{
           title: '',
           tabBarIcon: () => null,
@@ -105,27 +115,43 @@ export const AppNavigator = () => {
             </TouchableOpacity>
           ),
         }}
-      />
+      >
+        {() => (
+          <ErrorBoundary>
+            <AddTransactionScreen />
+          </ErrorBoundary>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="Transactions"
-        component={TransactionsScreen}
         options={{
           title: '履歴',
           tabBarIcon: ({ focused }) => (
             <List size={22} color={focused ? UI_COLORS.iconActive : UI_COLORS.iconInactive} />
           ),
         }}
-      />
+      >
+        {() => (
+          <ErrorBoundary>
+            <TransactionsScreen />
+          </ErrorBoundary>
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="Settings"
-        component={SettingsScreen}
         options={{
           title: '設定',
           tabBarIcon: ({ focused }) => (
             <SettingsIcon size={22} color={focused ? UI_COLORS.iconActive : UI_COLORS.iconInactive} />
           ),
         }}
-      />
+      >
+        {() => (
+          <ErrorBoundary>
+            <SettingsScreen />
+          </ErrorBoundary>
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };

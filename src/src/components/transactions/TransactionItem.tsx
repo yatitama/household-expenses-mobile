@@ -1,6 +1,7 @@
 import { TouchableOpacity, View, Text } from 'react-native';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { formatCurrency } from '../../utils/formatters';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import type { Transaction } from '../../types';
 
 interface TransactionItemProps {
@@ -28,9 +29,9 @@ export const TransactionItem = ({
       {/* カテゴリアイコン */}
       <View
         className="w-8 h-8 rounded-full items-center justify-center mr-3"
-        style={{ backgroundColor: cat?.color ?? '#9ca3af' }}
+        style={{ backgroundColor: cat?.color ?? COLORS_GRAY[400] }}
       >
-        {getCategoryIcon(cat?.icon ?? '', 14, '#fff')}
+        {getCategoryIcon(cat?.icon ?? '', 14, COLORS_SEMANTIC.white)}
       </View>
       {/* 情報 */}
       <View className="flex-1 min-w-0">

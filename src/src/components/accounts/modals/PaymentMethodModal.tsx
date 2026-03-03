@@ -5,6 +5,7 @@ import { ModalWrapper } from './ModalWrapper';
 import { PM_TYPE_LABELS, BILLING_TYPE_LABELS, COLORS } from '../constants';
 import { COMMON_MEMBER_ID } from '../../../types';
 import { DismissibleTextInput } from '../../inputs/DismissibleTextInput';
+import { COLORS_GRAY } from '../../../constants/colors';
 import type {
   Account, PaymentMethod, PaymentMethodType,
   PaymentMethodInput, BillingType, Member,
@@ -58,7 +59,7 @@ export const PaymentMethodModal = ({
       headerAction={
         paymentMethod && onDelete ? (
           <TouchableOpacity onPress={() => { onDelete(paymentMethod.id); onClose(); }} className="p-1">
-            <Trash2 size={15} color="#9ca3af" />
+            <Trash2 size={15} color={COLORS_GRAY[400]} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -78,7 +79,7 @@ export const PaymentMethodModal = ({
               value={name}
               onChangeText={setName}
               placeholder="例: クレジットカード"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -118,7 +119,7 @@ export const PaymentMethodModal = ({
                 <Text className="text-xs text-gray-900 dark:text-gray-200 text-center">{member.name}</Text>
                 {memberId === member.id && (
                   <View className="absolute top-0 right-0">
-                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                    <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -177,7 +178,7 @@ export const PaymentMethodModal = ({
                   onChangeText={setClosingDay}
                   keyboardType="numeric"
                   placeholder="15"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={COLORS_GRAY[400]}
                 />
               </View>
             </View>
@@ -190,7 +191,7 @@ export const PaymentMethodModal = ({
                   onChangeText={setPaymentDay}
                   keyboardType="numeric"
                   placeholder="10"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={COLORS_GRAY[400]}
                 />
               </View>
             </View>

@@ -17,6 +17,7 @@ import { formatCurrency } from '../utils/formatters';
 import { getRecurringPaymentsForMonth } from '../utils/billingUtils';
 import { getEffectiveRecurringAmount } from '../utils/savingsUtils';
 import { useTransactionFilterContext } from '../contexts/TransactionFilterContext';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../constants/colors';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -104,19 +105,19 @@ export const AccountsScreen = () => {
         key = t.categoryId;
         id = t.categoryId;
         name = cat?.name ?? '不明';
-        color = cat?.color ?? '#9ca3af';
+        color = cat?.color ?? COLORS_GRAY[400];
       } else if (pieGroupMode === 'payment') {
         const pm = paymentMethods.find((p) => p.id === t.paymentMethodId);
         key = t.paymentMethodId ?? '__direct__';
         id = t.paymentMethodId ?? '__direct__';
         name = pm?.name ?? '直接支払い';
-        color = pm?.color ?? '#9ca3af';
+        color = pm?.color ?? COLORS_GRAY[400];
       } else {
         const acc = accounts.find((a) => a.id === t.accountId);
         key = t.accountId;
         id = t.accountId;
         name = acc?.name ?? '不明';
-        color = acc?.color ?? '#9ca3af';
+        color = acc?.color ?? COLORS_GRAY[400];
       }
 
       const existing = map.get(key);
@@ -136,7 +137,7 @@ export const AccountsScreen = () => {
     return trendData.map((d) => ({
       value: trendType === 'income' ? d.income : trendType === 'expense' ? d.expense : Math.max(0, d.net),
       label: d.label,
-      frontColor: trendType === 'income' ? '#22c55e' : trendType === 'expense' ? '#ef4444' : '#3b82f6',
+      frontColor: trendType === 'income' ? COLORS_SEMANTIC.success500 : trendType === 'expense' ? COLORS_SEMANTIC.danger500 : COLORS_SEMANTIC.accent500,
     }));
   }, [trendData, trendType]);
 
@@ -220,12 +221,12 @@ export const AccountsScreen = () => {
             spacing={4}
             noOfSections={4}
             barBorderRadius={3}
-            yAxisTextStyle={{ color: '#9ca3af', fontSize: 10 }}
-            xAxisLabelTextStyle={{ color: '#9ca3af', fontSize: 10 }}
+            yAxisTextStyle={{ color: COLORS_GRAY[400], fontSize: 10 }}
+            xAxisLabelTextStyle={{ color: COLORS_GRAY[400], fontSize: 10 }}
             hideRules={false}
-            rulesColor="#f3f4f6"
-            yAxisColor="#e5e7eb"
-            xAxisColor="#e5e7eb"
+            rulesColor={COLORS_GRAY[100]}
+            yAxisColor={COLORS_GRAY[200]}
+            xAxisColor={COLORS_GRAY[200]}
           />
         )}
       </View>
@@ -245,7 +246,7 @@ export const AccountsScreen = () => {
             accessibilityLabel="前の月"
             accessibilityHint="表示している月を1ヶ月前に移動します"
           >
-            <ChevronLeft size={20} color="#374151" />
+            <ChevronLeft size={20} color={COLORS_GRAY[700]} />
           </TouchableOpacity>
           <Text className="text-sm font-medium text-gray-900 dark:text-gray-100">
             {pieYear}年{pieMonth}月
@@ -261,7 +262,7 @@ export const AccountsScreen = () => {
             accessibilityLabel="次の月"
             accessibilityHint="表示している月を1ヶ月後に移動します"
           >
-            <ChevronRight size={20} color="#374151" />
+            <ChevronRight size={20} color={COLORS_GRAY[700]} />
           </TouchableOpacity>
         </View>
 
@@ -343,7 +344,7 @@ export const AccountsScreen = () => {
                       }}
                       className="ml-2 p-1.5 rounded-lg active:bg-gray-200 dark:active:bg-slate-700"
                     >
-                      <ArrowRight size={16} color="#6b7280" />
+                      <ArrowRight size={16} color={COLORS_GRAY[500]} />
                     </TouchableOpacity>
                   </View>
                 </View>

@@ -6,6 +6,7 @@ import { ACCOUNT_TYPE_LABELS, COLORS } from '../constants';
 import { ACCOUNT_TYPE_ICONS } from '../AccountIcons';
 import { COMMON_MEMBER_ID } from '../../../types';
 import { DismissibleTextInput } from '../../inputs/DismissibleTextInput';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../../constants/colors';
 import type { Account, AccountType, AccountInput, Member } from '../../../types';
 
 interface AccountModalProps {
@@ -45,7 +46,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
       headerAction={
         account && onDelete ? (
           <TouchableOpacity onPress={() => { onDelete(account.id); onClose(); }} className="p-1">
-            <Trash2 size={15} color="#9ca3af" />
+            <Trash2 size={15} color={COLORS_GRAY[400]} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -68,7 +69,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
               value={name}
               onChangeText={setName}
               placeholder="例: メイン銀行"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>
@@ -90,7 +91,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
                 <Text className="text-xs text-gray-900 dark:text-gray-200 text-center">{member.name}</Text>
                 {memberId === member.id && (
                   <View className="absolute top-0 right-0">
-                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                    <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -114,7 +115,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
                 <Text className="text-xs text-gray-900 dark:text-gray-200 text-center">{label}</Text>
                 {accountType === value && (
                   <View className="absolute top-0 right-0">
-                    <Check size={12} color="#374151" strokeWidth={2.5} />
+                    <Check size={12} color={COLORS_GRAY[700]} strokeWidth={2.5} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -133,7 +134,7 @@ export const AccountModal = ({ account, members, onSave, onClose, onDelete }: Ac
               onChangeText={setBalance}
               keyboardType="numeric"
               placeholder="0"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={COLORS_GRAY[400]}
             />
           </View>
         </View>

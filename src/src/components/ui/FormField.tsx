@@ -1,4 +1,5 @@
 import { View, TextInput, Text, ViewStyle, TextInputProps } from 'react-native';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 import { Label } from './Label';
 
 interface FormFieldProps extends TextInputProps {
@@ -39,7 +40,7 @@ export const FormField = ({
           }
           ${className}
         `}
-        placeholderTextColor={hasError ? '#fca5a5' : '#9ca3af'}
+        placeholderTextColor={hasError ? COLORS_SEMANTIC.danger400 : COLORS_GRAY[400]}
       />
       {error && (
         <Text className="text-sm text-danger-600 dark:text-danger-400">

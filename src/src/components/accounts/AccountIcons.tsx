@@ -1,7 +1,8 @@
 import { Banknote, Building2, Smartphone, CreditCard } from 'lucide-react-native';
 import type { AccountType, PaymentMethodType } from '../../types';
+import { COLORS_GRAY, COLORS_SEMANTIC } from '../../constants/colors';
 
-const ICON_COLOR = '#ffffff';
+const ICON_COLOR = COLORS_SEMANTIC.white;
 
 export const ACCOUNT_TYPE_ICONS: Record<AccountType, React.ReactNode> = {
   cash: <Banknote size={20} color={ICON_COLOR} />,
@@ -22,9 +23,9 @@ export const ACCOUNT_TYPE_ICONS_XS: Record<AccountType, React.ReactNode> = {
 };
 
 export const ACCOUNT_TYPE_ICONS_LG: Record<AccountType, React.ReactNode> = {
-  cash: <Banknote size={60} color="#374151" />,
-  bank: <Building2 size={60} color="#374151" />,
-  emoney: <Smartphone size={60} color="#374151" />,
+  cash: <Banknote size={60} color={COLORS_GRAY[700]} />,
+  bank: <Building2 size={60} color={COLORS_GRAY[700]} />,
+  emoney: <Smartphone size={60} color={COLORS_GRAY[700]} />,
 };
 
 export const PM_TYPE_ICONS: Record<PaymentMethodType, React.ReactNode> = {

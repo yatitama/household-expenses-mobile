@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
+import { COLORS_GRAY } from '../../../constants/colors';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -147,7 +148,7 @@ export const ModalWrapper = ({
               {headerAction}
             </View>
             <TouchableOpacity onPress={close} className="p-sm">
-              <X size={18} color="#9ca3af" />
+              <X size={18} color={COLORS_GRAY[400]} />
             </TouchableOpacity>
           </View>
 
