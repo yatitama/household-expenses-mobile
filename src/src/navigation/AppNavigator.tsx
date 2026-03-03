@@ -9,6 +9,7 @@ import { AddTransactionScreen } from '../screens/AddTransactionScreen';
 import { TransactionsScreen } from '../screens/TransactionsScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { useTheme } from '../contexts/ThemeContext';
+import { COLORS_GRAY, UI_COLORS } from '../constants/colors';
 
 export type RootTabParamList = {
   Accounts: undefined;
@@ -20,16 +21,12 @@ export type RootTabParamList = {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const ICON_COLOR_ACTIVE = '#374151';
-const ICON_COLOR_INACTIVE = '#9ca3af';
-const ICON_COLOR_ACTIVE_DARK = '#d1d5db';
-
 export const AppNavigator = () => {
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
 
-  const TAB_BAR_BG_COLOR = isDark ? '#1f2937' : '#ffffff';
-  const TAB_BAR_BORDER_COLOR = isDark ? '#374151' : '#e5e7eb';
+  const TAB_BAR_BG_COLOR = isDark ? COLORS_GRAY[800] : COLORS_GRAY[50];
+  const TAB_BAR_BORDER_COLOR = isDark ? COLORS_GRAY[700] : COLORS_GRAY[200];
 
   return (
     <Tab.Navigator
@@ -44,8 +41,8 @@ export const AppNavigator = () => {
           borderTopRightRadius: 24,
           elevation: 0,
         },
-        tabBarActiveTintColor: ICON_COLOR_ACTIVE,
-        tabBarInactiveTintColor: ICON_COLOR_INACTIVE,
+        tabBarActiveTintColor: UI_COLORS.iconActive,
+        tabBarInactiveTintColor: UI_COLORS.iconInactive,
         tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
       }}
     >
@@ -91,19 +88,19 @@ export const AppNavigator = () => {
                   width: 56,
                   height: 56,
                   borderRadius: 28,
-                  backgroundColor: '#374151',
+                  backgroundColor: UI_COLORS.iconActive,
                   borderWidth: 3,
                   borderColor: TAB_BAR_BORDER_COLOR,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  shadowColor: '#000',
+                  shadowColor: COLORS_GRAY[900],
                   shadowOffset: { width: 0, height: 4 },
                   shadowOpacity: 0.2,
                   shadowRadius: 8,
                   elevation: 8,
                 }}
               >
-                <Plus size={24} color="#ffffff" />
+                <Plus size={24} color={UI_COLORS.white} />
               </View>
             </TouchableOpacity>
           ),

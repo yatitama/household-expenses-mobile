@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { AlertTriangle } from 'lucide-react-native';
+import { logger } from '../../services/logger';
+import { UI_COLORS } from '../../constants/colors';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -21,7 +23,7 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    logger.error('Error caught by boundary', error, { componentStack: errorInfo.componentStack });
   }
 
   render() {
@@ -30,7 +32,7 @@ export class ErrorBoundary extends React.Component<
         <View className="flex-1 items-center justify-center p-4 bg-gray-50">
           <View className="bg-white rounded-xl p-8 w-full items-center">
             <View className="w-16 h-16 bg-gray-100 rounded-full items-center justify-center mb-4">
-              <AlertTriangle size={32} color="#374151" />
+              <AlertTriangle size={32} color={UI_COLORS.iconActive} />
             </View>
             <Text className="text-2xl font-bold mb-2 text-gray-900">予期しないエラーです</Text>
             <Text className="text-base text-gray-600 text-center mb-4">

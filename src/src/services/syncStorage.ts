@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logger } from './logger';
 
 /**
  * localStorage と同じ同期 API を持つストレージアダプター。
@@ -23,7 +24,7 @@ class SyncStorage {
         }
       }
     } catch (e) {
-      console.warn('SyncStorage.initialize failed:', e);
+      logger.warn('SyncStorage.initialize failed', { error: e });
     }
   }
 
@@ -34,21 +35,21 @@ class SyncStorage {
   setItem(key: string, value: string): void {
     this.cache.set(key, value);
     void AsyncStorage.setItem(key, value).catch((e) =>
-      console.warn('SyncStorage.setItem failed:', e),
+      logger.warn('SyncStorage.setItem failed', { error: e }),
     );
   }
 
   removeItem(key: string): void {
     this.cache.delete(key);
     void AsyncStorage.removeItem(key).catch((e) =>
-      console.warn('SyncStorage.removeItem failed:', e),
+      logger.warn('SyncStorage.removeItem failed', { error: e }),
     );
   }
 
   clear(): void {
     this.cache.clear();
     void AsyncStorage.clear().catch((e) =>
-      console.warn('SyncStorage.clear failed:', e),
+      logger.warn('SyncStorage.clear failed', { error: e }),
     );
   }
 }

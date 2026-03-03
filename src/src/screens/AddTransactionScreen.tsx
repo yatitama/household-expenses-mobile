@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   View, Text, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, DatePickerAndroid, Keyboard,
-  useWindowDimensions,
+  useWindowDimensions, NativeSyntheticEvent, DatePickerIOSChangeEvent,
 } from 'react-native';
 import DatePickerIOS from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import {
   paymentMethodService, quickAddTemplateService,
 } from '../services/storage';
 import { getCategoryIcon } from '../utils/categoryIcons';
+import { COLORS_GRAY, UI_COLORS } from '../constants/colors';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import { QuickAddTemplateModal } from '../components/settings/QuickAddTemplateModal';
 import type { TransactionType, TransactionInput, QuickAddTemplate, QuickAddTemplateInput } from '../types';
@@ -51,7 +52,7 @@ export const AddTransactionScreen = () => {
   const [templates, setTemplates] = useState<QuickAddTemplate[]>(() => quickAddTemplateService.getAll());
 
   const type: TransactionType = tab === 'transfer' ? 'income' : tab;
-  const filteredCategories = categories.filter((c) => c.type === type);
+  const filteredCategories = useMemo(() => categories.filter((c) => c.type === type), [categories, type]);
 
   const resetForm = (currentTab: TabType = 'expense') => {
     setTab(currentTab);
@@ -101,7 +102,7 @@ export const AddTransactionScreen = () => {
     setShowDatePicker(true);
   };
 
-  const handleDateChange = (_event: unknown, selectedDate?: Date) => {
+  const handleDateChange = (_event: NativeSyntheticEvent<DatePickerIOSChangeEvent>, selectedDate?: Date) => {
     if (selectedDate) {
       setPickerDate(selectedDate);
       setDate(format(selectedDate, 'yyyy-MM-dd'));
@@ -250,6 +251,9 @@ export const AddTransactionScreen = () => {
                 key={t}
                 onPress={() => { setTab(t); setCategoryId(''); setSelectedSourceId(''); }}
                 className={`flex-1 py-2.5 items-center ${tab === t ? 'bg-gray-800 dark:bg-gray-600' : ''}`}
+                accessibilityRole="tab"
+                accessibilityLabel={t === 'expense' ? '支出タブ' : t === 'income' ? '収入タブ' : '振替タブ'}
+                accessibilityState={{ selected: tab === t }}
               >
                 <Text className={`text-sm font-medium ${tab === t ? 'text-white' : 'text-gray-700 dark:text-gray-300'}`}>
                   {t === 'expense' ? '支出' : t === 'income' ? '収入' : '振替'}
@@ -270,6 +274,9 @@ export const AddTransactionScreen = () => {
                     onLongPress={() => { setEditingTemplate(template); setShowTemplateModal(true); }}
                     style={{ width: gridItemWidth }}
                     className="relative items-center p-2 rounded-lg bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600"
+                    accessibilityRole="button"
+                    accessibilityLabel={template.name}
+                    accessibilityHint="ダブルタップで適用、長押しで編集します"
                   >
                     <Text
                       className="text-xs text-gray-900 dark:text-gray-100 text-center"
@@ -288,8 +295,11 @@ export const AddTransactionScreen = () => {
           <TouchableOpacity
             onPress={() => { setEditingTemplate(null); setShowTemplateModal(true); }}
             className="flex-row items-center gap-2 bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5"
+            accessibilityRole="button"
+            accessibilityLabel="クイック入力を作成"
+            accessibilityHint="ダブルタップで新しいクイック入力テンプレートを作成します"
           >
-            <Plus size={16} color="#6b7280" />
+            <Plus size={16} color={COLORS_GRAY[500]} />
             <Text className="text-sm text-gray-700 dark:text-gray-300">クイック入力を作成</Text>
           </TouchableOpacity>
 
@@ -304,7 +314,7 @@ export const AddTransactionScreen = () => {
                 onChangeText={setAmount}
                 keyboardType="numeric"
                 placeholder="0"
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor={UI_COLORS.placeholder}
               />
             </View>
           </View>
@@ -315,9 +325,12 @@ export const AddTransactionScreen = () => {
             <TouchableOpacity
               onPress={openDatePicker}
               className="flex-row items-center justify-between bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 h-12"
+              accessibilityRole="button"
+              accessibilityLabel={`日付選択: ${date}`}
+              accessibilityHint="ダブルタップで日付ピッカーを開きます"
             >
               <Text className="text-base text-gray-900 dark:text-gray-100">{date}</Text>
-              <ChevronDown size={20} color="#9ca3af" />
+              <ChevronDown size={20} color={UI_COLORS.placeholder} />
             </TouchableOpacity>
             {Platform.OS === 'ios' && showDatePicker && (
               <View className="mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800">
@@ -346,6 +359,9 @@ export const AddTransactionScreen = () => {
                       onPress={() => setCategoryId(cat.id)}
                       style={{ width: gridItemWidth }}
                       className={`relative items-center p-2 rounded-lg ${categoryId === cat.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                      accessibilityRole="button"
+                      accessibilityLabel={cat.name}
+                      accessibilityState={{ selected: categoryId === cat.id }}
                     >
                       <View className="mb-1">
                         {getCategoryIcon(cat.icon ?? '', 24, cat.color)}
@@ -359,7 +375,7 @@ export const AddTransactionScreen = () => {
                       </Text>
                       {categoryId === cat.id && (
                         <View className="absolute top-0 right-0">
-                          <Check size={12} color="#374151" strokeWidth={2.5} />
+                          <Check size={12} color={UI_COLORS.iconActive} strokeWidth={2.5} />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -380,12 +396,15 @@ export const AddTransactionScreen = () => {
                       onPress={() => setSelectedSourceId(src.id)}
                       style={{ width: gridItemWidth }}
                       className={`relative items-center p-2 rounded-lg ${selectedSourceId === src.id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                      accessibilityRole="button"
+                      accessibilityLabel={src.name}
+                      accessibilityState={{ selected: selectedSourceId === src.id }}
                     >
                       <View
                         className="w-8 h-8 rounded-full items-center justify-center mb-1"
                         style={{ backgroundColor: src.color }}
                       >
-                        {src.isAccount ? <Wallet size={16} color="#fff" /> : <CreditCard size={16} color="#fff" />}
+                        {src.isAccount ? <Wallet size={16} color={UI_COLORS.white} /> : <CreditCard size={16} color={UI_COLORS.white} />}
                       </View>
                       <Text
                         className="text-xs text-gray-900 dark:text-gray-100 text-center"
@@ -396,7 +415,7 @@ export const AddTransactionScreen = () => {
                       </Text>
                       {selectedSourceId === src.id && (
                         <View className="absolute top-0 right-0">
-                          <Check size={12} color="#374151" strokeWidth={2.5} />
+                          <Check size={12} color={UI_COLORS.iconActive} strokeWidth={2.5} />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -419,9 +438,12 @@ export const AddTransactionScreen = () => {
                           ? 'border-gray-800 bg-gray-50'
                           : 'border-gray-200'
                       }`}
+                      accessibilityRole="button"
+                      accessibilityLabel={acc.name}
+                      accessibilityState={{ selected: transferFromAccountId === acc.id }}
                     >
                       <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
-                        <Wallet size={12} color="#fff" />
+                        <Wallet size={12} color={UI_COLORS.white} />
                       </View>
                       <Text className="text-sm text-gray-900 flex-1">{acc.name}</Text>
                     </TouchableOpacity>
@@ -444,9 +466,12 @@ export const AddTransactionScreen = () => {
                             ? 'border-gray-800 bg-gray-50'
                             : 'border-gray-200'
                         }`}
+                        accessibilityRole="button"
+                        accessibilityLabel={acc.name}
+                        accessibilityState={{ selected: selectedSourceId === acc.id }}
                       >
                         <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: acc.color }}>
-                          <Wallet size={12} color="#fff" />
+                          <Wallet size={12} color={UI_COLORS.white} />
                         </View>
                         <Text className="text-sm text-gray-900 flex-1">{acc.name}</Text>
                       </TouchableOpacity>
@@ -465,7 +490,7 @@ export const AddTransactionScreen = () => {
                     onChangeText={setTransferFee}
                     keyboardType="numeric"
                     placeholder="0"
-                    placeholderTextColor="#9ca3af"
+                    placeholderTextColor={UI_COLORS.placeholder}
                   />
                 </View>
               </View>
@@ -490,6 +515,10 @@ export const AddTransactionScreen = () => {
             onPress={handleSubmit}
             disabled={isSubmitDisabled}
             className={`py-3 rounded-lg items-center ${isSubmitDisabled ? 'bg-gray-300' : 'bg-gray-800'}`}
+            accessibilityRole="button"
+            accessibilityLabel="取引を追加"
+            accessibilityHint="ダブルタップで新しい取引を追加します"
+            accessibilityState={{ disabled: isSubmitDisabled }}
           >
             <Text className={`font-semibold text-sm ${isSubmitDisabled ? 'text-gray-500' : 'text-white'}`}>
               追加する

@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback, useMemo } from 'react
 import type { ReactNode } from 'react';
 import { parseISO } from 'date-fns';
 import { transactionService, categoryService, savedFilterService, paymentMethodService } from '../services/storage';
-import type { SavedFilter } from '../types';
+import type { SavedFilter, Transaction } from '../types';
 
 export interface FilterOptions {
   searchQuery: string;
@@ -20,7 +20,7 @@ export interface FilterOptions {
 
 interface TransactionFilterContextValue {
   filters: FilterOptions;
-  filteredTransactions: any[];
+  filteredTransactions: readonly Transaction[];
   updateFilter: <K extends keyof FilterOptions>(key: K, value: FilterOptions[K]) => void;
   resetFilters: () => void;
   activeFilterCount: number;

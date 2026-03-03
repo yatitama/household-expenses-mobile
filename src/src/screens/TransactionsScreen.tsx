@@ -7,6 +7,8 @@ import { Search, List, Settings2 } from 'lucide-react-native';
 import { useTransactionFilterContext } from '../contexts/TransactionFilterContext';
 import { categoryService, accountService, paymentMethodService } from '../services/storage';
 import { formatCurrency, formatDate } from '../utils/formatters';
+import { logger } from '../services/logger';
+import { COLORS_GRAY, UI_COLORS } from '../constants/colors';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import { TransactionItem } from '../components/transactions/TransactionItem';
 import { TransactionDetailsSheet } from '../components/transactions/TransactionDetailsSheet';
@@ -70,7 +72,7 @@ export const TransactionsScreen = () => {
 
   const handleEdit = (t: Transaction) => {
     // TODO: 編集画面への遷移、またはモーダルを開く
-    console.log('Edit transaction:', t.id);
+    logger.info('Edit transaction', { transactionId: t.id });
   };
 
   return (
@@ -82,8 +84,10 @@ export const TransactionsScreen = () => {
           <TouchableOpacity
             onPress={() => setFilterModalOpen(true)}
             className="relative p-2"
+            accessibilityRole="button"
+            accessibilityLabel="フィルター設定を開く"
           >
-            <Settings2 size={20} color="#6b7280" />
+            <Settings2 size={20} color={COLORS_GRAY[500]} />
             {activeFilterCount > 0 && (
               <View className="absolute top-1 right-1 w-5 h-5 bg-blue-500 rounded-full items-center justify-center">
                 <Text className="text-xs font-bold text-white">{activeFilterCount}</Text>
@@ -93,11 +97,11 @@ export const TransactionsScreen = () => {
         </View>
         {/* 検索バー */}
         <View className="flex-row items-center bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 gap-2">
-          <Search size={16} color="#9ca3af" />
+          <Search size={16} color={UI_COLORS.placeholder} />
           <DismissibleTextInput
             className="flex-1 py-2.5 text-sm text-gray-900 dark:text-gray-100"
             placeholder="検索..."
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={UI_COLORS.placeholder}
             value={filters.searchQuery}
             onChangeText={(v) => updateFilter('searchQuery', v)}
           />
