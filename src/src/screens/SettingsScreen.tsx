@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import {
   Users, Tag, CreditCard, Database, Wallet, Repeat2, PiggyBank,
   ChevronDown, ChevronUp, Plus, Trash2,
@@ -20,18 +22,21 @@ import { getSavingsGoalIcon } from '../utils/savingsGoalIcons';
 import { ACCOUNT_TYPE_LABELS, PM_TYPE_LABELS } from '../components/accounts/constants';
 import { ACCOUNT_TYPE_ICONS } from '../components/accounts/AccountIcons';
 import { ConfirmDialog } from '../components/feedback/ConfirmDialog';
-import { AccountModal } from '../components/accounts/modals/AccountModal';
-import { PaymentMethodModal } from '../components/accounts/modals/PaymentMethodModal';
-import { MemberModal } from '../components/settings/MemberModal';
-import { CategoryModal } from '../components/settings/CategoryModal';
-import { RecurringPaymentModal } from '../components/settings/RecurringPaymentModal';
-import { SavingsGoalModal } from '../components/settings/SavingsGoalModal';
 import type {
   Member, Category, TransactionType,
   Account, PaymentMethod, RecurringPayment, SavingsGoal,
-  AccountInput, PaymentMethodInput,
-  MemberInput, CategoryInput, RecurringPaymentInput, SavingsGoalInput,
 } from '../types';
+import type { NavigationProp } from '@react-navigation/native';
+
+export type SettingsStackParamList = {
+  Settings: undefined;
+  MemberDetail: { memberId?: string };
+  CategoryDetail: { categoryId?: string };
+  AccountDetail: { accountId?: string };
+  PaymentMethodDetail: { paymentMethodId?: string };
+  RecurringPaymentDetail: { recurringPaymentId?: string };
+  SavingsGoalDetail: { savingsGoalId?: string };
+};
 
 const Section = ({
   title, icon, isOpen, onToggle, children, action,
@@ -67,6 +72,7 @@ const Section = ({
 
 export const SettingsScreen = () => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<NavigationProp<SettingsStackParamList>>();
   const [membersOpen, setMembersOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [accountsOpen, setAccountsOpen] = useState(false);
@@ -77,38 +83,26 @@ export const SettingsScreen = () => {
 
   // メンバー
   const [members, setMembers] = useState<Member[]>(() => memberService.getAll());
-  const [editingMember, setEditingMember] = useState<Member | null>(null);
-  const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
 
   // カテゴリ
   const [categories, setCategories] = useState<Category[]>(() => categoryService.getAll());
   const [categoryType, setCategoryType] = useState<TransactionType>('expense');
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   // 口座
   const [accounts, setAccounts] = useState<Account[]>(() => accountService.getAll());
-  const [editingAccount, setEditingAccount] = useState<Account | null>(null);
-  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
 
   // カード（支払い手段）
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(() => paymentMethodService.getAll());
-  const [editingPM, setEditingPM] = useState<PaymentMethod | null>(null);
-  const [isPMModalOpen, setIsPMModalOpen] = useState(false);
 
   // 定期取引
   const [recurringPayments, setRecurringPayments] = useState<RecurringPayment[]>(
     () => recurringPaymentService.getAll(),
   );
-  const [editingRecurring, setEditingRecurring] = useState<RecurringPayment | null>(null);
-  const [isRecurringModalOpen, setIsRecurringModalOpen] = useState(false);
 
   // 貯金目標
   const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>(
     () => savingsGoalService.getAll(),
   );
-  const [editingSavingsGoal, setEditingSavingsGoal] = useState<SavingsGoal | null>(null);
-  const [isSavingsGoalModalOpen, setIsSavingsGoalModalOpen] = useState(false);
 
   // 確認ダイアログ
   const [confirmDialog, setConfirmDialog] = useState({
@@ -119,18 +113,17 @@ export const SettingsScreen = () => {
     setConfirmDialog({ isOpen: true, title, message, onConfirm });
   };
 
-  // --- メンバー操作 ---
-  const handleSaveMember = (input: MemberInput) => {
-    if (editingMember) {
-      memberService.update(editingMember.id, input);
-      Toast.show({ type: 'success', text1: 'メンバーを更新しました' });
-    } else {
-      memberService.create(input);
-      Toast.show({ type: 'success', text1: 'メンバーを追加しました' });
-    }
-    setMembers(memberService.getAll());
-    setIsMemberModalOpen(false);
-  };
+  useFocusEffect(
+    useCallback(() => {
+      setMembers(memberService.getAll());
+      setCategories(categoryService.getAll());
+      setAccounts(accountService.getAll());
+      setPaymentMethods(paymentMethodService.getAll());
+      setRecurringPayments(recurringPaymentService.getAll());
+      setSavingsGoals(savingsGoalService.getAll());
+      return () => {};
+    }, []),
+  );
 
   const handleDeleteMember = (id: string) => {
     showConfirm('メンバーを削除', `このメンバーを削除しますか？この操作は取り消せません。`, () => {
@@ -138,19 +131,6 @@ export const SettingsScreen = () => {
       setMembers(memberService.getAll());
       Toast.show({ type: 'success', text1: 'メンバーを削除しました' });
     });
-  };
-
-  // --- カテゴリ操作 ---
-  const handleSaveCategory = (input: CategoryInput) => {
-    if (editingCategory) {
-      categoryService.update(editingCategory.id, input);
-      Toast.show({ type: 'success', text1: 'カテゴリを更新しました' });
-    } else {
-      categoryService.create(input);
-      Toast.show({ type: 'success', text1: 'カテゴリを追加しました' });
-    }
-    setCategories(categoryService.getAll());
-    setIsCategoryModalOpen(false);
   };
 
   const handleDeleteCategory = (id: string) => {
@@ -161,38 +141,12 @@ export const SettingsScreen = () => {
     });
   };
 
-  // --- 口座操作 ---
-  const handleSaveAccount = (input: AccountInput) => {
-    if (editingAccount) {
-      accountService.update(editingAccount.id, input);
-      Toast.show({ type: 'success', text1: '口座を更新しました' });
-    } else {
-      accountService.create(input);
-      Toast.show({ type: 'success', text1: '口座を追加しました' });
-    }
-    setAccounts(accountService.getAll());
-    setIsAccountModalOpen(false);
-  };
-
   const handleDeleteAccount = (id: string) => {
     showConfirm('口座を削除', 'この口座を削除しますか？この操作は取り消せません。', () => {
       accountService.delete(id);
       setAccounts(accountService.getAll());
       Toast.show({ type: 'success', text1: '口座を削除しました' });
     });
-  };
-
-  // --- カード（支払い手段）操作 ---
-  const handleSavePM = (input: PaymentMethodInput) => {
-    if (editingPM) {
-      paymentMethodService.update(editingPM.id, input);
-      Toast.show({ type: 'success', text1: 'カードを更新しました' });
-    } else {
-      paymentMethodService.create(input);
-      Toast.show({ type: 'success', text1: 'カードを追加しました' });
-    }
-    setPaymentMethods(paymentMethodService.getAll());
-    setIsPMModalOpen(false);
   };
 
   const handleDeletePM = (id: string) => {
@@ -203,38 +157,12 @@ export const SettingsScreen = () => {
     });
   };
 
-  // --- 定期取引操作 ---
-  const handleSaveRecurring = (input: RecurringPaymentInput) => {
-    if (editingRecurring) {
-      recurringPaymentService.update(editingRecurring.id, input);
-      Toast.show({ type: 'success', text1: '定期取引を更新しました' });
-    } else {
-      recurringPaymentService.create(input);
-      Toast.show({ type: 'success', text1: '定期取引を追加しました' });
-    }
-    setRecurringPayments(recurringPaymentService.getAll());
-    setIsRecurringModalOpen(false);
-  };
-
   const handleDeleteRecurring = (id: string) => {
     showConfirm('定期取引を削除', 'この定期取引を削除しますか？この操作は取り消せません。', () => {
       recurringPaymentService.delete(id);
       setRecurringPayments(recurringPaymentService.getAll());
       Toast.show({ type: 'success', text1: '定期取引を削除しました' });
     });
-  };
-
-  // --- 貯金目標操作 ---
-  const handleSaveSavingsGoal = (input: SavingsGoalInput) => {
-    if (editingSavingsGoal) {
-      savingsGoalService.update(editingSavingsGoal.id, input);
-      Toast.show({ type: 'success', text1: '貯金目標を更新しました' });
-    } else {
-      savingsGoalService.create(input);
-      Toast.show({ type: 'success', text1: '貯金目標を追加しました' });
-    }
-    setSavingsGoals(savingsGoalService.getAll());
-    setIsSavingsGoalModalOpen(false);
   };
 
   const handleDeleteSavingsGoal = (id: string) => {
@@ -295,8 +223,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    setEditingMember(null);
-                    setIsMemberModalOpen(true);
+                    navigation.navigate('MemberDetail', {});
                   }}
                   className="p-1"
                 >
@@ -309,7 +236,7 @@ export const SettingsScreen = () => {
               <TouchableOpacity
                 key={m.id}
                 className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
-                onPress={() => { setEditingMember(m); setIsMemberModalOpen(true); }}
+                onPress={() => navigation.navigate('MemberDetail', { memberId: m.id })}
               >
                 <View className="w-8 h-8 rounded-full items-center justify-center mr-3" style={{ backgroundColor: m.color }}>
                   <Users size={14} color={COLORS_SEMANTIC.white} />
@@ -318,7 +245,7 @@ export const SettingsScreen = () => {
               </TouchableOpacity>
             ))}
             <TouchableOpacity
-              onPress={() => { setEditingMember(null); setIsMemberModalOpen(true); }}
+              onPress={() => navigation.navigate('MemberDetail', {})}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
               <Plus size={13} color={COLORS_GRAY[500]} />
@@ -337,8 +264,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    setEditingCategory(null);
-                    setIsCategoryModalOpen(true);
+                    navigation.navigate('CategoryDetail', {});
                   }}
                   className="p-1"
                 >
@@ -364,7 +290,7 @@ export const SettingsScreen = () => {
               <TouchableOpacity
                 key={cat.id}
                 className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700"
-                onPress={() => { setEditingCategory(cat); setIsCategoryModalOpen(true); }}
+                onPress={() => navigation.navigate('CategoryDetail', { categoryId: cat.id })}
               >
                 <View className="w-7 h-7 rounded-full items-center justify-center mr-3" style={{ backgroundColor: cat.color }}>
                   {getCategoryIcon(cat.icon ?? '', 13, COLORS_SEMANTIC.white)}
@@ -373,7 +299,7 @@ export const SettingsScreen = () => {
               </TouchableOpacity>
             ))}
             <TouchableOpacity
-              onPress={() => { setEditingCategory(null); setIsCategoryModalOpen(true); }}
+              onPress={() => navigation.navigate('CategoryDetail', {})}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
               <Plus size={13} color={COLORS_GRAY[500]} />
@@ -392,8 +318,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    setEditingAccount(null);
-                    setIsAccountModalOpen(true);
+                    navigation.navigate('AccountDetail', {});
                   }}
                   className="p-1"
                 >
@@ -408,7 +333,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   key={account.id}
                   className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
-                  onPress={() => { setEditingAccount(account); setIsAccountModalOpen(true); }}
+                  onPress={() => navigation.navigate('AccountDetail', { accountId: account.id })}
                 >
                   <View
                     className="w-8 h-8 rounded-full items-center justify-center mr-3"
@@ -427,7 +352,7 @@ export const SettingsScreen = () => {
               );
             })}
             <TouchableOpacity
-              onPress={() => { setEditingAccount(null); setIsAccountModalOpen(true); }}
+              onPress={() => navigation.navigate('AccountDetail', {})}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
               <Plus size={13} color={COLORS_GRAY[500]} />
@@ -446,8 +371,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    setEditingPM(null);
-                    setIsPMModalOpen(true);
+                    navigation.navigate('PaymentMethodDetail', {});
                   }}
                   className="p-1"
                 >
@@ -463,7 +387,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   key={pm.id}
                   className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
-                  onPress={() => { setEditingPM(pm); setIsPMModalOpen(true); }}
+                  onPress={() => navigation.navigate('PaymentMethodDetail', { paymentMethodId: pm.id })}
                 >
                   <View
                     className="w-8 h-8 rounded-full items-center justify-center mr-3"
@@ -483,7 +407,7 @@ export const SettingsScreen = () => {
               );
             })}
             <TouchableOpacity
-              onPress={() => { setEditingPM(null); setIsPMModalOpen(true); }}
+              onPress={() => navigation.navigate('PaymentMethodDetail', {})}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
               <Plus size={13} color={COLORS_GRAY[500]} />
@@ -502,8 +426,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    setEditingRecurring(null);
-                    setIsRecurringModalOpen(true);
+                    navigation.navigate('RecurringPaymentDetail', {});
                   }}
                   className="p-1"
                 >
@@ -523,10 +446,7 @@ export const SettingsScreen = () => {
                   <TouchableOpacity
                     key={rp.id}
                     className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0"
-                    onPress={() => {
-                      setEditingRecurring(rp);
-                      setIsRecurringModalOpen(true);
-                    }}
+                    onPress={() => navigation.navigate('RecurringPaymentDetail', { recurringPaymentId: rp.id })}
                   >
                     {category && (
                       <View
@@ -554,10 +474,7 @@ export const SettingsScreen = () => {
               })
             )}
             <TouchableOpacity
-              onPress={() => {
-                setEditingRecurring(null);
-                setIsRecurringModalOpen(true);
-              }}
+              onPress={() => navigation.navigate('RecurringPaymentDetail', {})}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
               <Plus size={13} color={COLORS_GRAY[500]} />
@@ -576,8 +493,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    setEditingSavingsGoal(null);
-                    setIsSavingsGoalModalOpen(true);
+                    navigation.navigate('SavingsGoalDetail', {});
                   }}
                   className="p-1"
                 >
@@ -595,10 +511,7 @@ export const SettingsScreen = () => {
                 <TouchableOpacity
                   key={goal.id}
                   className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0"
-                  onPress={() => {
-                    setEditingSavingsGoal(goal);
-                    setIsSavingsGoalModalOpen(true);
-                  }}
+                  onPress={() => navigation.navigate('SavingsGoalDetail', { savingsGoalId: goal.id })}
                 >
                   <View
                     className="w-8 h-8 rounded-full items-center justify-center mr-3"
@@ -618,10 +531,7 @@ export const SettingsScreen = () => {
               ))
             )}
             <TouchableOpacity
-              onPress={() => {
-                setEditingSavingsGoal(null);
-                setIsSavingsGoalModalOpen(true);
-              }}
+              onPress={() => navigation.navigate('SavingsGoalDetail', {})}
               className="flex-row items-center gap-1 mt-3 py-1"
             >
               <Plus size={13} color={COLORS_GRAY[500]} />
@@ -646,79 +556,6 @@ export const SettingsScreen = () => {
           </Section>
         </View>
       </ScrollView>
-
-      {/* モーダル */}
-      {isMemberModalOpen && (
-        <MemberModal
-          member={editingMember}
-          onSave={handleSaveMember}
-          onClose={() => setIsMemberModalOpen(false)}
-          onDelete={handleDeleteMember}
-        />
-      )}
-
-      {isCategoryModalOpen && (
-        <CategoryModal
-          category={editingCategory}
-          onSave={handleSaveCategory}
-          onClose={() => setIsCategoryModalOpen(false)}
-          onDelete={handleDeleteCategory}
-          defaultType={categoryType}
-        />
-      )}
-
-      {isAccountModalOpen && (
-        <AccountModal
-          account={editingAccount}
-          members={members}
-          onSave={handleSaveAccount}
-          onClose={() => setIsAccountModalOpen(false)}
-          onDelete={editingAccount ? (id) => {
-            setIsAccountModalOpen(false);
-            handleDeleteAccount(id);
-          } : undefined}
-        />
-      )}
-
-      {isPMModalOpen && (
-        <PaymentMethodModal
-          paymentMethod={editingPM}
-          accounts={accounts}
-          members={members}
-          onSave={handleSavePM}
-          onClose={() => setIsPMModalOpen(false)}
-          onDelete={editingPM ? (id) => {
-            setIsPMModalOpen(false);
-            handleDeletePM(id);
-          } : undefined}
-        />
-      )}
-
-      {isRecurringModalOpen && (
-        <RecurringPaymentModal
-          recurringPayment={editingRecurring}
-          categories={categories}
-          paymentMethods={paymentMethods}
-          onSave={handleSaveRecurring}
-          onClose={() => setIsRecurringModalOpen(false)}
-          onDelete={editingRecurring ? (id) => {
-            setIsRecurringModalOpen(false);
-            handleDeleteRecurring(id);
-          } : undefined}
-        />
-      )}
-
-      {isSavingsGoalModalOpen && (
-        <SavingsGoalModal
-          goal={editingSavingsGoal}
-          onSave={handleSaveSavingsGoal}
-          onClose={() => setIsSavingsGoalModalOpen(false)}
-          onDelete={editingSavingsGoal ? (id) => {
-            setIsSavingsGoalModalOpen(false);
-            handleDeleteSavingsGoal(id);
-          } : undefined}
-        />
-      )}
 
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
