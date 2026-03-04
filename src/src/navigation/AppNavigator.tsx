@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TrendingUp, List, Settings as SettingsIcon, Plus, Wallet } from 'lucide-react-native';
 import { View, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,16 +12,154 @@ import { SettingsScreen } from '../screens/SettingsScreen';
 import { useTheme } from '../contexts/ThemeContext';
 import { ErrorBoundary } from '../components/feedback/ErrorBoundary';
 import { COLORS_GRAY, UI_COLORS } from '../constants/colors';
+import type {
+  RootTabParamList,
+  SettingsStackParamList,
+  TransactionsStackParamList,
+  AddTransactionStackParamList,
+} from './types/navigation';
 
-export type RootTabParamList = {
-  Accounts: undefined;
-  Money: undefined;
-  AddTransaction: undefined;
-  Transactions: undefined;
-  Settings: undefined;
-};
+// Import new screens (we'll create these)
+import { MemberDetailScreen } from '../screens/settings/MemberDetailScreen';
+import { CategoryDetailScreen } from '../screens/settings/CategoryDetailScreen';
+import { AccountDetailScreen } from '../screens/settings/AccountDetailScreen';
+import { PaymentMethodDetailScreen } from '../screens/settings/PaymentMethodDetailScreen';
+import { RecurringPaymentDetailScreen } from '../screens/settings/RecurringPaymentDetailScreen';
+import { SavingsGoalDetailScreen } from '../screens/settings/SavingsGoalDetailScreen';
+import { FilterScreen } from '../screens/transactions/FilterScreen';
+import { TransactionDetailsScreen } from '../screens/transactions/TransactionDetailsScreen';
+import { QuickAddTemplateDetailScreen } from '../screens/addTransaction/QuickAddTemplateDetailScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
+const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
+const TransactionsStack = createNativeStackNavigator<TransactionsStackParamList>();
+const AddTransactionStack = createNativeStackNavigator<AddTransactionStackParamList>();
+
+// Settings Stack Navigator
+const SettingsTabNavigator = () => (
+  <SettingsStack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
+    <SettingsStack.Screen
+      name="SettingsScreen"
+      component={SettingsScreen}
+      options={{ headerShown: false }}
+    />
+    <SettingsStack.Screen
+      name="MemberDetail"
+      component={MemberDetailScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: 'メンバー',
+      }}
+    />
+    <SettingsStack.Screen
+      name="CategoryDetail"
+      component={CategoryDetailScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: 'カテゴリ',
+      }}
+    />
+    <SettingsStack.Screen
+      name="AccountDetail"
+      component={AccountDetailScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: '口座',
+      }}
+    />
+    <SettingsStack.Screen
+      name="PaymentMethodDetail"
+      component={PaymentMethodDetailScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: 'カード',
+      }}
+    />
+    <SettingsStack.Screen
+      name="RecurringPaymentDetail"
+      component={RecurringPaymentDetailScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: '定期取引',
+      }}
+    />
+    <SettingsStack.Screen
+      name="SavingsGoalDetail"
+      component={SavingsGoalDetailScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: '貯金目標',
+      }}
+    />
+  </SettingsStack.Navigator>
+);
+
+// Transactions Stack Navigator
+const TransactionsTabNavigator = () => (
+  <TransactionsStack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
+    <TransactionsStack.Screen
+      name="TransactionsScreen"
+      component={TransactionsScreen}
+      options={{ headerShown: false }}
+    />
+    <TransactionsStack.Screen
+      name="FilterScreen"
+      component={FilterScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: 'フィルター',
+      }}
+    />
+    <TransactionsStack.Screen
+      name="TransactionDetailsScreen"
+      component={TransactionDetailsScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: '取引詳細',
+      }}
+    />
+  </TransactionsStack.Navigator>
+);
+
+// AddTransaction Stack Navigator
+const AddTransactionTabNavigator = () => (
+  <AddTransactionStack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
+    <AddTransactionStack.Screen
+      name="AddTransactionScreen"
+      component={AddTransactionScreen}
+      options={{ headerShown: false }}
+    />
+    <AddTransactionStack.Screen
+      name="QuickAddTemplateDetail"
+      component={QuickAddTemplateDetailScreen}
+      options={{
+        presentation: 'modal',
+        headerShown: true,
+        title: 'クイック入力',
+      }}
+    />
+  </AddTransactionStack.Navigator>
+);
 
 export const AppNavigator = () => {
   const insets = useSafeAreaInsets();
@@ -118,7 +257,7 @@ export const AppNavigator = () => {
       >
         {() => (
           <ErrorBoundary>
-            <AddTransactionScreen />
+            <AddTransactionTabNavigator />
           </ErrorBoundary>
         )}
       </Tab.Screen>
@@ -133,7 +272,7 @@ export const AppNavigator = () => {
       >
         {() => (
           <ErrorBoundary>
-            <TransactionsScreen />
+            <TransactionsTabNavigator />
           </ErrorBoundary>
         )}
       </Tab.Screen>
@@ -148,7 +287,7 @@ export const AppNavigator = () => {
       >
         {() => (
           <ErrorBoundary>
-            <SettingsScreen />
+            <SettingsTabNavigator />
           </ErrorBoundary>
         )}
       </Tab.Screen>

@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
 import { Search, List, Settings2 } from 'lucide-react-native';
 import { useTransactionFilterContext } from '../contexts/TransactionFilterContext';
@@ -11,12 +12,18 @@ import { logger } from '../services/logger';
 import { COLORS_GRAY, UI_COLORS, COLORS_SEMANTIC } from '../constants/colors';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
 import { TransactionItem } from '../components/transactions/TransactionItem';
-import { TransactionDetailsSheet } from '../components/transactions/TransactionDetailsSheet';
-import { FilterModal } from '../components/transactions/FilterModal';
 import type { Transaction } from '../types';
+import type { NavigationProp } from '@react-navigation/native';
+
+export type TransactionsStackParamList = {
+  Transactions: undefined;
+  TransactionDetailsScreen: { transactionId: string };
+  FilterScreen: undefined;
+};
 
 export const TransactionsScreen = () => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<NavigationProp<TransactionsStackParamList>>();
   const [, setFocused] = useState(false);
   const {
     filters,
@@ -28,9 +35,6 @@ export const TransactionsScreen = () => {
     applySavedFilter,
     deleteSavedFilter,
   } = useTransactionFilterContext();
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-  const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
-  const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -70,13 +74,11 @@ export const TransactionsScreen = () => {
   );
 
   const handleTransactionPress = (t: Transaction) => {
-    setSelectedTransaction(t);
-    setDetailsSheetOpen(true);
+    navigation.navigate('TransactionDetailsScreen', { transactionId: t.id });
   };
 
   const handleEdit = (t: Transaction) => {
-    // TODO: 編集画面への遷移、またはモーダルを開く
-    logger.info('Edit transaction', { transactionId: t.id });
+    navigation.navigate('TransactionDetailsScreen', { transactionId: t.id });
   };
 
   return (
@@ -86,7 +88,7 @@ export const TransactionsScreen = () => {
         <View className="flex-row items-center justify-between mb-3">
           <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">履歴</Text>
           <TouchableOpacity
-            onPress={() => setFilterModalOpen(true)}
+            onPress={() => navigation.navigate('FilterScreen')}
             className="relative p-2"
             accessibilityRole="button"
             accessibilityLabel="フィルター設定を開く"
@@ -169,34 +171,6 @@ export const TransactionsScreen = () => {
         )}
       </ScrollView>
 
-      {/* 詳細シート */}
-      <TransactionDetailsSheet
-        transaction={selectedTransaction}
-        isOpen={detailsSheetOpen}
-        onClose={() => {
-          setDetailsSheetOpen(false);
-          setSelectedTransaction(null);
-        }}
-        category={selectedTransaction ? categories.find((c) => c.id === selectedTransaction.categoryId) : undefined}
-        account={selectedTransaction ? accounts.find((a) => a.id === selectedTransaction.accountId) : undefined}
-        paymentMethod={selectedTransaction ? paymentMethods.find((p) => p.id === selectedTransaction.paymentMethodId) : undefined}
-        onEdit={handleEdit}
-      />
-
-      {/* フィルターモーダル */}
-      <FilterModal
-        visible={filterModalOpen}
-        onClose={() => setFilterModalOpen(false)}
-        filters={filters}
-        onFilterChange={updateFilter}
-        categories={categories}
-        accounts={accounts}
-        paymentMethods={paymentMethods}
-        savedFilters={savedFilters}
-        onSaveFilter={saveFilter}
-        onApplySavedFilter={applySavedFilter}
-        onDeleteSavedFilter={deleteSavedFilter}
-      />
     </View>
   );
 };

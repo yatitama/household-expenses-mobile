@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, DatePickerAndroid, Keyboard,
@@ -6,6 +6,8 @@ import {
 } from 'react-native';
 import DatePickerIOS from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 import Toast from 'react-native-toast-message';
 import { Wallet, CreditCard, ChevronDown, Check, Plus } from 'lucide-react-native';
@@ -16,9 +18,14 @@ import {
 import { getCategoryIcon } from '../utils/categoryIcons';
 import { COLORS_GRAY, UI_COLORS, COLORS_SEMANTIC } from '../constants/colors';
 import { DismissibleTextInput } from '../components/inputs/DismissibleTextInput';
-import { QuickAddTemplateModal } from '../components/settings/QuickAddTemplateModal';
-import type { TransactionType, TransactionInput, QuickAddTemplate, QuickAddTemplateInput } from '../types';
+import type { TransactionType, TransactionInput, QuickAddTemplate } from '../types';
 import type { ScrollView as RNScrollView } from 'react-native';
+import type { NavigationProp } from '@react-navigation/native';
+
+export type AddTransactionStackParamList = {
+  AddTransaction: undefined;
+  QuickAddTemplateDetail: { templateId?: string };
+};
 
 type TabType = TransactionType | 'transfer';
 
@@ -29,6 +36,7 @@ const parseDate = (dateString: string): Date => {
 
 export const AddTransactionScreen = () => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<NavigationProp<AddTransactionStackParamList>>();
   const scrollViewRef = useRef<RNScrollView>(null);
   const { width: windowWidth } = useWindowDimensions();
   // px-4 (16px × 2 = 32px) のコンテナ水平パディング + gap-2 (8px) × 2 列間 = 48px
@@ -47,9 +55,14 @@ export const AddTransactionScreen = () => {
   const [transferFee, setTransferFee] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pickerDate, setPickerDate] = useState<Date>(() => parseDate(format(new Date(), 'yyyy-MM-dd')));
-  const [showTemplateModal, setShowTemplateModal] = useState(false);
-  const [editingTemplate, setEditingTemplate] = useState<QuickAddTemplate | null>(null);
   const [templates, setTemplates] = useState<QuickAddTemplate[]>(() => quickAddTemplateService.getAll());
+
+  useFocusEffect(
+    useCallback(() => {
+      setTemplates(quickAddTemplateService.getAll());
+      return () => {};
+    }, []),
+  );
 
   const type: TransactionType = tab === 'transfer' ? 'income' : tab;
   const filteredCategories = useMemo(() => categories.filter((c) => c.type === type), [categories, type]);
@@ -79,23 +92,6 @@ export const AddTransactionScreen = () => {
     }
   };
 
-  const handleSaveTemplate = (input: QuickAddTemplateInput) => {
-    if (editingTemplate) {
-      quickAddTemplateService.update(editingTemplate.id, input);
-    } else {
-      quickAddTemplateService.create(input);
-    }
-    setTemplates(quickAddTemplateService.getAll());
-    setShowTemplateModal(false);
-    setEditingTemplate(null);
-    Toast.show({ type: 'success', text1: editingTemplate ? 'テンプレートを更新しました' : 'テンプレートを作成しました' });
-  };
-
-  const handleDeleteTemplate = (id: string) => {
-    quickAddTemplateService.delete(id);
-    setTemplates(quickAddTemplateService.getAll());
-    Toast.show({ type: 'success', text1: 'テンプレートを削除しました' });
-  };
 
   const openDatePicker = () => {
     setPickerDate(parseDate(date));
@@ -290,7 +286,7 @@ export const AddTransactionScreen = () => {
                   <TouchableOpacity
                     key={template.id}
                     onPress={() => applyTemplate(template)}
-                    onLongPress={() => { setEditingTemplate(template); setShowTemplateModal(true); }}
+                    onLongPress={() => navigation.navigate('QuickAddTemplateDetail', { templateId: template.id })}
                     style={{ width: gridItemWidth }}
                     className="relative items-center p-2 rounded-lg bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600"
                     accessibilityRole="button"
@@ -312,7 +308,7 @@ export const AddTransactionScreen = () => {
 
           {/* クイック入力を作成ボタン */}
           <TouchableOpacity
-            onPress={() => { setEditingTemplate(null); setShowTemplateModal(true); }}
+            onPress={() => navigation.navigate('QuickAddTemplateDetail', {})}
             className="flex-row items-center gap-2 bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5"
             accessibilityRole="button"
             accessibilityLabel="クイック入力を作成"
@@ -545,20 +541,6 @@ export const AddTransactionScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-
-      {/* クイック入力テンプレートモーダル */}
-      {showTemplateModal && (
-        <QuickAddTemplateModal
-          template={editingTemplate}
-          onSave={handleSaveTemplate}
-          onClose={() => {
-            setShowTemplateModal(false);
-            setEditingTemplate(null);
-          }}
-          onDelete={handleDeleteTemplate}
-          defaultType={tab}
-        />
-      )}
     </KeyboardAvoidingView>
   );
 };
